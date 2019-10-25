@@ -7,6 +7,7 @@ public class CardSpace extends Space {
         this.number = number;
         this.name = name;
         this.type = type;
+        action = "draw card";
     }
 
     public String getType() {
