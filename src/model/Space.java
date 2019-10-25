@@ -1,6 +1,14 @@
 package model;
 
 public abstract class Space {
-    public int number;
-    public String name;
+    protected int number;
+    protected String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public int getNumber() {
+        return number;
+    }
 }
