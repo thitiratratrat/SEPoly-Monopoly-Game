@@ -3,6 +3,7 @@ package model;
 public abstract class Space {
     protected int number;
     protected String name;
+    protected String action;
 
     public String getName() {
         return name;
@@ -10,5 +11,9 @@ public abstract class Space {
 
     public int getNumber() {
         return number;
+    }
+
+    public String getAction() {
+        return action;
     }
 }
