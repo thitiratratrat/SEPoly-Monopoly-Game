@@ -3,14 +3,14 @@ package model;
 import java.util.ArrayList;
 
 public class Player {
-    ArrayList<Utility> utilities;
-    ArrayList<Estate> estates;
+    ArrayList<UtilitySpace> utilities;
+    ArrayList<EstateSpace> estates;
     double money;
 
     Player(double startingMoney) {
         money = startingMoney;
-        utilities = new ArrayList<Utility>();
-        estates = new ArayList<Estate>();
+        utilities = new ArrayList<UtilitySpace>();
+        estates = new ArrayList<EstateSpace>();
     }
 
     public void buy(Property property) {}
