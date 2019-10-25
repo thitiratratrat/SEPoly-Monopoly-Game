@@ -5,6 +5,11 @@ public abstract class Space {
     protected String name;
     protected String action;
 
+    Space(int number, String name) {
+        this.number = number;
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }
