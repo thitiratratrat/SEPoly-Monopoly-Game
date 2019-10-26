@@ -16,7 +16,7 @@ public class Player {
     public void buy(Property property) {}
     public void drawCard(ArrayList<Card> cards) {};
     public int rollDice() {};
-    public double pay() {};
+    public double pay(Player player) {};
     public void getMoney(double money) {};
     public void mortgage(Property property) {};
 }
