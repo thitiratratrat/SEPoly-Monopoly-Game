@@ -9,7 +9,7 @@ public class EstateSpace extends PropertySpace {
     private int landmarkCount;
     private ArrayList<Double> rentPrices;
 
-    EstateSpace(int number, String name, double price, double rent, double oneHouseRent,
+    public EstateSpace(int number, String name, double price, double rent, double oneHouseRent,
                 double twoHouseRent, double threeHouseRent, double fourHouseRent,
                 double landmarkRent, double housePrice, double landmarkPrice) {
         super(number, name, price);

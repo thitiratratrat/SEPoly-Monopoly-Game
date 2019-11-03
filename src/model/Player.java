@@ -7,16 +7,16 @@ public class Player {
     ArrayList<EstateSpace> estates;
     double money;
 
-    Player(double startingMoney) {
+    public Player(double startingMoney) {
         money = startingMoney;
         utilities = new ArrayList<UtilitySpace>();
         estates = new ArrayList<EstateSpace>();
     }
 
-    public void buy(Property property) {}
-    public void drawCard(ArrayList<Card> cards) {};
-    public int rollDice() {};
-    public double pay(Player player) {};
-    public void getMoney(double money) {};
-    public void mortgage(Property property) {};
+//    public void buy(Property property) {}
+//    public void drawCard(ArrayList<Card> cards) {};
+//    public int rollDice() {};
+//    public double pay(Player player) {};
+//    public void getMoney(double money) {};
+//    public void mortgage(Property property) {};
 }

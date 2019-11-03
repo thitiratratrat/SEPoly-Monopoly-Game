@@ -3,7 +3,7 @@ package model;
 public class UtilitySpace extends PropertySpace {
     private String type;
 
-    UtilitySpace(int number, String name, double price, String type) {
+    public UtilitySpace(int number, String name, double price, String type) {
         super(number, name, price);
         this.type = type;
     }
