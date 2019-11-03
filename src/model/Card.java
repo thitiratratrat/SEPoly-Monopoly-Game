@@ -4,7 +4,7 @@ public class Card {
     private String action;
     private String text;
 
-    Card(String action, String text) {
+    public Card(String action, String text) {
         this.action = action;
         this.text = text;
     }
