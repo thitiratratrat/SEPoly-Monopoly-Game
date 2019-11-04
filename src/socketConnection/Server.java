@@ -16,7 +16,8 @@ public class Server {
     private List<ClientHandler> clients;
     private ServerSocket serverSocket;
     private List<Player> players;
-    private double startingMoney = 1000;
+    final private double STARTINGMONEY = 1000;
+    String message = "hello";
 
     Server(int port) throws IOException {
         serverSocket = new ServerSocket(port);
@@ -30,7 +31,7 @@ public class Server {
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
             ClientHandler clientHandler = new ClientHandler(socket, inputStream, outputStream, this);
-            Player player = new Player(startingMoney);
+            Player player = new Player(STARTINGMONEY);
 
             clients.add(clientHandler);
             players.add(player);
@@ -41,10 +42,14 @@ public class Server {
         }
     }
 
-    public void sendHello() throws IOException {
-        for (ClientHandler client: clients) {
-            ObjectOutputStream outputStream = client.getOutputStream();
-            outputStream.writeObject("Hello");
+    public void setMessage(String m) throws IOException {
+        message = m;
+        sendData();
+    }
+
+    public void sendData() throws IOException {
+        for(ClientHandler client: clients) {
+            client.getOutputStream().writeObject(message);
         }
     }
 
@@ -53,3 +58,5 @@ public class Server {
     }
 }
 
+
+//when player's data is sent here to update, send it to other player

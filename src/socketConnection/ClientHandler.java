@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.concurrent.TimeUnit;
 
 class ClientHandler extends Thread {
     private Socket socket;
@@ -21,11 +22,10 @@ class ClientHandler extends Thread {
     @Override
     public void run() {
         try {
-//            while (true) {
-////                Object request = inputStream.readObject();
-//                server.sendHello();
-//                break;
-//            }
+            while(true) {
+                String newMessage = (String) inputStream.readObject();
+                server.setMessage(newMessage);
+            }
         } catch (Exception e) {
             try {
                 inputStream.close();
