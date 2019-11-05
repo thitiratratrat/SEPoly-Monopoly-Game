@@ -10,4 +10,16 @@ public class EstateSpaceObj {
         this.houseCount = houseCount;
         this.landmarkCount = landmarkCount;
     }
+
+    public Player getOwner() {
+        return owner;
+    }
+
+    public int getHouseCount() {
+        return houseCount;
+    }
+
+    public int getLandmarkCount() {
+        return landmarkCount;
+    }
 }
