@@ -18,11 +18,11 @@ public class Gameplay {
     private String address = "127.0.0.1";
     private int port = 5056;
     private Timer sendPlayerDataTimer, getGameDataTimer;
+    private boolean isTurn = false;
     private boolean isMoving = false;
     final private int TIMERDELAY = 500;
-    final private String[] messages = {"Yay", "Yo", "Hahah"};
-    JFrame frame;
-    JLabel lblText;
+//    JFrame frame;
+//    JLabel lblText;
 
     Gameplay() {
         initMapUI();
@@ -55,11 +55,11 @@ public class Gameplay {
     }
 
     private void start() {
-        getMapData();
         startSendPlayerPositionTimer();
         startGetGameDataTimer();
     }
 
+    //send player position update
     private void startSendPlayerPositionTimer() {
         sendPlayerDataTimer = new Timer();
         sendPlayerDataTimer.scheduleAtFixedRate(new TimerTask() {
@@ -68,29 +68,51 @@ public class Gameplay {
                 if (!isMoving) {
                     return;
                 }
-                try {
-                    Random randomGenerator = new Random();
-                    int randomInt = randomGenerator.nextInt(messages.length);
-                    client.sendData(messages[randomInt]);
-                } catch (
-                        IOException e) {
-                    e.printStackTrace();
-                }
+
             }
         }, 0, TIMERDELAY);
     }
 
+    //for update with no request from gameplay client side
     private void startGetGameDataTimer() {
         getGameDataTimer = new Timer();
         getGameDataTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 try {
-                    String message = (String) client.getData();
-                    if (message != null) {
-                        System.out.println(message);
-                        lblText.setText(message);
+                    ServerMessage serverMessage = client.getData();
+                    if (serverMessage == null) {
+                        return;
                     }
+
+                    String action = serverMessage.getAction();
+                    switch (action) {
+                        case ("startTurn"): {
+                            isTurn = true;
+                            System.out.println("my turn");
+                            break;
+                        }
+
+                        case ("initMap"): {
+                            map = (ArrayList<Space>) serverMessage.getData();
+                            break;
+                        }
+
+                        case ("initPlayer"): {
+                            player = (Player) serverMessage.getData();
+                            break;
+                        }
+
+                        case ("updatePlayer"): {
+                            PlayerObj playerObj = (PlayerObj) serverMessage.getData();
+                            updatePlayer(playerObj);
+                            break;
+                        }
+
+                        default:
+                            break;
+                    }
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -98,15 +120,35 @@ public class Gameplay {
         }, 0, TIMERDELAY);
     }
 
-    private void getMapData() {
-        map = client.getMapData();
+    private void endTurn() throws IOException {
+        isTurn = false;
+        ServerMessage serverMessage = new ServerMessage("endTurn", player.getID());
+        client.sendData(serverMessage);
     }
 
-    private void sendData(ServerMessage serverMessage) throws IOException {
+    private void updatePlayer(PlayerObj playerObj) {
+        for (PlayerObj opponent : opponents) {
+            if (opponent.getID() == playerObj.getID()) {
+                opponent.setX(playerObj.getX());
+                opponent.setY(playerObj.getY());
+                opponent.setMoney(playerObj.getMoney());
+            }
+        }
+    }
+
+    private void buy() throws IOException {
+        //check money before buying
+
+        //Player buys house/estate/utility logic here
+
+        //update player's money
+        int xPosition = 0;
+        int yPosition = 0;
+        PlayerObj playerObj = new PlayerObj(xPosition, yPosition, player.getMoney(), player.getID());
+        ServerMessage serverMessage = new ServerMessage("updatePlayer", playerObj);
         client.sendData(serverMessage);
     }
 
 }
 
-//set timer to update player's position bcos it is automatically moved
 
