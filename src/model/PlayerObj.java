@@ -1,12 +1,14 @@
 package model;
 
-public class PlayerPositionObj {
+public class PlayerObj {
     private int x;
     private int y;
+    private double money;
 
-    PlayerPositionObj(int x, int y) {
+    PlayerObj(int x, int y, double money) {
         this.x = x;
         this.y = y;
+        this.money = money;
     }
 
     public int getX() {
@@ -15,5 +17,9 @@ public class PlayerPositionObj {
 
     public int getY() {
         return y;
+    }
+
+    public double getMoney() {
+        return money;
     }
 }

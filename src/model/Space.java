@@ -1,6 +1,8 @@
 package model;
 
-public abstract class Space {
+import java.io.Serializable;
+
+public abstract class Space implements Serializable {
     protected int number;
     protected String name;
     protected String action;

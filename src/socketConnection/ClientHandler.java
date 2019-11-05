@@ -1,5 +1,7 @@
 package socketConnection;
 
+import model.ServerMessage;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -23,8 +25,17 @@ class ClientHandler extends Thread {
     public void run() {
         try {
             while(true) {
-                String newMessage = (String) inputStream.readObject();
-                server.setMessage(newMessage);
+                ServerMessage serverMessage = (ServerMessage) inputStream.readObject();
+                String action = serverMessage.getAction();
+
+                switch(action) {
+                    case("getMap"): {
+                        outputStream.writeObject(server.getMapData());
+                        break;
+                    }
+
+                    default: break;
+                }
             }
         } catch (Exception e) {
             try {

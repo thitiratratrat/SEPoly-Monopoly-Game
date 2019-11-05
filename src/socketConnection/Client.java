@@ -1,7 +1,11 @@
 package socketConnection;
 
+import model.ServerMessage;
+import model.Space;
+
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 
 public class Client {
     private Socket socket = null;
@@ -25,6 +29,17 @@ public class Client {
             socket.setSoTimeout(SOCKETINPUTTIMEOUT);
             return inputStream.readObject();
         } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public ArrayList<Space> getMapData() {
+        try {
+            ServerMessage getMap = new ServerMessage("getMap", "");
+            outputStream.writeObject(getMap);
+            return (ArrayList<Space>) inputStream.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
             return null;
         }
     }
