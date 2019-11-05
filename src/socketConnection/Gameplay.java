@@ -1,9 +1,6 @@
 package socketConnection;
 
-import model.Player;
-import model.PlayerObj;
-import model.ServerMessage;
-import model.Space;
+import model.*;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -21,15 +18,13 @@ public class Gameplay {
     private boolean isTurn = false;
     private boolean isMoving = false;
     final private int TIMERDELAY = 500;
-//    JFrame frame;
-//    JLabel lblText;
 
     Gameplay() {
         initMapUI();
         initUI();
     }
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
+    public static void main(String[] args) throws IOException {
         Gameplay gameplay = new Gameplay();
         gameplay.startClientConnection();
         gameplay.start();
@@ -66,7 +61,11 @@ public class Gameplay {
             @Override
             public void run() {
                 if (!isMoving) {
-                    return;
+                    try {
+                        sendPlayerToUpdate();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
 
             }
@@ -89,7 +88,6 @@ public class Gameplay {
                     switch (action) {
                         case ("startTurn"): {
                             isTurn = true;
-                            System.out.println("my turn");
                             break;
                         }
 
@@ -106,6 +104,11 @@ public class Gameplay {
                         case ("updatePlayer"): {
                             PlayerObj playerObj = (PlayerObj) serverMessage.getData();
                             updatePlayer(playerObj);
+                            break;
+                        }
+
+                        case ("startAuction"): {
+                            //TODO: auction UI visible
                             break;
                         }
 
@@ -137,11 +140,16 @@ public class Gameplay {
     }
 
     private void buy() throws IOException {
-        //check money before buying
+        //TODO: check money before buying
 
-        //Player buys house/estate/utility logic here
+        //TODO: Player buys house/estate/utility logic here
 
         //update player's money
+        sendPlayerToUpdate();
+    }
+
+    private void sendPlayerToUpdate() throws IOException {
+        //TODO: get x and y position of player
         int xPosition = 0;
         int yPosition = 0;
         PlayerObj playerObj = new PlayerObj(xPosition, yPosition, player.getMoney(), player.getID());
@@ -149,6 +157,13 @@ public class Gameplay {
         client.sendData(serverMessage);
     }
 
+    private void startAuction(PropertySpace property) throws IOException {
+        ServerMessage serverMessage = new ServerMessage("startAuction", property);
+        client.sendData(serverMessage);
+    }
+
+    //TODO: bidding
+    //TODO: end auction
 }
 
 
