@@ -45,7 +45,8 @@ class ClientHandler extends Thread {
                     }
 
                     case("auction"): {
-
+                        server.sendDataToAllClients(serverMessage);
+                        break;
                     }
 
                     default: break;
