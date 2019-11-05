@@ -18,4 +18,8 @@ public class ServerMessage<T> implements Serializable {
     public String getAction() {
         return action;
     }
+
+    public void setData(T data) {
+        this.data = data;
+    }
 }

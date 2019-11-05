@@ -1,8 +1,6 @@
 package socketConnection;
 
-import model.Player;
-import model.Space;
-import model.UtilitySpace;
+import model.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -32,9 +30,9 @@ public class Server {
             Socket socket = serverSocket.accept();
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
-            ClientHandler clientHandler = new ClientHandler(socket, inputStream, outputStream, this);
-            int playerID = players.size();
-            Player player = new Player(STARTINGMONEY, playerID);
+            int ID = players.size();
+            ClientHandler clientHandler = new ClientHandler(socket, inputStream, outputStream, this, ID);
+            Player player = new Player(STARTINGMONEY, ID);
 
             clients.add(clientHandler);
             players.add(player);
@@ -45,18 +43,50 @@ public class Server {
         }
     }
 
-    public void start() {
+    public void start() throws IOException {
         initMapData();
+        sendMapData();
+        sendInitPlayerData();
+        startNextPlayerTurn(-1);
     }
 
-    public ArrayList<Space> getMapData() {
-        return map;
-    }
+    private void sendInitPlayerData() throws IOException {
+        ServerMessage serverMessage = new ServerMessage("initPlayer", "");
 
-    public void sendData() throws IOException {
-        for(ClientHandler client: clients) {
-            client.getOutputStream().writeObject("");
+        for (ClientHandler client: clients) {
+            Player player = players.get(client.getID());
+            serverMessage.setData(player);
+            client.getOutputStream().writeObject(serverMessage);
         }
+    }
+
+   private void sendMapData() throws IOException {
+        ServerMessage serverMessage = new ServerMessage("initMap", map);
+        sendDataToAllClients(serverMessage);
+   }
+
+    public void sendDataToAllClients(ServerMessage serverMessage) throws IOException {
+        for (ClientHandler client : clients) {
+            client.getOutputStream().writeObject(serverMessage);
+        }
+    }
+
+    public void startNextPlayerTurn(int playerID) throws IOException {
+        int nextPlayerIDTurn = playerID == players.size() -1 ? 0 : playerID + 1;
+        ClientHandler firstPlayerClient = clients.get(nextPlayerIDTurn);
+        ServerMessage serverMessage = new ServerMessage("startTurn", "");
+
+        firstPlayerClient.getOutputStream().writeObject(serverMessage);
+    }
+
+    public void updatePlayer(PlayerObj playerObj) throws IOException {
+       for (ClientHandler client: clients) {
+           if (client.getID() == playerObj.getID()) {
+               continue;
+           }
+           ServerMessage serverMessage = new ServerMessage("updatePlayer", playerObj);
+           client.getOutputStream().writeObject(serverMessage);
+       }
     }
 
     public void close() throws IOException {
@@ -65,9 +95,6 @@ public class Server {
 
     private void initMapData() {
         //init map queried from database here
-
-        map.add(new UtilitySpace(1, "Rat's rail", 100, "railroad"));
-        map.add(new UtilitySpace(2, "Waterpark", 200, "water"));
     }
 }
 

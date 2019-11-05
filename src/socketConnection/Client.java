@@ -24,22 +24,11 @@ public class Client {
         outputStream.flush();
     }
 
-    public Object getData() throws SocketException {
+    public ServerMessage getData() throws SocketException {
         try {
             socket.setSoTimeout(SOCKETINPUTTIMEOUT);
-            return inputStream.readObject();
+            return (ServerMessage) inputStream.readObject();
         } catch (Exception e) {
-            return null;
-        }
-    }
-
-    public ArrayList<Space> getMapData() {
-        try {
-            ServerMessage getMap = new ServerMessage("getMap", "");
-            outputStream.writeObject(getMap);
-            return (ArrayList<Space>) inputStream.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
             return null;
         }
     }

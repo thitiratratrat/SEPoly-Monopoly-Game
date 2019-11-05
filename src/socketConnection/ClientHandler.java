@@ -1,5 +1,6 @@
 package socketConnection;
 
+import model.PlayerObj;
 import model.ServerMessage;
 
 import java.io.IOException;
@@ -13,12 +14,14 @@ class ClientHandler extends Thread {
     private Server server;
     private ObjectInputStream inputStream;
     private ObjectOutputStream outputStream;
+    private int ID;
 
-    public ClientHandler(Socket socket, ObjectInputStream inputStream, ObjectOutputStream outputStream, Server server) {
+    public ClientHandler(Socket socket, ObjectInputStream inputStream, ObjectOutputStream outputStream, Server server, int ID) {
         this.socket = socket;
         this.inputStream = inputStream;
         this.outputStream = outputStream;
         this.server = server;
+        this.ID = ID;
     }
 
     @Override
@@ -29,9 +32,20 @@ class ClientHandler extends Thread {
                 String action = serverMessage.getAction();
 
                 switch(action) {
-                    case("getMap"): {
-                        outputStream.writeObject(server.getMapData());
+                    case("endTurn"): {
+                        int playerID = (int) serverMessage.getData();
+                        server.startNextPlayerTurn(playerID);
                         break;
+                    }
+
+                    case("updatePlayer"): {
+                        PlayerObj playerObj = (PlayerObj) serverMessage.getData();
+                        server.updatePlayer(playerObj);
+                        break;
+                    }
+
+                    case("auction"): {
+
                     }
 
                     default: break;
@@ -50,5 +64,9 @@ class ClientHandler extends Thread {
 
     public ObjectOutputStream getOutputStream() {
         return outputStream;
+    }
+
+    public int getID() {
+        return ID;
     }
 }
