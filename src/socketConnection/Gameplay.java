@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.io.IOException;
 import java.util.*;
 import java.util.Timer;
+import java.util.concurrent.TimeUnit;
 
 public class Gameplay {
     private Client client;
@@ -14,10 +15,12 @@ public class Gameplay {
     private ArrayList<Space> map;
     private String address = "127.0.0.1";
     private int port = 5056;
+    private Timer biddingTimer = new Timer();
     private Timer sendPlayerDataTimer, getGameDataTimer;
+    private Integer highestBidMoney = null;
     private boolean isTurn = false;
     private boolean isMoving = false;
-    final private int TIMERDELAY = 500;
+    final private int TIMERDELAY = 10;
 
     Gameplay() {
         initMapUI();
@@ -49,7 +52,7 @@ public class Gameplay {
         //init map UI here
     }
 
-    private void start() {
+    private void start() throws IOException {
         startSendPlayerPositionTimer();
         startGetGameDataTimer();
     }
@@ -60,7 +63,7 @@ public class Gameplay {
         sendPlayerDataTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                if (!isMoving) {
+                if (isMoving) {
                     try {
                         sendPlayerToUpdate();
                     } catch (IOException e) {
@@ -96,19 +99,48 @@ public class Gameplay {
                             break;
                         }
 
+                        case ("updatePlayer"):
                         case ("initPlayer"): {
                             player = (Player) serverMessage.getData();
                             break;
                         }
 
-                        case ("updatePlayer"): {
+                        case ("initOpponents"): {
+                            opponents = (ArrayList<PlayerObj>) serverMessage.getData();
+                            break;
+                        }
+
+                        case ("updateOpponent"): {
                             PlayerObj playerObj = (PlayerObj) serverMessage.getData();
-                            updatePlayer(playerObj);
+                            updateOpponent(playerObj);
                             break;
                         }
 
                         case ("startAuction"): {
+                            PropertySpace auctionProperty = (PropertySpace) serverMessage.getData();
+                            highestBidMoney = auctionProperty.getPrice();
                             //TODO: auction UI visible
+                            biddingTimer.cancel();
+                            startBidTimer();
+                            break;
+                        }
+
+                        case ("updateHighestBidPrice"): {
+                            BidObj bidObj = (BidObj) serverMessage.getData();
+                            highestBidMoney = bidObj.getBidMoney();
+                            biddingTimer.cancel();
+                            startBidTimer();
+                            break;
+                        }
+
+                        case ("endAuction"): {
+                            biddingTimer.cancel();
+                            break;
+                        }
+
+                        case ("updateMap"): {
+                            PropertySpace propertySpace = (PropertySpace) serverMessage.getData();
+                            updateMap(propertySpace);
                             break;
                         }
 
@@ -129,12 +161,11 @@ public class Gameplay {
         client.sendData(serverMessage);
     }
 
-    private void updatePlayer(PlayerObj playerObj) {
+    private void updateOpponent(PlayerObj playerObj) {
         for (PlayerObj opponent : opponents) {
             if (opponent.getID() == playerObj.getID()) {
-                opponent.setX(playerObj.getX());
-                opponent.setY(playerObj.getY());
-                opponent.setMoney(playerObj.getMoney());
+                opponent = playerObj;
+                break;
             }
         }
     }
@@ -146,13 +177,11 @@ public class Gameplay {
 
         //update player's money
         sendPlayerToUpdate();
+        //TODO: update map
     }
 
     private void sendPlayerToUpdate() throws IOException {
-        //TODO: get x and y position of player
-        int xPosition = 0;
-        int yPosition = 0;
-        PlayerObj playerObj = new PlayerObj(xPosition, yPosition, player.getMoney(), player.getID());
+        PlayerObj playerObj = new PlayerObj(player.getX(), player.getY(), player.getMoney(), player.getID());
         ServerMessage serverMessage = new ServerMessage("updatePlayer", playerObj);
         client.sendData(serverMessage);
     }
@@ -162,8 +191,36 @@ public class Gameplay {
         client.sendData(serverMessage);
     }
 
-    //TODO: bidding
-    //TODO: end auction
+    private void bid(int bidMoney) throws IOException {
+        if (bidMoney <= highestBidMoney || player.getMoney() < bidMoney) {
+            return;
+        }
+
+        BidObj bidObj = new BidObj(player.getID(), bidMoney);
+        ServerMessage serverMessage = new ServerMessage("bid", bidObj);
+        client.sendData(serverMessage);
+    }
+
+    private void updateMap(PropertySpace propertySpace) {
+        map.set(propertySpace.getNumber(), propertySpace);
+    }
+
+    private void startBidTimer() {
+        biddingTimer = new Timer();
+
+        biddingTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                ServerMessage serverMessage = new ServerMessage("endAuction", "");
+                try {
+                    client.sendData(serverMessage);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                cancel();
+            }
+        }, 100, 100000);
+    }
 }
 
 

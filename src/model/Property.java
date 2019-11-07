@@ -1,7 +1,7 @@
 package model;
 
 public interface Property {
-    public double getPrice();
+    public int getPrice();
 
     public void soldTo(Player player);
 
