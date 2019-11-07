@@ -28,7 +28,7 @@ public class CreatePage extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(800, 600));
 
-        readyBtn.setIcon(new javax.swing.ImageIcon("C:\\Users\\us\\Desktop\\Character\\Asset 16.png")); // NOI18N
+        readyBtn.setIcon(new javax.swing.ImageIcon("src\\allImage\\Asset 16.png")); // NOI18N
         readyBtn.setBorder(null);
         readyBtn.setBorderPainted(false);
         readyBtn.addActionListener(new java.awt.event.ActionListener() {
