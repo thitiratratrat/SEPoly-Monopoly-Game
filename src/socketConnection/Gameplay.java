@@ -46,10 +46,11 @@ public class Gameplay {
     }
 
     private void initUI() {
+        //TODO: init UI code here
     }
 
     private void initMapUI() {
-        //init map UI here
+        //TODO: init map UI here
     }
 
     private void start() throws IOException {
@@ -222,5 +223,3 @@ public class Gameplay {
         }, 100, 100000);
     }
 }
-
-
