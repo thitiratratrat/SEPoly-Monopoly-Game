@@ -50,9 +50,11 @@ public class Server {
         highestPlayerIDBidder = null;
         highestBiddingMoney = null;
         initMapData();
+        initCardData();
         sendMapData();
         sendInitPlayerData();
         sendInitOpponentData();
+        sendStartGame();
         startNextPlayerTurn(-1);
     }
 
@@ -101,7 +103,6 @@ public class Server {
     }
 
     public void endAuction() throws IOException {
-        System.out.println("end auction in server");
         ServerMessage serverMessage = new ServerMessage("endAuction", "");
         sendToAllClients(serverMessage);
 
@@ -110,7 +111,6 @@ public class Server {
             player.pay(highestBiddingMoney);
             player.buy(auctionProperty);
             auctionProperty.soldTo(player);
-            System.out.println("player's money: " + player.getMoney());
 
             //update player to player client
             serverMessage = new ServerMessage("updatePlayer", player);
@@ -124,9 +124,6 @@ public class Server {
             sendToAllExcept(player.getID(), serverMessage);
 
             //update map to every player
-            //test
-            auctionProperty.setPrice(150);
-            System.out.println("auction price: " + auctionProperty.getPrice());
             serverMessage = new ServerMessage("updateMap", auctionProperty);
             sendToAllClients(serverMessage);
         }
@@ -136,7 +133,7 @@ public class Server {
     }
 
     private void initMapData() {
-        //init map queried from database here
+        //TODO: init map queried from database here
     }
 
     private void sendInitPlayerData() throws IOException {
@@ -173,6 +170,11 @@ public class Server {
         sendToAllClients(serverMessage);
     }
 
+    private void sendStartGame() throws IOException {
+        ServerMessage serverMessage = new ServerMessage("startGame", "");
+        sendToAllClients(serverMessage);
+    }
+
     private void sendToAllExcept(int ID, ServerMessage serverMessage) throws IOException {
         for (ClientHandler client : clients) {
             if (client.getID() == ID) {
@@ -182,9 +184,23 @@ public class Server {
             client.getOutputStream().reset();
         }
     }
+
+
+    private void initCardData() {
+        initCommunityCardData();
+        initChanceCardData();
+    }
+
+    private void initCommunityCardData() {
+        //TODO: query community card data from database
+    }
+
+    private void initChanceCardData() {
+        //TODO: query chance card data from database
+    }
 }
 
-//TODO: init Card Decks
 //TODO: trigger to start game
+
 
 //when player's data is sent here to update, send it to other player

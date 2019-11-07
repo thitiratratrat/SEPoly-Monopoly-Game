@@ -20,7 +20,8 @@ public class Client {
     }
 
     public void sendData(Object data) throws IOException {
-        outputStream.writeObject(data);
+        outputStream.writeUnshared(data);
+        outputStream.reset();
         outputStream.flush();
     }
 
