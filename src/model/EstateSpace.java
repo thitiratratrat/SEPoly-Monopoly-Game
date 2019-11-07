@@ -3,21 +3,21 @@ package model;
 import java.util.ArrayList;
 
 public class EstateSpace extends PropertySpace {
-    private double housePrice;
-    private double landmarkPrice;
+    private int housePrice;
+    private int landmarkPrice;
     private int houseCount;
     private int landmarkCount;
-    private ArrayList<Double> rentPrices;
+    private ArrayList<Integer> rentPrices;
 
-    public EstateSpace(int number, String name, double price, double rent, double oneHouseRent,
-                double twoHouseRent, double threeHouseRent, double fourHouseRent,
-                double landmarkRent, double housePrice, double landmarkPrice) {
+    public EstateSpace(int number, String name, int price, int rent, int oneHouseRent,
+                int twoHouseRent, int threeHouseRent, int fourHouseRent,
+                int landmarkRent, int housePrice, int landmarkPrice) {
         super(number, name, price);
         this.housePrice = housePrice;
         this.landmarkPrice = landmarkPrice;
         houseCount = 0;
         landmarkCount = 0;
-        rentPrices = new ArrayList<Double>();
+        rentPrices = new ArrayList<>();
 
         rentPrices.add(rent);
         rentPrices.add(oneHouseRent);
@@ -27,11 +27,11 @@ public class EstateSpace extends PropertySpace {
         rentPrices.add(landmarkRent);
     }
 
-    public double getHousePrice() {
+    public int getHousePrice() {
         return housePrice;
     }
 
-    public double getLandmarkPrice() {
+    public int getLandmarkPrice() {
         return landmarkPrice;
     }
 
@@ -43,7 +43,7 @@ public class EstateSpace extends PropertySpace {
         return landmarkCount;
     }
 
-    public double getRentPrice() {
+    public int getRentPrice() {
         return rentPrices.get(houseCount);
     }
 
