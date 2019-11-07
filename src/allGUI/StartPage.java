@@ -30,10 +30,10 @@ class StartP extends javax.swing.JFrame {
         setBackground(new java.awt.Color(255, 204, 204));
         setIconImages(null);
 
-        logoBg.setIcon(new javax.swing.ImageIcon("C:\\Users\\us\\Desktop\\Character\\Asset 11.png")); // NOI18N
+        logoBg.setIcon(new javax.swing.ImageIcon("src\\allImage\\Asset 11.png")); // NOI18N
         logoBg.setLabelFor(logoBg);
 
-        createBtn.setIcon(new javax.swing.ImageIcon("C:\\Users\\us\\Desktop\\Character\\Asset 13.png")); // NOI18N
+        createBtn.setIcon(new javax.swing.ImageIcon("src\\allImage\\Asset 13.png")); // NOI18N
         createBtn.setBorder(null);
         createBtn.setBorderPainted(false);
         createBtn.setName("createBtn"); // NOI18N
@@ -43,7 +43,7 @@ class StartP extends javax.swing.JFrame {
             }
         });
 
-        joinBtn.setIcon(new javax.swing.ImageIcon("C:\\Users\\us\\Desktop\\Character\\Asset 14.png")); // NOI18N
+        joinBtn.setIcon(new javax.swing.ImageIcon("src\\allImage\\Asset 14.png")); // NOI18N
         joinBtn.setToolTipText("");
         joinBtn.setBorder(null);
         joinBtn.setBorderPainted(false);
