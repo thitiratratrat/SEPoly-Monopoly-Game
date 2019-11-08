@@ -10,22 +10,28 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class Server {
     private List<ClientHandler> clients;
     private ServerSocket serverSocket;
     private ArrayList<Player> players;
     private ArrayList<Space> map;
+    private ArrayList<Card> communityDeck;
+    private ArrayList<Card> chanceDeck;
     private Integer highestPlayerIDBidder;
     private Integer highestBiddingMoney;
     private PropertySpace auctionProperty;
     final private double STARTINGMONEY = 1000;
+    final private int CARDCOUNT = 10;
 
     Server(int port) throws IOException {
         serverSocket = new ServerSocket(port);
         clients = Collections.synchronizedList(new ArrayList<>());
         players = new ArrayList<>();
         map = new ArrayList<>();
+        communityDeck = new ArrayList<>();
+        chanceDeck = new ArrayList<>();
     }
 
     public void connect() throws IOException {
@@ -132,6 +138,14 @@ public class Server {
         highestBiddingMoney = null;
     }
 
+    public void drawCard(String deckType) {
+        Random randomGenerator = new Random();
+        int cardNumber = randomGenerator.nextInt(CARDCOUNT);
+        Card card = deckType.equalsIgnoreCase("community") ? communityDeck.get(cardNumber) : chanceDeck.get(cardNumber);
+
+        //TODO: player act on card effect
+    }
+
     private void initMapData() {
         //TODO: init map queried from database here
     }
@@ -151,8 +165,8 @@ public class Server {
         ServerMessage serverMessage = new ServerMessage("initOpponents", "");
         ArrayList<PlayerObj> opponents = new ArrayList<>();
 
-        for (ClientHandler client: clients) {
-            for (Player player: players) {
+        for (ClientHandler client : clients) {
+            for (Player player : players) {
                 if (player.getID() == client.getID()) {
                     continue;
                 }
@@ -185,7 +199,6 @@ public class Server {
         }
     }
 
-
     private void initCardData() {
         initCommunityCardData();
         initChanceCardData();
@@ -199,8 +212,3 @@ public class Server {
         //TODO: query chance card data from database
     }
 }
-
-//TODO: trigger to start game
-
-
-//when player's data is sent here to update, send it to other player
