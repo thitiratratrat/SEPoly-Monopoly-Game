@@ -235,7 +235,7 @@ public class Gameplay {
             diceNumbers[i] = diceNumber;
             totalMoveCount += diceNumber;
         }
-        //TODO: display UI
+        //TODO: display UI dice roll
         movePlayerForward(totalMoveCount);
     }
 
@@ -265,7 +265,17 @@ public class Gameplay {
                 DrawCardObj drawCardObj = new DrawCardObj(player.getID(), deckType);
                 ServerMessage serverMessage = new ServerMessage("drawCard", drawCardObj);
                 client.sendData(serverMessage);
+                break;
             }
+
+            case ("start"): {
+                StartSpace startSpace = (StartSpace) space;
+                player.getPaid(startSpace.getGoMoney());
+                sendPlayerToUpdate();
+                break;
+            }
+
+
 
             default:
                 break;
