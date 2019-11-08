@@ -46,8 +46,7 @@ public class Gameplay {
     }
 
     private void initMapUI() {
-        GUI.NewJFrame2 board  = new GUI.NewJFrame2();
-        board.display();
+        //init map UI here
     }
 
     private void start() {

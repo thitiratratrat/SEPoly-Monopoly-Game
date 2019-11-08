@@ -1,5 +1,6 @@
 package socketConnection;
 
+import model.BidObj;
 import model.PlayerObj;
 import model.ServerMessage;
 
@@ -7,7 +8,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.concurrent.TimeUnit;
 
 class ClientHandler extends Thread {
     private Socket socket;
@@ -27,29 +27,46 @@ class ClientHandler extends Thread {
     @Override
     public void run() {
         try {
-            while(true) {
-                ServerMessage serverMessage = (ServerMessage) inputStream.readObject();
+            while (true) {
+                ServerMessage serverMessage = (ServerMessage) inputStream.readUnshared();
                 String action = serverMessage.getAction();
 
-                switch(action) {
-                    case("endTurn"): {
+                switch (action) {
+                    case ("endTurn"): {
                         int playerID = (int) serverMessage.getData();
                         server.startNextPlayerTurn(playerID);
                         break;
                     }
 
-                    case("updatePlayer"): {
+                    case ("updatePlayer"): {
                         PlayerObj playerObj = (PlayerObj) serverMessage.getData();
                         server.updatePlayer(playerObj);
                         break;
                     }
 
-                    case("auction"): {
-                        server.sendDataToAllClients(serverMessage);
+                    case ("startAuction"): {
+                        server.startAuction(serverMessage);
                         break;
                     }
 
-                    default: break;
+                    case ("bid"): {
+                        server.setNewHighestBid((BidObj) serverMessage.getData());
+                        break;
+                    }
+
+                    case ("endAuction"): {
+                        server.endAuction();
+                        break;
+                    }
+
+                    case("drawCard"): {
+                        String deckType = (String) serverMessage.getData();
+                        server.drawCard(deckType);
+                        break;
+                    }
+
+                    default:
+                        break;
                 }
             }
         } catch (Exception e) {

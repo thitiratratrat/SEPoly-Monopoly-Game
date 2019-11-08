@@ -1,19 +1,23 @@
 package model;
 
 public class Card {
-    private String action;
+    private String effect;
     private String text;
+    private int effectAmount;
 
-    public Card(String action, String text) {
-        this.action = action;
+    public Card(String effect, String text, int effectAmount) {
+        this.effect = effect;
         this.text = text;
+        this.effectAmount = effectAmount;
     }
 
-    public String getAction() {
-        return action;
+    public String getEffect() {
+        return effect;
     }
 
     public String getText() {
         return text;
     }
+
+    public int getEffectAmount() { return effectAmount; }
 }

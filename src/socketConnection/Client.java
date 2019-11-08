@@ -20,14 +20,15 @@ public class Client {
     }
 
     public void sendData(Object data) throws IOException {
-        outputStream.writeObject(data);
+        outputStream.writeUnshared(data);
+        outputStream.reset();
         outputStream.flush();
     }
 
     public ServerMessage getData() throws SocketException {
         try {
             socket.setSoTimeout(SOCKETINPUTTIMEOUT);
-            return (ServerMessage) inputStream.readObject();
+            return (ServerMessage) inputStream.readUnshared();
         } catch (Exception e) {
             return null;
         }
