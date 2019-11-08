@@ -20,7 +20,9 @@ public class Gameplay {
     private Integer highestBidMoney = null;
     private boolean isTurn = false;
     private boolean isMoving = false;
-    final private int TIMERDELAY = 10;
+    private int spaceNumber = 0;
+    final private int TIMER_DELAY = 10;
+    final private int SPACE_COUNT = 32;
 
     Gameplay() {
         initMapUI();
@@ -73,7 +75,7 @@ public class Gameplay {
                 }
 
             }
-        }, 0, TIMERDELAY);
+        }, 0, TIMER_DELAY);
     }
 
     //for update with no request from gameplay client side
@@ -90,6 +92,11 @@ public class Gameplay {
 
                     String action = serverMessage.getAction();
                     switch (action) {
+                        case ("startGame"): {
+                            //TODO: start main game UI
+                            break;
+                        }
+
                         case ("startTurn"): {
                             isTurn = true;
                             break;
@@ -153,7 +160,7 @@ public class Gameplay {
                     e.printStackTrace();
                 }
             }
-        }, 0, TIMERDELAY);
+        }, 0, TIMER_DELAY);
     }
 
     private void endTurn() throws IOException {
@@ -200,6 +207,46 @@ public class Gameplay {
         BidObj bidObj = new BidObj(player.getID(), bidMoney);
         ServerMessage serverMessage = new ServerMessage("bid", bidObj);
         client.sendData(serverMessage);
+    }
+
+    private void rollDice() throws IOException {
+        int[] diceNumbers = new int[2];
+        int totalMoveCount = 0;
+        Random randomGenerator = new Random();
+
+        for (int i = 0; i < diceNumbers.length; i++) {
+            int diceNumber = randomGenerator.nextInt(6) + 1;
+            diceNumbers[i] = diceNumber;
+            totalMoveCount += diceNumber;
+        }
+        //TODO: display UI
+        //TODO: UI move player
+        movePlayer(totalMoveCount);
+    }
+
+    private void movePlayer(int moveCount) throws IOException {
+        spaceNumber += moveCount;
+
+        if (spaceNumber >= SPACE_COUNT) {
+            spaceNumber %= SPACE_COUNT;
+        }
+
+        Space space = map.get(spaceNumber);
+        String action = space.getAction();
+
+        switch(action) {
+            case("draw card") : {
+                CardSpace cardSpace = (CardSpace) space;
+                String deckType = cardSpace.getType();
+                ServerMessage serverMessage = new ServerMessage("drawCard", deckType);
+                client.sendData(serverMessage);
+            }
+
+
+            default : break;
+        }
+
+
     }
 
     private void updateMap(PropertySpace propertySpace) {

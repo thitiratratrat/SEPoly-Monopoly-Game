@@ -56,6 +56,13 @@ class ClientHandler extends Thread {
 
                     case ("endAuction"): {
                         server.endAuction();
+                        break;
+                    }
+
+                    case("drawCard"): {
+                        String deckType = (String) serverMessage.getData();
+                        server.drawCard(deckType);
+                        break;
                     }
 
                     default:
