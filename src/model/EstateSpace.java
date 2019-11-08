@@ -8,13 +8,15 @@ public class EstateSpace extends PropertySpace {
     private int houseCount;
     private int landmarkCount;
     private ArrayList<Double> rentPrices;
+    private byte[] image;
 
     public EstateSpace(int number, String name, double price, double rent, double oneHouseRent,
-                double twoHouseRent, double threeHouseRent, double fourHouseRent,
-                double landmarkRent, double housePrice, double landmarkPrice) {
-        super(number, name, price);
+                double twoHouseRent, double threeHouseRent, double landmarkRent, double housePrice,
+                       double landmarkPrice, byte[] image, double[] positions) {
+        super(number, name, positions, price);
         this.housePrice = housePrice;
         this.landmarkPrice = landmarkPrice;
+        this.image = image;
         houseCount = 0;
         landmarkCount = 0;
         rentPrices = new ArrayList<Double>();
@@ -23,7 +25,6 @@ public class EstateSpace extends PropertySpace {
         rentPrices.add(oneHouseRent);
         rentPrices.add(twoHouseRent);
         rentPrices.add(threeHouseRent);
-        rentPrices.add(fourHouseRent);
         rentPrices.add(landmarkRent);
     }
 
@@ -54,4 +55,6 @@ public class EstateSpace extends PropertySpace {
     public void sellLandmark() {
         landmarkCount = 0;
     }
+
+    public byte[] getImage(){ return image; }
 }
