@@ -1,21 +1,21 @@
 package model;
-// add position
+
 public abstract class PropertySpace extends Space implements Property {
-    protected double price;
+    protected int price;
     protected Player owner;
 
-    public PropertySpace(int number, String name, double[] positions, double price) {
+    public PropertySpace(int number, String name, double[] positions, int price) {
         super(number, name, positions);
         action = "property";
         this.price = price;
         owner = null;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 
-    public double getPrice() {
+    public int getPrice() {
         return price;
     }
 
