@@ -22,7 +22,7 @@ public class Server {
     private Integer highestPlayerIDBidder;
     private Integer highestBiddingMoney;
     private PropertySpace auctionProperty;
-    final private double STARTINGMONEY = 1000;
+    final private double STARTINGMONEY = 1500;
     final private int CARDCOUNT = 10;
 
     Server(int port) throws IOException {
@@ -81,12 +81,9 @@ public class Server {
         firstPlayerClient.getOutputStream().reset();
     }
 
-    public void updatePlayer(PlayerObj playerObj) throws IOException {
-        Player player = players.get(playerObj.getID());
-        player.setMoney(playerObj.getMoney());
-        player.setX(playerObj.getX());
-        player.setY(playerObj.getY());
-
+    public void updatePlayer(Player player) throws IOException {
+        players.set(player.getID(), player);
+        PlayerObj playerObj = new PlayerObj(player.getX(), player.getY(), player.getMoney(), player.getID());
         ServerMessage serverMessage = new ServerMessage("updateOpponent", playerObj);
         sendToAllExcept(player.getID(), serverMessage);
     }
@@ -120,14 +117,10 @@ public class Server {
 
             //update player to player client
             serverMessage = new ServerMessage("updatePlayer", player);
-            ClientHandler playerClient = clients.get(player.getID());
-            playerClient.getOutputStream().writeUnshared(serverMessage);
-            playerClient.getOutputStream().reset();
+            sendToPlayer(serverMessage, player.getID());
 
             //update player to opponents
-            PlayerObj playerObj = new PlayerObj(player.getX(), player.getY(), player.getMoney(), player.getID());
-            serverMessage = new ServerMessage("updateOpponent", playerObj);
-            sendToAllExcept(player.getID(), serverMessage);
+            updatePlayer(player);
 
             //update map to every player
             serverMessage = new ServerMessage("updateMap", auctionProperty);
@@ -138,12 +131,52 @@ public class Server {
         highestBiddingMoney = null;
     }
 
-    public void drawCard(String deckType) {
+    public void drawCard(DrawCardObj drawCardObj) throws IOException {
         Random randomGenerator = new Random();
         int cardNumber = randomGenerator.nextInt(CARDCOUNT);
-        Card card = deckType.equalsIgnoreCase("community") ? communityDeck.get(cardNumber) : chanceDeck.get(cardNumber);
+        Card card = drawCardObj.getdeckType().equalsIgnoreCase("community") ? communityDeck.get(cardNumber) : chanceDeck.get(cardNumber);
+        String effect = card.getEffect();
+        int effectAmount = card.getEffectAmount();
+        Player player = players.get(drawCardObj.getPlayerID());
 
-        //TODO: player act on card effect
+        switch (effect) {
+            case ("getPaid"): {
+                player.getPaid(effectAmount);
+                break;
+            }
+
+            case ("pay"): {
+                player.pay(effectAmount);
+                checkBankrupt(player);
+                break;
+            }
+
+            case ("breakJail"): {
+                player.drawBreakJailCard();
+                break;
+            }
+
+            case ("getJailed"): {
+                player.jailed();
+                ServerMessage serverMessage = new ServerMessage("goToJail", "");
+                sendToPlayer(serverMessage, player.getID());
+                break;
+            }
+
+            case ("moveForward"): {
+                ServerMessage serverMessage = new ServerMessage("moveForward", effectAmount);
+                sendToPlayer(serverMessage, player.getID());
+                break;
+            }
+
+            default:
+                break;
+        }
+
+        //send player data to all clients
+        ServerMessage serverMessage = new ServerMessage("updatePlayer", player);
+        sendToPlayer(serverMessage, player.getID());
+        updatePlayer(player);
     }
 
     private void initMapData() {
@@ -197,6 +230,16 @@ public class Server {
             client.getOutputStream().writeUnshared(serverMessage);
             client.getOutputStream().reset();
         }
+    }
+
+    private void sendToPlayer(ServerMessage serverMessage, int ID) throws IOException {
+        ClientHandler client = clients.get(ID);
+        client.getOutputStream().writeUnshared(serverMessage);
+        client.getOutputStream().reset();
+    }
+
+    private void checkBankrupt(Player player) {
+        //TODO: check bankrupt
     }
 
     private void initCardData() {
