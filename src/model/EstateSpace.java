@@ -7,6 +7,7 @@ public class EstateSpace extends PropertySpace {
     private int landmarkPrice;
     private int houseCount;
     private int landmarkCount;
+    private String color;
     private ArrayList<Integer> rentPrices;
 
     public EstateSpace(int number, String name, int price, int rent, int oneHouseRent,

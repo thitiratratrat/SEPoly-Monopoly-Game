@@ -23,6 +23,8 @@ public class Gameplay {
     private int spaceNumber = 0;
     final private int TIMER_DELAY = 10;
     final private int SPACE_COUNT = 32;
+    final private int BIDTIMER_DELAY = 100000;
+    final private int JAIL_SPACE_NUMBER = 8;
 
     Gameplay() {
         initMapUI();
@@ -110,6 +112,7 @@ public class Gameplay {
                         case ("updatePlayer"):
                         case ("initPlayer"): {
                             player = (Player) serverMessage.getData();
+                            //TODO: animate player if changes in x y
                             break;
                         }
 
@@ -152,6 +155,18 @@ public class Gameplay {
                             break;
                         }
 
+                        case ("moveForward"): {
+                            int spaceNumber = (int) serverMessage.getData();
+                            movePlayerForward(spaceNumber);
+                            break;
+                        }
+
+                        case ("goToJail"): {
+                            //TODO: animation go to jail
+                            spaceNumber = JAIL_SPACE_NUMBER;
+                            break;
+                        }
+
                         default:
                             break;
                     }
@@ -176,6 +191,8 @@ public class Gameplay {
                 break;
             }
         }
+
+        //TODO: animate opponent to move to that position
     }
 
     private void buy() throws IOException {
@@ -189,8 +206,7 @@ public class Gameplay {
     }
 
     private void sendPlayerToUpdate() throws IOException {
-        PlayerObj playerObj = new PlayerObj(player.getX(), player.getY(), player.getMoney(), player.getID());
-        ServerMessage serverMessage = new ServerMessage("updatePlayer", playerObj);
+        ServerMessage serverMessage = new ServerMessage("updatePlayer", player);
         client.sendData(serverMessage);
     }
 
@@ -220,33 +236,40 @@ public class Gameplay {
             totalMoveCount += diceNumber;
         }
         //TODO: display UI
-        //TODO: UI move player
-        movePlayer(totalMoveCount);
+        movePlayerForward(totalMoveCount);
     }
 
-    private void movePlayer(int moveCount) throws IOException {
+    private void movePlayerForward(int moveCount) throws IOException {
         spaceNumber += moveCount;
 
         if (spaceNumber >= SPACE_COUNT) {
             spaceNumber %= SPACE_COUNT;
+            if (!player.isJailed()) {
+                int goMoney = ((StartSpace) map.get(0)).getGoMoney();
+                player.getPaid(goMoney);
+                sendPlayerToUpdate();
+            }
         }
+        //TODO: animation move player forward
+        doSpaceAction(spaceNumber);
+    }
 
+    private void doSpaceAction(int spaceNumber) throws IOException {
         Space space = map.get(spaceNumber);
         String action = space.getAction();
 
-        switch(action) {
-            case("draw card") : {
+        switch (action) {
+            case ("draw card"): {
                 CardSpace cardSpace = (CardSpace) space;
                 String deckType = cardSpace.getType();
-                ServerMessage serverMessage = new ServerMessage("drawCard", deckType);
+                DrawCardObj drawCardObj = new DrawCardObj(player.getID(), deckType);
+                ServerMessage serverMessage = new ServerMessage("drawCard", drawCardObj);
                 client.sendData(serverMessage);
             }
 
-
-            default : break;
+            default:
+                break;
         }
-
-
     }
 
     private void updateMap(PropertySpace propertySpace) {
@@ -267,6 +290,6 @@ public class Gameplay {
                 }
                 cancel();
             }
-        }, 100, 100000);
+        }, BIDTIMER_DELAY, 100000);
     }
 }

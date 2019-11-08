@@ -1,13 +1,13 @@
 package model;
 
-import jdk.jshell.execution.Util;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Player implements Serializable {
     private ArrayList<UtilitySpace> utilities;
     private ArrayList<EstateSpace> estates;
+    private int breakJailCards;
+    private boolean isJailed;
     private double money;
     private int ID;
     private int x;
@@ -18,28 +18,21 @@ public class Player implements Serializable {
         utilities = new ArrayList<UtilitySpace>();
         estates = new ArrayList<EstateSpace>();
         this.ID = ID;
+        breakJailCards = 0;
+        isJailed = false;
     }
 
     public void buy(Property property) {
         if (property instanceof UtilitySpace) {
             utilities.add((UtilitySpace) property);
-        }
-
-        else {
+        } else {
             estates.add((EstateSpace) property);
         }
     }
 
-//    public void drawCard(ArrayList<Card> cards) {};
-//    public int rollDice() {};
-
-    public void setMoney(double amount) {
-        money = amount;
-    }
-
     public void pay(double amount) {
         money -= amount;
-    };
+    }
 
     public void getPaid(double amount) {
         money += amount;
@@ -61,6 +54,30 @@ public class Player implements Serializable {
         return y;
     }
 
+    public int getBreakJailCards() {
+        return breakJailCards;
+    }
+
+    public void jailed() {
+        isJailed = true;
+    }
+
+    public void getOutOfJail() {
+        isJailed = false;
+    }
+
+    public boolean isJailed() {
+        return isJailed;
+    }
+
+    public void useBreakJailCard() {
+        breakJailCards -= 1;
+    }
+
+    public void drawBreakJailCard() {
+        breakJailCards += 1;
+    }
+
     public void setX(int x) {
         this.x = x;
     }
@@ -69,6 +86,5 @@ public class Player implements Serializable {
         this.y = y;
     }
 
-    ;
 //    public void mortgage(Property property) {};
 }
