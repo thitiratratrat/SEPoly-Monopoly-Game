@@ -298,6 +298,18 @@ public class Gameplay {
                 break;
             }
 
+            case ("property"): {
+
+                break;
+            }
+
+            case ("pay tax"): {
+                TaxSpace taxSpace = (TaxSpace) space;
+                player.pay(taxSpace.getTaxFee());
+                checkBankrupt();
+                sendPlayerToUpdate();
+                break;
+            }
 
             case ("free parking"):
             default:
