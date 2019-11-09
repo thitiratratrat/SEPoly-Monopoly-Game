@@ -203,14 +203,69 @@ public class Gameplay {
         //TODO: animate opponent to move to that position
     }
 
-    private void buy() throws IOException {
-        //TODO: check money before buying
-
-        //TODO: Player buys house/estate/utility logic here
-
-        //update player's money
+    private void buy(PropertySpace propertySpace) throws IOException {
+        propertySpace.soldTo(player);
+        player.buy(propertySpace);
         sendPlayerToUpdate();
-        //TODO: update map
+        sendMapToUpdate(propertySpace);
+
+        if (propertySpace instanceof EstateSpace) {
+            //TODO: UI option to buy house
+        }
+    }
+
+    private void buyHouse(EstateSpace estateSpace) throws IOException {
+        player.pay(estateSpace.getHousePrice());
+        estateSpace.buildHouse(1);
+        sendMapToUpdate(estateSpace);
+        sendPlayerToUpdate();
+    }
+
+    private void buyLandmark(EstateSpace estateSpace) throws IOException {
+        //TODO: UI is not enable if player does not have 4 houses
+        if (estateSpace.getHouseCount() != 4) {
+            return;
+        }
+
+        player.pay(estateSpace.getLandmarkCount());
+        estateSpace.buildLandmark();
+        sendMapToUpdate(estateSpace);
+        sendPlayerToUpdate();
+    }
+
+    private void sell(PropertySpace propertySpace) throws IOException {
+        if (propertySpace instanceof EstateSpace) {
+            if (((EstateSpace) propertySpace).getHouseCount() != 0) {
+                return;
+            }
+        }
+        propertySpace.soldBack();
+        player.sell(propertySpace);
+        player.getPaid(propertySpace.getPrice() / 2);
+        sendMapToUpdate(propertySpace);
+        sendPlayerToUpdate();
+    }
+
+    private void sellHouse(EstateSpace estateSpace) throws IOException {
+        if (estateSpace.getHouseCount() == 0) {
+            return;
+        }
+
+        estateSpace.sellHouse(1);
+        player.getPaid(estateSpace.getHousePrice() / 2);
+        sendMapToUpdate(estateSpace);
+        sendPlayerToUpdate();
+    }
+
+    private void sellLandmark(EstateSpace estateSpace) throws IOException {
+        if (estateSpace.getLandmarkCount() == 0) {
+            return;
+        }
+
+        estateSpace.sellLandmark();
+        player.getPaid(estateSpace.getLandmarkPrice() / 2);
+        sendMapToUpdate(estateSpace);
+        sendPlayerToUpdate();
     }
 
     private void sendPlayerToUpdate() throws IOException {
@@ -269,10 +324,10 @@ public class Gameplay {
         }
         //TODO: animation move player forward
         isMoving = false;
-        doSpaceAction(spaceNumber);
+        doSpaceAction(spaceNumber, moveCount);
     }
 
-    private void doSpaceAction(int spaceNumber) throws IOException {
+    private void doSpaceAction(int spaceNumber, int diceNumber) throws IOException {
         Space space = map.get(spaceNumber);
         String action = space.getAction();
 
@@ -299,7 +354,26 @@ public class Gameplay {
             }
 
             case ("property"): {
+                PropertySpace propertySpace = (PropertySpace) space;
+                Player owner = propertySpace.getOwner();
+                if (owner == null) {
+                    //TODO: display UI to let player choose to buy or put up for auction
+                } else if (owner.getID() == player.getID()) {
+                    //TODO: display UI to let player choose to buy house
+                } else {
+                    int rent = propertySpace.getRentPrice();
 
+                    if (propertySpace instanceof UtilitySpace) {
+                        rent *= diceNumber;
+                    }
+
+                    player.pay(rent);
+                    checkBankrupt();
+                    sendPlayerToUpdate();
+                    GetPaidObj getPaidObj = new GetPaidObj(propertySpace.getOwner().getID(), rent);
+                    ServerMessage serverMessage = new ServerMessage("getPaid", getPaidObj);
+                    client.sendData(serverMessage);
+                }
                 break;
             }
 
@@ -322,12 +396,10 @@ public class Gameplay {
             jailTurnCount = 0;
             player.getOutOfJail();
             movePlayerForward(moveCount);
-        }
-        else if (jailTurnCount == 2) {
+        } else if (jailTurnCount == 2) {
             payJailFine();
             movePlayerForward(moveCount);
-        }
-        else {
+        } else {
             jailTurnCount += 1;
         }
     }
@@ -348,6 +420,11 @@ public class Gameplay {
 
     private void updateMap(PropertySpace propertySpace) {
         map.set(propertySpace.getNumber(), propertySpace);
+    }
+
+    private void sendMapToUpdate(PropertySpace propertySpace) throws IOException {
+        ServerMessage serverMessage = new ServerMessage("updateMap", propertySpace);
+        client.sendData(serverMessage);
     }
 
     private void startBidTimer() {

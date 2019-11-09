@@ -7,12 +7,12 @@ public class EstateSpace extends PropertySpace {
     private int landmarkPrice;
     private int houseCount;
     private int landmarkCount;
-    private String color;
     private ArrayList<Integer> rentPrices;
+    final private int MAX_LANDMARK = 1;
 
     public EstateSpace(int number, String name, int price, int rent, int oneHouseRent,
-                int twoHouseRent, int threeHouseRent, int fourHouseRent,
-                int landmarkRent, int housePrice, int landmarkPrice) {
+                       int twoHouseRent, int threeHouseRent, int fourHouseRent,
+                       int landmarkRent, int housePrice, int landmarkPrice) {
         super(number, name, price);
         this.housePrice = housePrice;
         this.landmarkPrice = landmarkPrice;
@@ -45,14 +45,28 @@ public class EstateSpace extends PropertySpace {
     }
 
     public int getRentPrice() {
-        return rentPrices.get(houseCount);
+        int rentPrice = landmarkCount == MAX_LANDMARK ? rentPrices.get(5) : rentPrices.get(houseCount);
+        return rentPrice;
     }
 
     public void sellHouse(int sellHouseCount) {
         houseCount -= sellHouseCount;
     }
 
+    public void buildHouse(int houseCount) {
+        houseCount += houseCount;
+
+        if (houseCount > 4) {
+            houseCount = 4;
+        }
+    }
+
+    public void buildLandmark() {
+        landmarkCount = MAX_LANDMARK;
+    }
+
     public void sellLandmark() {
         landmarkCount = 0;
+        houseCount = 0;
     }
 }

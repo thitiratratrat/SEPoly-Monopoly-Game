@@ -26,4 +26,10 @@ public abstract class PropertySpace extends Space implements Property {
     public Player getOwner() {
         return owner;
     }
+
+    public abstract int getRentPrice();
+
+    public void soldBack() {
+        owner = null;
+    }
 }

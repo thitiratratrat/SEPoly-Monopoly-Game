@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public class Player implements Serializable {
     private ArrayList<UtilitySpace> utilities;
     private ArrayList<EstateSpace> estates;
+    private ArrayList<RailroadSpace> railroads;
     private int breakJailCards;
     private boolean isJailed;
     private double money;
@@ -15,8 +16,9 @@ public class Player implements Serializable {
 
     public Player(double startingMoney, int ID) {
         money = startingMoney;
-        utilities = new ArrayList<UtilitySpace>();
-        estates = new ArrayList<EstateSpace>();
+        utilities = new ArrayList<>();
+        estates = new ArrayList<>();
+        railroads = new ArrayList<>();
         this.ID = ID;
         breakJailCards = 0;
         isJailed = false;
@@ -25,8 +27,22 @@ public class Player implements Serializable {
     public void buy(Property property) {
         if (property instanceof UtilitySpace) {
             utilities.add((UtilitySpace) property);
+        } else if (property instanceof RailroadSpace) {
+            railroads.add((RailroadSpace) property);
         } else {
             estates.add((EstateSpace) property);
+        }
+
+        pay(property.getPrice());
+    }
+
+    public void sell(PropertySpace property) {
+        if (property instanceof UtilitySpace) {
+            utilities.removeIf(utility -> property.getNumber() == utility.getNumber());
+        } else if (property instanceof RailroadSpace) {
+            railroads.removeIf(railroad -> property.getNumber() == railroad.getNumber());
+        } else {
+            estates.removeIf(estate -> property.getNumber() == estate.getNumber());
         }
     }
 
@@ -73,6 +89,14 @@ public class Player implements Serializable {
     public void useBreakJailCard() {
         breakJailCards -= 1;
         getOutOfJail();
+    }
+
+    public int getUtilityCount() {
+        return utilities.size();
+    }
+
+    public int getRailroadCount() {
+        return railroads.size();
     }
 
     public void drawBreakJailCard() {

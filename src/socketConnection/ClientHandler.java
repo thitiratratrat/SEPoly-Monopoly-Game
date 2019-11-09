@@ -67,6 +67,16 @@ class ClientHandler extends Thread {
                         server.sendToAllClients(serverMessage);
                     }
 
+                    case ("getPaid"): {
+                        GetPaidObj getPaidObj = (GetPaidObj) serverMessage.getData();
+                        server.payRentPlayer(getPaidObj);
+                    }
+
+                    case ("updateMap"): {
+                        PropertySpace propertySpace = (PropertySpace) serverMessage.getData();
+                        server.sendToAllExcept(propertySpace.getOwner().getID(),  serverMessage);
+                    }
+
                     default:
                         break;
                 }
