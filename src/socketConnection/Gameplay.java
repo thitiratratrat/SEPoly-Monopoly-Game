@@ -169,6 +169,12 @@ public class Gameplay {
                             break;
                         }
 
+                        case ("updateDice"): {
+                            int[] diceNumbers = (int[]) serverMessage.getData();
+                            //TODO: display UI dice roll
+                            break;
+                        }
+
                         default:
                             break;
                     }
@@ -238,7 +244,10 @@ public class Gameplay {
             totalMoveCount += diceNumber;
         }
 
+        ServerMessage serverMessage = new ServerMessage("updateDice", diceNumbers);
+        client.sendData(serverMessage);
         //TODO: display UI dice roll
+
         if (player.isJailed()) {
             checkBreakJail(diceNumbers, totalMoveCount);
         } else {

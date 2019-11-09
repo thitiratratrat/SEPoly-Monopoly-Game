@@ -63,6 +63,10 @@ class ClientHandler extends Thread {
                         break;
                     }
 
+                    case ("updateDice"): {
+                        server.sendToAllClients(serverMessage);
+                    }
+
                     default:
                         break;
                 }
