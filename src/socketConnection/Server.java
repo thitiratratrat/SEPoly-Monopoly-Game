@@ -111,7 +111,7 @@ public class Server {
 
         if (highestPlayerIDBidder != null) {
             Player player = players.get(highestPlayerIDBidder);
-            player.pay(highestBiddingMoney);
+            player.pay(highestBiddingMoney - auctionProperty.getPrice());
             player.buy(auctionProperty);
             auctionProperty.soldTo(player);
 
@@ -179,6 +179,14 @@ public class Server {
         updatePlayer(player);
     }
 
+    public void payRentPlayer(GetPaidObj getPaidObj) throws IOException {
+        Player player = players.get(getPaidObj.getPlayerID());
+        player.getPaid(getPaidObj.getRent());
+        ServerMessage serverMessage = new ServerMessage("updatePlayer", player);
+        sendToPlayer(serverMessage, player.getID());
+        updatePlayer(player);
+    }
+
     private void initMapData() {
         //TODO: init map queried from database here
     }
@@ -222,7 +230,7 @@ public class Server {
         sendToAllClients(serverMessage);
     }
 
-    private void sendToAllExcept(int ID, ServerMessage serverMessage) throws IOException {
+    public void sendToAllExcept(int ID, ServerMessage serverMessage) throws IOException {
         for (ClientHandler client : clients) {
             if (client.getID() == ID) {
                 continue;
