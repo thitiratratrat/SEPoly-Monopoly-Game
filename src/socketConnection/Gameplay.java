@@ -20,11 +20,13 @@ public class Gameplay {
     private Integer highestBidMoney = null;
     private boolean isTurn = false;
     private boolean isMoving = false;
+    private int jailTurnCount = 0;
     private int spaceNumber = 0;
     final private int TIMER_DELAY = 10;
     final private int SPACE_COUNT = 32;
     final private int BIDTIMER_DELAY = 100000;
     final private int JAIL_SPACE_NUMBER = 8;
+    final private int JAIL_FEE = 50;
 
     Gameplay() {
         initMapUI();
@@ -235,11 +237,17 @@ public class Gameplay {
             diceNumbers[i] = diceNumber;
             totalMoveCount += diceNumber;
         }
+
         //TODO: display UI dice roll
-        movePlayerForward(totalMoveCount);
+        if (player.isJailed()) {
+            checkBreakJail(diceNumbers, totalMoveCount);
+        } else {
+            movePlayerForward(totalMoveCount);
+        }
     }
 
     private void movePlayerForward(int moveCount) throws IOException {
+        isMoving = true;
         spaceNumber += moveCount;
 
         if (spaceNumber >= SPACE_COUNT) {
@@ -251,6 +259,7 @@ public class Gameplay {
             }
         }
         //TODO: animation move player forward
+        isMoving = false;
         doSpaceAction(spaceNumber);
     }
 
@@ -275,11 +284,45 @@ public class Gameplay {
                 break;
             }
 
+            case ("go to jail"): {
+                player.jailed();
+                break;
+            }
 
 
+            case ("free parking"):
             default:
                 break;
         }
+    }
+
+    private void checkBreakJail(int[] diceNumbers, int moveCount) throws IOException {
+        if (diceNumbers[0] == diceNumbers[1]) {
+            jailTurnCount = 0;
+            player.getOutOfJail();
+            movePlayerForward(moveCount);
+        }
+        else if (jailTurnCount == 2) {
+            payJailFine();
+            movePlayerForward(moveCount);
+        }
+        else {
+            jailTurnCount += 1;
+        }
+    }
+
+    private void payJailFine() throws IOException {
+        jailTurnCount = 0;
+        player.pay(JAIL_FEE);
+        checkBankrupt();
+        player.getOutOfJail();
+        sendPlayerToUpdate();
+    }
+
+    private void useBreakJailCard() throws IOException {
+        player.useBreakJailCard();
+        sendPlayerToUpdate();
+        jailTurnCount = 0;
     }
 
     private void updateMap(PropertySpace propertySpace) {
@@ -301,5 +344,9 @@ public class Gameplay {
                 cancel();
             }
         }, BIDTIMER_DELAY, 100000);
+    }
+
+    private void checkBankrupt() {
+
     }
 }

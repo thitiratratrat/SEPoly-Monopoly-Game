@@ -72,6 +72,7 @@ public class Player implements Serializable {
 
     public void useBreakJailCard() {
         breakJailCards -= 1;
+        getOutOfJail();
     }
 
     public void drawBreakJailCard() {
