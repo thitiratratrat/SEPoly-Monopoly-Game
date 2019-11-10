@@ -219,6 +219,7 @@ public class Gameplay {
         estateSpace.buildHouse(1);
         sendMapToUpdate(estateSpace);
         sendPlayerToUpdate();
+        //TODO: animation build house
     }
 
     private void buyLandmark(EstateSpace estateSpace) throws IOException {
@@ -231,6 +232,8 @@ public class Gameplay {
         estateSpace.buildLandmark();
         sendMapToUpdate(estateSpace);
         sendPlayerToUpdate();
+        //TODO: animation remove houses
+        //TODO: animation build landmark
     }
 
     private void sell(PropertySpace propertySpace) throws IOException {
@@ -244,6 +247,7 @@ public class Gameplay {
         player.getPaid(propertySpace.getPrice() / 2);
         sendMapToUpdate(propertySpace);
         sendPlayerToUpdate();
+        //TODO: remove color on property space
     }
 
     private void sellHouse(EstateSpace estateSpace) throws IOException {
@@ -255,6 +259,7 @@ public class Gameplay {
         player.getPaid(estateSpace.getHousePrice() / 2);
         sendMapToUpdate(estateSpace);
         sendPlayerToUpdate();
+        //TODO: animation remove house
     }
 
     private void sellLandmark(EstateSpace estateSpace) throws IOException {
@@ -266,6 +271,7 @@ public class Gameplay {
         player.getPaid(estateSpace.getLandmarkPrice() / 2);
         sendMapToUpdate(estateSpace);
         sendPlayerToUpdate();
+        //TODO: animation remove landmark
     }
 
     private void sendPlayerToUpdate() throws IOException {
