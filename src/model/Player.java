@@ -7,15 +7,17 @@ public class Player implements Serializable {
     private ArrayList<UtilitySpace> utilities;
     private ArrayList<EstateSpace> estates;
     private ArrayList<RailroadSpace> railroads;
+    private int asset;
     private int breakJailCards;
     private boolean isJailed;
-    private double money;
+    private int money;
     private int ID;
     private int x;
     private int y;
 
-    public Player(double startingMoney, int ID) {
+    public Player(int startingMoney, int ID) {
         money = startingMoney;
+        asset = startingMoney;
         utilities = new ArrayList<>();
         estates = new ArrayList<>();
         railroads = new ArrayList<>();
@@ -33,7 +35,25 @@ public class Player implements Serializable {
             estates.add((EstateSpace) property);
         }
 
+        property.soldTo(this);
         pay(property.getPrice());
+        asset += property.getPrice() / 2;
+    }
+
+    public void buyHouse(EstateSpace estateSpace) {
+        int price = estateSpace.getHousePrice();
+
+        pay(price);
+        estateSpace.buildHouse(1);
+        asset += price / 2;
+    }
+
+    public void buyLandmark(EstateSpace estateSpace) {
+        int price = estateSpace.getLandmarkPrice();
+
+        pay(price);
+        estateSpace.buildLandmark();
+        asset += price / 2;
     }
 
     public void sell(PropertySpace property) {
@@ -44,18 +64,43 @@ public class Player implements Serializable {
         } else {
             estates.removeIf(estate -> property.getNumber() == estate.getNumber());
         }
+
+        int propertySellingPrice = property.getPrice() / 2;
+        property.soldBack();
+        asset -= propertySellingPrice;
+        getPaid(propertySellingPrice);
+    }
+
+    public void sellHouse(EstateSpace estateSpace) {
+        estateSpace.sellHouse(1);
+        int houseSellingPrice = estateSpace.getHousePrice() / 2;
+        asset -= houseSellingPrice;
+        getPaid(houseSellingPrice);
+    }
+
+    public void sellLandmark(EstateSpace estateSpace) {
+        estateSpace.sellLandmark();
+        int landmarkSellingPrice = estateSpace.getLandmarkPrice() / 2;
+        asset -= landmarkSellingPrice;
+        getPaid(landmarkSellingPrice);
     }
 
     public void pay(double amount) {
         money -= amount;
+        asset -= amount;
     }
 
     public void getPaid(double amount) {
         money += amount;
+        asset += amount;
     }
 
-    public double getMoney() {
+    public int getMoney() {
         return money;
+    }
+
+    public int getAsset() {
+        return asset;
     }
 
     public int getID() {
@@ -111,5 +156,5 @@ public class Player implements Serializable {
         this.y = y;
     }
 
-//    public void mortgage(Property property) {};
+    //TODO: buy house add asset
 }
