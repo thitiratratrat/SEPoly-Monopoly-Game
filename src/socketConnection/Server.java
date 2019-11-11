@@ -22,7 +22,7 @@ public class Server {
     private Integer highestPlayerIDBidder;
     private Integer highestBiddingMoney;
     private PropertySpace auctionProperty;
-    final private double STARTINGMONEY = 1500;
+    final private int STARTINGMONEY = 1500;
     final private int CARDCOUNT = 10;
 
     Server(int port) throws IOException {
@@ -146,13 +146,16 @@ public class Server {
             }
 
             case ("pay"): {
-                player.pay(effectAmount);
+                if (isBankrupt(effectAmount)) {
+                    player.pay(effectAmount);
+                }
                 checkBankrupt(player);
                 break;
             }
 
             case ("breakJail"): {
                 player.drawBreakJailCard();
+                System.out.println("ชิวาว่า!");
                 break;
             }
 
@@ -160,16 +163,19 @@ public class Server {
                 player.jailed();
                 ServerMessage serverMessage = new ServerMessage("goToJail", "");
                 sendToPlayer(serverMessage, player.getID());
+                System.out.println("ชิวาว่า!");
                 break;
             }
 
             case ("moveForward"): {
                 ServerMessage serverMessage = new ServerMessage("moveForward", effectAmount);
                 sendToPlayer(serverMessage, player.getID());
+                System.out.println("ชิวาว่า!");
                 break;
             }
 
             default:
+                System.out.println("ชิวาว่า!");
                 break;
         }
 
@@ -261,5 +267,10 @@ public class Server {
 
     private void initChanceCardData() {
         //TODO: query chance card data from database
+    }
+
+    private boolean isBankrupt(int payingAmount) {
+
+        return true;
     }
 }

@@ -37,6 +37,7 @@ public class Gameplay {
         Gameplay gameplay = new Gameplay();
         gameplay.startClientConnection();
         gameplay.start();
+
     }
 
     public void setAddress(String address) {
@@ -204,7 +205,6 @@ public class Gameplay {
     }
 
     private void buy(PropertySpace propertySpace) throws IOException {
-        propertySpace.soldTo(player);
         player.buy(propertySpace);
         sendPlayerToUpdate();
         sendMapToUpdate(propertySpace);
@@ -215,8 +215,8 @@ public class Gameplay {
     }
 
     private void buyHouse(EstateSpace estateSpace) throws IOException {
-        player.pay(estateSpace.getHousePrice());
-        estateSpace.buildHouse(1);
+        //TODO: UI not enable if player does not have enough money
+        player.buyHouse(estateSpace);
         sendMapToUpdate(estateSpace);
         sendPlayerToUpdate();
         //TODO: animation build house
@@ -228,8 +228,7 @@ public class Gameplay {
             return;
         }
 
-        player.pay(estateSpace.getLandmarkCount());
-        estateSpace.buildLandmark();
+        player.buyLandmark(estateSpace);
         sendMapToUpdate(estateSpace);
         sendPlayerToUpdate();
         //TODO: animation remove houses
@@ -242,9 +241,7 @@ public class Gameplay {
                 return;
             }
         }
-        propertySpace.soldBack();
         player.sell(propertySpace);
-        player.getPaid(propertySpace.getPrice() / 2);
         sendMapToUpdate(propertySpace);
         sendPlayerToUpdate();
         //TODO: remove color on property space
@@ -255,8 +252,7 @@ public class Gameplay {
             return;
         }
 
-        estateSpace.sellHouse(1);
-        player.getPaid(estateSpace.getHousePrice() / 2);
+        player.sellHouse(estateSpace);
         sendMapToUpdate(estateSpace);
         sendPlayerToUpdate();
         //TODO: animation remove house
@@ -267,8 +263,7 @@ public class Gameplay {
             return;
         }
 
-        estateSpace.sellLandmark();
-        player.getPaid(estateSpace.getLandmarkPrice() / 2);
+        player.sellLandmark(estateSpace);
         sendMapToUpdate(estateSpace);
         sendPlayerToUpdate();
         //TODO: animation remove landmark
@@ -365,16 +360,15 @@ public class Gameplay {
                 if (owner == null) {
                     //TODO: display UI to let player choose to buy or put up for auction
                 } else if (owner.getID() == player.getID()) {
-                    //TODO: display UI to let player choose to buy house
+                    //TODO: display UI to let player choose to buy house if player has enough money
                 } else {
                     int rent = propertySpace.getRentPrice();
 
                     if (propertySpace instanceof UtilitySpace) {
                         rent *= diceNumber;
                     }
-
+                    //TODO: check bankrupt
                     player.pay(rent);
-                    checkBankrupt();
                     sendPlayerToUpdate();
                     GetPaidObj getPaidObj = new GetPaidObj(propertySpace.getOwner().getID(), rent);
                     ServerMessage serverMessage = new ServerMessage("getPaid", getPaidObj);
@@ -385,8 +379,14 @@ public class Gameplay {
 
             case ("pay tax"): {
                 TaxSpace taxSpace = (TaxSpace) space;
+                int taxFee = taxSpace.getTaxFee();
+
+                if (isBankrupt(taxFee)) {
+                    sendPlayerIsBankrupt();
+                    break;
+                }
+
                 player.pay(taxSpace.getTaxFee());
-                checkBankrupt();
                 sendPlayerToUpdate();
                 break;
             }
@@ -412,8 +412,13 @@ public class Gameplay {
 
     private void payJailFine() throws IOException {
         jailTurnCount = 0;
+
+        if (isBankrupt(JAIL_FEE)) {
+            sendPlayerIsBankrupt();
+            return;
+        }
+
         player.pay(JAIL_FEE);
-        checkBankrupt();
         player.getOutOfJail();
         sendPlayerToUpdate();
     }
@@ -433,6 +438,10 @@ public class Gameplay {
         client.sendData(serverMessage);
     }
 
+    private void sendPlayerIsBankrupt() {
+
+    }
+
     private void startBidTimer() {
         biddingTimer = new Timer();
 
@@ -450,7 +459,8 @@ public class Gameplay {
         }, BIDTIMER_DELAY, 100000);
     }
 
-    private void checkBankrupt() {
+    private boolean isBankrupt(int payingAmount) {
 
+        return true;
     }
 }
