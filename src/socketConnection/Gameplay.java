@@ -143,7 +143,6 @@ public class Gameplay {
         //TODO: check money before buying
 
         //TODO: Player buys house/estate/utility logic here
-
         //update player's money
         sendPlayerToUpdate();
     }
