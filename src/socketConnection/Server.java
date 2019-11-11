@@ -1,5 +1,5 @@
 package socketConnection;
-
+//query commu card and chance card, change starting money and card count
 import model.*;
 
 import java.io.IOException;
@@ -23,8 +23,8 @@ public class Server {
     private Integer highestPlayerIDBidder;
     private Integer highestBiddingMoney;
     private PropertySpace auctionProperty;
-    final private double STARTINGMONEY = 1000;
-    final private int CARDCOUNT = 10;
+    final private double STARTINGMONEY = 1500000;
+    final private int CARDCOUNT = 8;
 
     Server(int port) throws IOException {
         serverSocket = new ServerSocket(port);
@@ -33,6 +33,7 @@ public class Server {
         map = new ArrayList<>();
         communityDeck = new ArrayList<>();
         chanceDeck = new ArrayList<>();
+
     }
 
     public void connect() throws IOException {
@@ -53,7 +54,7 @@ public class Server {
         }
     }
 
-    public void start() throws IOException {
+    public void start() throws IOException, SQLException {
         highestPlayerIDBidder = null;
         highestBiddingMoney = null;
         initMapData();
@@ -63,11 +64,6 @@ public class Server {
         sendInitOpponentData();
         sendStartGame();
         startNextPlayerTurn(-1);
-        try {
-            initMapData();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
         //test
 //        sendMapData();
 //        sendInitPlayerData();
@@ -107,57 +103,10 @@ public class Server {
 
     private void initMapData() throws SQLException {
         //init map queried from database here
-        //************************************************************************
-        //************************************************************************
-        //update db
-        /*
-        Connection connection = DriverManager.getConnection("jdbc:sqlite://C:/Users/Asus/Desktop/Monopoly/src/Estate.db");
-        //Statement statement = connection.createStatement();
-        double x1,x2,x3,x4,y1,y2,y3,y4;
-
-
-
-            try {
-                String sql = "UPDATE Estate SET x1 = ? , "
-                        + "y1 = ? "
-                        + "x2 = ? "
-                        + "y2 = ? "
-                        + "y3 = ? "
-                        + "y3 = ? "
-                        + "y4 = ? "
-                        + "WHERE y4 = ? ";
-                    Connection conn = connection;
-                    PreparedStatement pstmt = conn.prepareStatement(sql)
-                    pstmt.setDouble(13, x1);
-                    pstmt.setDouble(14, y1);
-                    pstmt.setDouble(15, x2);
-                    pstmt.setDouble(16, y2);
-                    pstmt.setDouble(17, x3);
-                    pstmt.setDouble(18, y3);
-                    pstmt.setDouble(19, x4);
-                    pstmt.setDouble(20, y4);
-                    pstmt.executeUpdate();
-
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
-        }
-
-        /**
-         * @param args the command line arguments
-
-        public static void main(String[] args) {
-
-            UpdateApp app = new UpdateApp();
-            // update the warehouse with id 3
-            app.update(3, "Finished Products", 5500);
-        }*/
-
-        Connection c = null;
-        try{
-            Connection connection = DriverManager.getConnection("jdbc:sqlite://C:/Users/Asus/Desktop/Monopoly/src/Estate.db");
+        try {
+            Connection connection = DriverManager.getConnection("jdbc:sqlite://C:/Users/Asus/Desktop/Monopoly/src/SEpoly.db");
             Statement statement = connection.createStatement();
-            ResultSet estate = statement.executeQuery("select * from Estate");
+            ResultSet estate = statement.executeQuery("select * from Map");
             Space temp;
             double[] pos = new double[8];
             while (estate.next()) {
@@ -171,52 +120,53 @@ public class Server {
                 pos[6] = estate.getDouble(19);
                 pos[7] = estate.getDouble(20);
 
-                switch(estate.getString(3)) {
+                switch (estate.getString(3)) {
                     case "estate":
-                        temp = new EstateSpace(estate.getInt(1),estate.getString(2),estate.getInt(4),
-                                estate.getDouble(7),estate.getDouble(8),estate.getDouble(9),
-                                estate.getDouble(10),estate.getDouble(11),estate.getDouble(5),
-                                estate.getDouble(6),estate.getBytes(12),pos);
+                        temp = new EstateSpace(estate.getInt(1), estate.getString(2), estate.getInt(4),
+                                estate.getDouble(7), estate.getDouble(8), estate.getDouble(9),
+                                estate.getDouble(10), estate.getDouble(11), estate.getDouble(5),
+                                estate.getDouble(6), estate.getBytes(12), pos);
                         map.add(temp);
                         break;
                     case "utility":
-                        temp = new UtilitySpace(estate.getInt(1),estate.getString(2),
-                                estate.getInt(4),estate.getString(2),pos);
+                        temp = new UtilitySpace(estate.getInt(1), estate.getString(2),
+                                estate.getInt(4), estate.getString(2), pos);
                         map.add(temp);
                         break;
                     case "start":
-                        temp = new StartSpace(estate.getInt(1),estate.getString(2),
-                                estate.getInt(4),pos);
+                        temp = new StartSpace(estate.getInt(1), estate.getString(2),
+                                estate.getInt(4), pos);
                         map.add(temp);
                         break;
                     case "card":
-                        temp = new CardSpace(estate.getInt(1),estate.getString(2),
-                                estate.getString(2),pos);
+                        temp = new CardSpace(estate.getInt(1), estate.getString(2),
+                                estate.getString(2), pos);
                         map.add(temp);
                         break;
                     case "free parking":
-                        temp = new FreeParkingSpace(estate.getInt(1),estate.getString(2),pos);
+                        temp = new FreeParkingSpace(estate.getInt(1), estate.getString(2), pos);
                         map.add(temp);
                         break;
                     case "tax":
-                        temp = new TaxSpace(estate.getInt(1),estate.getString(2),pos);
+                        temp = new TaxSpace(estate.getInt(1), estate.getString(2), pos);
                         map.add(temp);
                         break;
                     case "jail":
-                        temp = new JailSpace(estate.getInt(1),estate.getString(2),pos);
+                        temp = new JailSpace(estate.getInt(1), estate.getString(2), pos);
                         map.add(temp);
                         break;
                     case "go to jail":
-                        temp = new MoveSpace(estate.getInt(1),estate.getString(2),pos);
+                        temp = new MoveSpace(estate.getInt(1), estate.getString(2), pos);
                         map.add(temp);
                         break;
 
                 }
             }
             connection.close();
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e);
         }
+    }
 
     public void setNewHighestBid(BidObj bidObj) throws IOException {
         highestBiddingMoney = bidObj.getBidMoney();
@@ -267,10 +217,10 @@ public class Server {
         Card card = deckType.equalsIgnoreCase("community") ? communityDeck.get(cardNumber) : chanceDeck.get(cardNumber);
 
         //TODO: player act on card effect
-    }
-
-    private void initMapData() {
-        //TODO: init map queried from database here
+        //go = move imidately
+        //move = move character
+        //gain = gain money
+        //pay = pay money
     }
 
     private void sendInitPlayerData() throws IOException {
@@ -322,16 +272,44 @@ public class Server {
         }
     }
 
-    private void initCardData() {
+    private void initCardData() throws SQLException{
         initCommunityCardData();
         initChanceCardData();
     }
 
-    private void initCommunityCardData() {
-        //TODO: query community card data from database
-    }
+    private void initCommunityCardData() throws SQLException {
+            //TODO: query community card data from database
+            try {
+                Connection connection = DriverManager.getConnection("jdbc:sqlite://C:/Users/Asus/Desktop/Monopoly/src/SEpoly.db");
+                Statement statement = connection.createStatement();
+                ResultSet card = statement.executeQuery("select * from Community_cards");
+                Card temp;
+                while (card.next()) {
+                        //System.out.println(card.getString(3) + card.getInt(4));
+                        temp = new Card(card.getString(3),card.getInt(4),card.getBytes(5));
+                        communityDeck.add(temp);
+                    }
+                connection.close();
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
 
-    private void initChanceCardData() {
+    private void initChanceCardData() throws SQLException{
         //TODO: query chance card data from database
+        try {
+            Connection connection = DriverManager.getConnection("jdbc:sqlite://C:/Users/Asus/Desktop/Monopoly/src/SEpoly.db");
+            Statement statement = connection.createStatement();
+            ResultSet card = statement.executeQuery("select * from Chance_cards");
+            Card temp;
+            while (card.next()) {
+                //System.out.println(card.getString(3) + card.getInt(4));
+                temp = new Card(card.getString(3),card.getInt(4),card.getBytes(5));
+                communityDeck.add(temp);
+            }
+            connection.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 }
