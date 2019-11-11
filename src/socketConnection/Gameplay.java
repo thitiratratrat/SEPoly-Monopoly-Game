@@ -27,6 +27,8 @@ public class Gameplay {
     public static void main(String[] args) throws IOException {
         Gameplay gameplay = new Gameplay();
         gameplay.startClientConnection();
+        GUI.NewJFrame2 board = new GUI.NewJFrame2();
+        board.display();
         gameplay.start();
     }
 
@@ -43,18 +45,20 @@ public class Gameplay {
     }
 
     private void initUI() {
+
     }
 
     private void initMapUI() {
-        //init map UI here
+
     }
 
     private void start() {
-        startSendPlayerPositionTimer();
+        //startSendPlayerPositionTimer();
         startGetGameDataTimer();
     }
 
     //send player position update
+    /*
     private void startSendPlayerPositionTimer() {
         sendPlayerDataTimer = new Timer();
         sendPlayerDataTimer.scheduleAtFixedRate(new TimerTask() {
@@ -70,7 +74,7 @@ public class Gameplay {
 
             }
         }, 0, TIMERDELAY);
-    }
+    }*/
 
     //for update with no request from gameplay client side
     private void startGetGameDataTimer() {
@@ -145,9 +149,9 @@ public class Gameplay {
         //TODO: Player buys house/estate/utility logic here
 
         //update player's money
-        sendPlayerToUpdate();
+        //sendPlayerToUpdate();
     }
-
+/*
     private void sendPlayerToUpdate() throws IOException {
         //TODO: get x and y position of player
         int xPosition = 0;
@@ -155,7 +159,7 @@ public class Gameplay {
         PlayerObj playerObj = new PlayerObj(xPosition, yPosition, player.getMoney(), player.getID());
         ServerMessage serverMessage = new ServerMessage("updatePlayer", playerObj);
         client.sendData(serverMessage);
-    }
+    }*/
 
     private void startAuction(PropertySpace property) throws IOException {
         ServerMessage serverMessage = new ServerMessage("startAuction", property);

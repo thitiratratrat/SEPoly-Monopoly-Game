@@ -44,7 +44,7 @@ public class NewJFrame2 extends javax.swing.JFrame {
             }
         });
 
-        board.setIcon(new javax.swing.ImageIcon("C://Users/Asus/Desktop/Monopoly/final_board.png")); // NOI18N
+        board.setIcon(new javax.swing.ImageIcon("C://Users/Asus/Desktop/Monopoly/finaljingjing_board.png")); // NOI18N
         getContentPane().add(board);
         board.setBounds(0, 0, 800, 600);
         board.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -52,6 +52,11 @@ public class NewJFrame2 extends javax.swing.JFrame {
                 boardMousePressed(evt);
             }
         });
+
+        /*
+        boardbg.setIcon(new javax.swing.ImageIcon("dir of map bg")); // NOI18N
+        getContentPane().add(boardbg);
+        boardbg.setBounds(0, 0, 800, 600);*/
         pack();
     }// </editor-fold>
 
@@ -66,6 +71,8 @@ public class NewJFrame2 extends javax.swing.JFrame {
         /*send x y to server and then weather the position is on a space
         * if true show the popup ui*/
     }
+
+
     /**
      * @param args the command line arguments
      */
@@ -102,6 +109,7 @@ public class NewJFrame2 extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify
+    private javax.swing.JLabel boardbg;
     private javax.swing.JLabel board;
     private javax.swing.JLabel text;
     private javax.swing.JLabel popup;
