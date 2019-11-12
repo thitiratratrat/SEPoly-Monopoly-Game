@@ -1,6 +1,7 @@
 package model;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Player implements Serializable {
@@ -154,6 +155,15 @@ public class Player implements Serializable {
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    public ArrayList<PropertySpace> getAllProperty() {
+        ArrayList<PropertySpace> property = new ArrayList<>();
+        property.addAll(estates);
+        property.addAll(utilities);
+        property.addAll(railroads);
+
+        return property;
     }
 
     //TODO: buy house add asset

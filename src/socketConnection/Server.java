@@ -73,7 +73,16 @@ public class Server {
     }
 
     public void startNextPlayerTurn(int playerID) throws IOException {
-        int nextPlayerIDTurn = playerID == players.size() - 1 ? 0 : playerID + 1;
+        int nextPlayerIDTurn = 0;
+
+        while (true) {
+            nextPlayerIDTurn = playerID == players.size() - 1 ? 0 : playerID + 1;
+
+            if (players.get(nextPlayerIDTurn) != null) {
+                break;
+            }
+        }
+
         ClientHandler firstPlayerClient = clients.get(nextPlayerIDTurn);
         ServerMessage serverMessage = new ServerMessage("startTurn", "");
 
@@ -193,6 +202,32 @@ public class Server {
         updatePlayer(player);
     }
 
+    public void sendToAllExcept(int ID, ServerMessage serverMessage) throws IOException {
+        for (ClientHandler client : clients) {
+            if (client.getID() == ID) {
+                continue;
+            }
+            client.getOutputStream().writeUnshared(serverMessage);
+            client.getOutputStream().reset();
+        }
+    }
+
+    public void playerBankrupt(int playerID) throws IOException {
+        Player player = players.get(playerID);
+        ServerMessage mapMessage = new ServerMessage("updateMap", "");
+        ArrayList<PropertySpace> properties = player.getAllProperty();
+
+        for (PropertySpace property: properties) {
+            property.soldBack();
+            mapMessage.setData(property);
+            sendToAllClients(mapMessage);
+        }
+
+        players.set(playerID, null);
+        ServerMessage serverMessage = new ServerMessage("bankrupt", playerID);
+        sendToAllClients(serverMessage);
+    }
+
     private void initMapData() {
         //TODO: init map queried from database here
     }
@@ -236,15 +271,6 @@ public class Server {
         sendToAllClients(serverMessage);
     }
 
-    public void sendToAllExcept(int ID, ServerMessage serverMessage) throws IOException {
-        for (ClientHandler client : clients) {
-            if (client.getID() == ID) {
-                continue;
-            }
-            client.getOutputStream().writeUnshared(serverMessage);
-            client.getOutputStream().reset();
-        }
-    }
 
     private void sendToPlayer(ServerMessage serverMessage, int ID) throws IOException {
         ClientHandler client = clients.get(ID);

@@ -176,6 +176,11 @@ public class Gameplay {
                             break;
                         }
 
+                        case ("bankrupt"): {
+                            int playerID = (int) serverMessage.getData();
+                            playerBankrupt(playerID);
+                        }
+
                         default:
                             break;
                     }
@@ -367,7 +372,12 @@ public class Gameplay {
                     if (propertySpace instanceof UtilitySpace) {
                         rent *= diceNumber;
                     }
-                    //TODO: check bankrupt
+
+                    if (isBankrupt(rent)) {
+                        sendPlayerIsBankrupt();
+                        break;
+                    }
+
                     player.pay(rent);
                     sendPlayerToUpdate();
                     GetPaidObj getPaidObj = new GetPaidObj(propertySpace.getOwner().getID(), rent);
@@ -438,8 +448,9 @@ public class Gameplay {
         client.sendData(serverMessage);
     }
 
-    private void sendPlayerIsBankrupt() {
-
+    private void sendPlayerIsBankrupt() throws IOException {
+        ServerMessage serverMessage = new ServerMessage("bankrupt", player.getID());
+        client.sendData(serverMessage);
     }
 
     private void startBidTimer() {
@@ -460,7 +471,33 @@ public class Gameplay {
     }
 
     private boolean isBankrupt(int payingAmount) {
+        if (player.getMoney() >= payingAmount) {
+            return false;
+        }
 
-        return true;
+        if (player.getAsset() < payingAmount) {
+            return true;
+        }
+
+        return showSellPropertyUI();
+    }
+
+    private boolean showSellPropertyUI() {
+        //TODO: returns boolean if player decides to bankrupt or did not sell enough property
+        return false;
+    }
+
+    private void playerBankrupt(int playerID) throws IOException {
+        if (playerID == player.getID()) {
+            endTurn();
+            return;
+        }
+
+        for (PlayerObj opponent: opponents) {
+            if (playerID == opponent.getID()) {
+                opponent = null;
+                break;
+            }
+        }
     }
 }
