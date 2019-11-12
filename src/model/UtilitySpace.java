@@ -1,14 +1,13 @@
 package model;
 
 public class UtilitySpace extends PropertySpace {
-    private String type;
-
-    public UtilitySpace(int number, String name, double price, String type) {
+    public UtilitySpace(int number, String name, int price) {
         super(number, name, price);
-        this.type = type;
     }
 
-    public String getType() {
-        return type;
+    public int getRentPrice() {
+        int multiplier = owner.getUtilityCount() > 1 ? 10 : 4;
+
+        return multiplier;
     }
 }
