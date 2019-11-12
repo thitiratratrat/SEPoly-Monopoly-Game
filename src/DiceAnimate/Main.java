@@ -5,7 +5,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Random;
@@ -30,7 +29,7 @@ public class Main extends JFrame {
         BufferedImageLoader loader = new BufferedImageLoader() ;
         BufferedImage diceSpriteSheet= null ;
         try {
-            diceSpriteSheet = loader.loadImage("C:\\Users\\us\\Desktop\\Y2S1\\JAVA\\monopoly\\src\\allImage\\newDice.png" );
+            diceSpriteSheet = loader.loadImage("/allImage/newDice.png");
         }catch (IOException ex){
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE,null,ex);
         }
@@ -44,7 +43,7 @@ public class Main extends JFrame {
         Random random = new Random();
         die1  = random.nextInt(6) + 1;
         die2  = random.nextInt(6) + 1;
-
+        System.out.println("die1: "+ die1 + " die2: "+ die2);
 
         sprites.add(diceSS.grabSprite(0, 0, 92,92));//1
         sprites.add(diceSS.grabSprite(92, 0, 92,92));//2
