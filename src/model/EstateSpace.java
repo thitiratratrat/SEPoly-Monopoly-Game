@@ -69,4 +69,9 @@ public class EstateSpace extends PropertySpace {
         landmarkCount = 0;
         houseCount = 0;
     }
+
+    public void soldBack() {
+        sellLandmark();
+        super.soldBack();
+    }
 }
