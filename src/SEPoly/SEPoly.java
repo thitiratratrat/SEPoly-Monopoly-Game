@@ -11,9 +11,10 @@ import model.EstateSpace;
 import socketConnection.Gameplay;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.awt.Color;
 
 
 public class SEPoly extends javax.swing.JFrame {
@@ -21,13 +22,16 @@ public class SEPoly extends javax.swing.JFrame {
         initComponents();
     }
     private void initComponents() throws IOException {
-        //gameplay
         game = new Gameplay();
         game.display();
-        container = new javax.swing.JTabbedPane();
         start = new javax.swing.JPanel();
         lobby = new javax.swing.JPanel();
         gameplay = new javax.swing.JPanel();
+
+        container = new javax.swing.JTabbedPane();
+
+        //gameplay
+        image  = new javax.swing.JLabel();
         text = new javax.swing.JLabel();
         landName = new javax.swing.JLabel("", SwingConstants.CENTER);
         popup = new javax.swing.JLabel();
@@ -191,10 +195,15 @@ public class SEPoly extends javax.swing.JFrame {
         gameplay.setAlignmentY(0.0F);
         gameplay.setBounds(0,0,800,600);
         gameplay.setLayout(null);
+        gameplay.add(image);
         gameplay.add(text);
         gameplay.add(landName);
         gameplay.add(popup);
         gameplay.add(board);
+
+
+        image.setVisible(false);
+
 
         popup.setBounds(0,0,800,600);
         popup.setVisible(false);
@@ -236,7 +245,6 @@ public class SEPoly extends javax.swing.JFrame {
     //---------------------S T A R T -----------------------------------------------
 
     private void createBtnActionPerformed(java.awt.event.MouseEvent evt) {
-        System.out.println("name: " + username.getText());
         container.setSelectedIndex(1);
 
     }
@@ -249,7 +257,6 @@ public class SEPoly extends javax.swing.JFrame {
             roomNumber = joinGame.showInputDialog("Enter a number: ");
             //if OK is pushed then (if not strDialogResponse is null)
             if (roomNumber != null && roomNumber.length()>0) {
-                System.out.println("Hello " + roomNumber);
                 container.setSelectedIndex(1);
             }
             else if (roomNumber != null){
@@ -271,6 +278,7 @@ public class SEPoly extends javax.swing.JFrame {
     //******************************************************************************
     //---------------------G A M E P L A Y------------------------------------------
     private void popupMousePressed(java.awt.event.MouseEvent evt) {
+        image.setVisible(false);
         popup.setVisible(false);
         text.setVisible(false);
         landName.setVisible(false);
@@ -296,13 +304,49 @@ public class SEPoly extends javax.swing.JFrame {
                         "HOUSE PRICE        "+temp.getHousePrice()+"<br>" +
                         "LANDMARK PRICE     "+temp.getLandmarkPrice()+"</b></pre></body></html>";
                 text.setText(s);
-                //title.setText();
                 landName.setText("<html><b>"+temp.getName()+"</b></html>");
+                ImageIcon t = new ImageIcon(((EstateSpace) map.get(c)).getImage());
+
+                if(c>0 && c<8) {
+                    image.setBounds(0 - ((EstateSpace) map.get(c)).getDisplayXPos() + 335,
+                            0 - ((EstateSpace) map.get(c)).getDisplayYPos() + 300,
+                            800, 600);
+                }
+                else if (c < 16){
+                    image.setBounds(0 - ((EstateSpace) map.get(c)).getDisplayXPos() + 340,
+                            0 - ((EstateSpace) map.get(c)).getDisplayYPos() + 265,
+                            800, 600);
+                }
+                else if (c < 24){
+                    image.setBounds(0 - ((EstateSpace) map.get(c)).getDisplayXPos() + 380,
+                            0 - ((EstateSpace) map.get(c)).getDisplayYPos() + 280,
+                            800, 600);
+                }
+                else{
+                    image.setBounds(0 - ((EstateSpace) map.get(c)).getDisplayXPos() + 380,
+                            0 - ((EstateSpace) map.get(c)).getDisplayYPos() + 290,
+                            800, 600);
+                }
+
+
+                image.setIcon(t);
+                image.setVisible(true);
                 landName.setVisible(true);
                 popup.setVisible(true);
                 text.setVisible(true);
             }
         }
+    }
+
+    private Image getScaledImage(Image srcImg, int x,int y,int w, int h){
+        BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = resizedImg.createGraphics();
+
+        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2.drawImage(srcImg, x, y, w, h, null);
+
+        g2.dispose();
+        return resizedImg;
     }
 
     public static void start() {
@@ -336,12 +380,14 @@ public class SEPoly extends javax.swing.JFrame {
     //gameplay
     private javax.swing.JTabbedPane container;
     private javax.swing.JPanel gameplay;
+
     private javax.swing.JLabel board;
     private javax.swing.JPanel lobby;
     private javax.swing.JPanel start;
     private javax.swing.JLabel text;
     private javax.swing.JLabel popup;
     private javax.swing.JLabel landName;
+    private javax.swing.JLabel image;
     private javax.swing.ImageIcon Land_popup = new javax.swing.ImageIcon("C://Users/Asus/Desktop/Monopoly/estate.png");
 
     private Gameplay game;
