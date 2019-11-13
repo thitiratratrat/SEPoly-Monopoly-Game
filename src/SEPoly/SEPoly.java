@@ -7,12 +7,8 @@ package SEPoly;
 
 import model.Space;
 import model.EstateSpace;
-
 import socketConnection.Gameplay;
-
 import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -22,6 +18,9 @@ public class SEPoly extends javax.swing.JFrame {
         initComponents();
     }
     private void initComponents() throws IOException {
+        checkTitledeed = 0;
+
+
         game = new Gameplay();
         game.display();
         start = new javax.swing.JPanel();
@@ -36,6 +35,14 @@ public class SEPoly extends javax.swing.JFrame {
         landName = new javax.swing.JLabel("", SwingConstants.CENTER);
         popup = new javax.swing.JLabel();
         board = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\finaljingjing_board.png"));
+        //house buying popup
+        cancelBtn = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\Asset 22.png"));
+        buyBtn = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\Users\\Asus\\Desktop\\javaProject\\monopoly\\src\\allImage\\Asset 21.png"));
+        totalPrice = new javax.swing.JLabel();
+        threeHouseCheck= new javax.swing.JCheckBox();
+        twoHouseCheck = new javax.swing.JCheckBox();
+        oneHouseCheck = new javax.swing.JCheckBox();
+
 
         //start
         createBtn = new javax.swing.JLabel();
@@ -47,7 +54,7 @@ public class SEPoly extends javax.swing.JFrame {
 
         //lobby
         startBtn = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\Asset 30.png"));
-        JLabel1 = new javax.swing.JLabel();
+        text2 = new javax.swing.JLabel();
         roomNumber = new javax.swing.JLabel();
         player1 = new javax.swing.JLabel();
         player2 = new javax.swing.JLabel();
@@ -131,7 +138,7 @@ public class SEPoly extends javax.swing.JFrame {
         lobby.setBounds(0,0,800,600);
         lobby.setLayout(null);
         lobby.add(startBtn);
-        lobby.add(JLabel1);
+        lobby.add(text2);
         lobby.add(roomNumber);
         lobby.add(player1);
         lobby.add(player2);
@@ -148,10 +155,10 @@ public class SEPoly extends javax.swing.JFrame {
             }
         });
 
-        JLabel1.setFont(new java.awt.Font("Muller Demo ExtraBold", 1, 36));
-        JLabel1.setForeground(new java.awt.Color(0, 0, 51));
-        JLabel1.setText("<html><b>Room  number  : </b></html>");
 
+        text2.setFont(new java.awt.Font("Muller Demo ExtraBold", 1, 36));
+        text2.setForeground(new java.awt.Color(0, 0, 51));
+        text2.setText("<html><b>Room  number  : </b></html>");
 
         roomNumber.setFont(new java.awt.Font("Muller Demo ExtraBold", 0, 24)); // NOI18N
         roomNumber.setForeground(new java.awt.Color(153, 0, 0));
@@ -174,7 +181,7 @@ public class SEPoly extends javax.swing.JFrame {
         player4.setBackground(new java.awt.Color(255, 255, 255));
         player4.setFont(new java.awt.Font("supermarket", 0, 24));
 
-        JLabel1.setBounds(93,50,300,100);
+        text2.setBounds(93,50,300,100);
         startBtn.setBounds(420,446,196,100);
         roomNumber.setBounds(400, 57, 100,100);
         player1.setBounds(170,188,450,50);
@@ -191,6 +198,23 @@ public class SEPoly extends javax.swing.JFrame {
         //******************************************************************************
         //******************************************************************************
         //---------------------G A M E P L A Y------------------------------------------
+
+        //house buying popup
+        gameplay.add(buyBtn);
+        gameplay.add(cancelBtn);
+        gameplay.add(totalPrice);
+        gameplay.add(oneHouseCheck);
+        gameplay.add(twoHouseCheck);
+        gameplay.add(threeHouseCheck);
+
+        buyBtn.setVisible(false);
+        cancelBtn.setVisible(false);
+        totalPrice.setVisible(false);
+        oneHouseCheck.setVisible(false);
+        twoHouseCheck.setVisible(false);
+        threeHouseCheck.setVisible(false);
+
+
         gameplay.setAlignmentX(0.0F);
         gameplay.setAlignmentY(0.0F);
         gameplay.setBounds(0,0,800,600);
@@ -202,7 +226,9 @@ public class SEPoly extends javax.swing.JFrame {
         gameplay.add(board);
 
 
+
         image.setVisible(false);
+
 
 
         popup.setBounds(0,0,800,600);
@@ -230,6 +256,36 @@ public class SEPoly extends javax.swing.JFrame {
         landName.setFont(new java.awt.Font("Microsoft PhagsPa", 0, 15));
         landName.setBounds(308,160,187,34);
         landName.setVisible(false);
+
+        cancelBtn.setBounds(290, 400, 90, 39);
+        buyBtn.setBounds(430, 400, 100, 39);
+
+        totalPrice.setFont(new java.awt.Font("Tahoma", 1, 16));
+        totalPrice.setText("1400000000");
+        totalPrice.setBounds(350, 365, 210, 20);
+
+
+        threeHouseCheck.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                threeHouseCheckActionPerformed(evt);
+            }
+        });
+        threeHouseCheck.setBounds(390, 310, 25, 25);
+
+        twoHouseCheck.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                twoHouseCheckActionPerformed(evt);
+            }
+        });
+        twoHouseCheck.setBounds(500, 310, 25, 25);
+
+        oneHouseCheck.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                oneHouseCheckActionPerformed(evt);
+            }
+        });
+        oneHouseCheck.setBounds(270, 310, 25, 25);
+
         container.addTab("gameplay", gameplay);
 
         getContentPane().add(container);
@@ -245,7 +301,9 @@ public class SEPoly extends javax.swing.JFrame {
     //---------------------S T A R T -----------------------------------------------
 
     private void createBtnActionPerformed(java.awt.event.MouseEvent evt) {
-        container.setSelectedIndex(1);
+        if(username.getText().length()>0 && !username.getText().equals("Enter your name")) {
+            container.setSelectedIndex(1);
+        }
 
     }
 
@@ -264,12 +322,16 @@ public class SEPoly extends javax.swing.JFrame {
             }
         }
     }
+
+
     //******************************************************************************
     //******************************************************************************
     //---------------------L O B B Y -----------------------------------------------
+
     private void startBtnActionPerformed(java.awt.event.MouseEvent evt) {
         //if num of player == 4
         container.setSelectedIndex(2);
+        isOwnedEstate();
     }
 
 
@@ -277,13 +339,20 @@ public class SEPoly extends javax.swing.JFrame {
     //******************************************************************************
     //******************************************************************************
     //---------------------G A M E P L A Y------------------------------------------
+
+    //close estate detail by clicking anywhere
     private void popupMousePressed(java.awt.event.MouseEvent evt) {
-        image.setVisible(false);
-        popup.setVisible(false);
-        text.setVisible(false);
-        landName.setVisible(false);
+        if(checkTitledeed == 1){
+            image.setVisible(false);
+            popup.setVisible(false);
+            text.setVisible(false);
+            landName.setVisible(false);
+            checkTitledeed = 0;
+        }
     }
+    //show estate detail
     private void boardMousePressed(java.awt.event.MouseEvent evt) {
+        checkTitledeed = 1;
         map = game.getMap();
         double x = evt.getX();
         double y = evt.getY();
@@ -338,15 +407,16 @@ public class SEPoly extends javax.swing.JFrame {
         }
     }
 
-    private Image getScaledImage(Image srcImg, int x,int y,int w, int h){
-        BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2 = resizedImg.createGraphics();
 
-        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        g2.drawImage(srcImg, x, y, w, h, null);
-
-        g2.dispose();
-        return resizedImg;
+    private void isOwnedEstate(){
+        popup.setIcon(houseBuying_popup);
+        popup.setVisible(true);
+        buyBtn.setVisible(true);
+        cancelBtn.setVisible(true);
+        oneHouseCheck.setVisible(true);
+        twoHouseCheck.setVisible(true);
+        threeHouseCheck.setVisible(true);
+        totalPrice.setVisible(true);
     }
 
     public static void start() {
@@ -377,6 +447,35 @@ public class SEPoly extends javax.swing.JFrame {
             }
         });
     }
+
+    private void oneHouseCheckActionPerformed(java.awt.event.ActionEvent evt) {
+    }
+
+    private void twoHouseCheckActionPerformed(java.awt.event.ActionEvent evt) {
+    }
+
+    private void threeHouseCheckActionPerformed(java.awt.event.ActionEvent evt) {
+    }
+
+    private int checkTitledeed;
+    //start
+    private javax.swing.JLabel createBtn;
+    private javax.swing.JLabel n;
+    private javax.swing.JLabel dot;
+    private javax.swing.JLabel joinBtn;
+    private javax.swing.JLabel logoBg;
+    private javax.swing.JTextField username;
+
+    //lobby
+    private javax.swing.JLabel text2;
+    private javax.swing.JLabel player1;
+    private javax.swing.JLabel player2;
+    private javax.swing.JLabel player3;
+    private javax.swing.JLabel player4;
+    private javax.swing.JLabel startBtn;
+    private javax.swing.JLabel roomNumber;
+    private javax.swing.JLabel lobbyBg;
+
     //gameplay
     private javax.swing.JTabbedPane container;
     private javax.swing.JPanel gameplay;
@@ -390,24 +489,15 @@ public class SEPoly extends javax.swing.JFrame {
     private javax.swing.JLabel image;
     private javax.swing.ImageIcon Land_popup = new javax.swing.ImageIcon("src\\allImage\\estate.png");
 
+    //for house buying
+    private javax.swing.JLabel buyBtn;
+    private javax.swing.JLabel cancelBtn;
+    private javax.swing.JCheckBox oneHouseCheck;
+    private javax.swing.JCheckBox twoHouseCheck;
+    private javax.swing.JCheckBox threeHouseCheck;
+    private javax.swing.ImageIcon houseBuying_popup = new javax.swing.ImageIcon("src\\allImage\\houseBuying.png");;
+    private javax.swing.JLabel totalPrice;
+
     private Gameplay game;
     private ArrayList<Space> map;
-
-    //start
-    private javax.swing.JLabel createBtn;
-    private javax.swing.JLabel n;
-    private javax.swing.JLabel dot;
-    private javax.swing.JLabel joinBtn;
-    private javax.swing.JLabel logoBg;
-    private javax.swing.JTextField username;
-
-    //lobby
-    private javax.swing.JLabel JLabel1;
-    private javax.swing.JLabel player1;
-    private javax.swing.JLabel player2;
-    private javax.swing.JLabel player3;
-    private javax.swing.JLabel player4;
-    private javax.swing.JLabel startBtn;
-    private javax.swing.JLabel roomNumber;
-    private javax.swing.JLabel lobbyBg;
 }
