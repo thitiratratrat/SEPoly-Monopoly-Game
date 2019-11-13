@@ -1,8 +1,6 @@
 package socketConnection;
 
-import model.BidObj;
-import model.PlayerObj;
-import model.ServerMessage;
+import model.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -39,8 +37,8 @@ class ClientHandler extends Thread {
                     }
 
                     case ("updatePlayer"): {
-                        PlayerObj playerObj = (PlayerObj) serverMessage.getData();
-                        server.updatePlayer(playerObj);
+                        Player player = (Player) serverMessage.getData();
+                        server.updatePlayer(player);
                         break;
                     }
 
@@ -59,10 +57,24 @@ class ClientHandler extends Thread {
                         break;
                     }
 
-                    case("drawCard"): {
-                        String deckType = (String) serverMessage.getData();
-                        server.drawCard(deckType);
+                    case ("drawCard"): {
+                        DrawCardObj drawCardObj = (DrawCardObj) serverMessage.getData();
+                        server.drawCard(drawCardObj);
                         break;
+                    }
+
+                    case ("updateDice"): {
+                        server.sendToAllClients(serverMessage);
+                    }
+
+                    case ("getPaid"): {
+                        GetPaidObj getPaidObj = (GetPaidObj) serverMessage.getData();
+                        server.payRentPlayer(getPaidObj);
+                    }
+
+                    case ("updateMap"): {
+                        PropertySpace propertySpace = (PropertySpace) serverMessage.getData();
+                        server.sendToAllExcept(propertySpace.getOwner().getID(),  serverMessage);
                     }
 
                     default:

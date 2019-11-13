@@ -1,15 +1,15 @@
 package model;
-//add public
-public class StartSpace extends Space{
-    private double goMoney;
 
-    public StartSpace(int number, String name, double goMoney, double[] positions) {
+public class StartSpace extends Space {
+    private int goMoney;
+
+    public StartSpace(int number, String name, int goMoney, double[] positions) {
         super(number, name, positions);
         this.goMoney = goMoney;
         action = "start";
     }
 
-    double getGoMoney() {
+    public int getGoMoney() {
         return goMoney;
     }
 }

@@ -1,7 +1,6 @@
 package model;
 
 import java.io.Serializable;
-// add posiiton
 public abstract class Space implements Serializable {
     protected int number;
     protected String name;

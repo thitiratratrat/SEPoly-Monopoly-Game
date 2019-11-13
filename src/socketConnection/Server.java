@@ -1,5 +1,5 @@
 package socketConnection;
-//query commu card and chance card, change starting money and card count
+
 import model.*;
 
 import java.io.IOException;
@@ -24,7 +24,7 @@ public class Server {
     private Integer highestBiddingMoney;
     private PropertySpace auctionProperty;
     final private double STARTINGMONEY = 1500000;
-    final private int CARDCOUNT = 8;
+    final private int CARDCOUNT = 10;
 
     Server(int port) throws IOException {
         serverSocket = new ServerSocket(port);
@@ -33,7 +33,6 @@ public class Server {
         map = new ArrayList<>();
         communityDeck = new ArrayList<>();
         chanceDeck = new ArrayList<>();
-
     }
 
     public void connect() throws IOException {
@@ -41,13 +40,14 @@ public class Server {
             Socket socket = serverSocket.accept();
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
+            //check if size == 4 ?????
             int ID = players.size();
             ClientHandler clientHandler = new ClientHandler(socket, inputStream, outputStream, this, ID);
             Player player = new Player(STARTINGMONEY, ID);
 
             clients.add(clientHandler);
             players.add(player);
-
+            //send size? to change color in lobby????
             clientHandler.start();
         } catch (Exception e) {
             close();
@@ -64,10 +64,6 @@ public class Server {
         sendInitOpponentData();
         sendStartGame();
         startNextPlayerTurn(-1);
-        //test
-//        sendMapData();
-//        sendInitPlayerData();
-//        startNextPlayerTurn(-1);
     }
 
 
@@ -87,12 +83,9 @@ public class Server {
         firstPlayerClient.getOutputStream().reset();
     }
 
-    public void updatePlayer(PlayerObj playerObj) throws IOException {
-        Player player = players.get(playerObj.getID());
-        player.setMoney(playerObj.getMoney());
-        player.setX(playerObj.getX());
-        player.setY(playerObj.getY());
-
+    public void updatePlayer(Player player) throws IOException {
+        players.set(player.getID(), player);
+        PlayerObj playerObj = new PlayerObj(player.getX(), player.getY(), player.getMoney(), player.getID());
         ServerMessage serverMessage = new ServerMessage("updateOpponent", playerObj);
         sendToAllExcept(player.getID(), serverMessage);
     }
@@ -108,9 +101,10 @@ public class Server {
             Statement statement = connection.createStatement();
             ResultSet estate = statement.executeQuery("select * from Map");
             Space temp;
-            double[] pos = new double[8];
+
             while (estate.next()) {
                 //System.out.println(estate.getString(3));
+                double[] pos = new double[8];
                 pos[0] = estate.getDouble(13);
                 pos[1] = estate.getDouble(14);
                 pos[2] = estate.getDouble(15);
@@ -119,18 +113,23 @@ public class Server {
                 pos[5] = estate.getDouble(18);
                 pos[6] = estate.getDouble(19);
                 pos[7] = estate.getDouble(20);
-
+                //System.out.println(pos[0]);
                 switch (estate.getString(3)) {
                     case "estate":
                         temp = new EstateSpace(estate.getInt(1), estate.getString(2), estate.getInt(4),
-                                estate.getDouble(7), estate.getDouble(8), estate.getDouble(9),
-                                estate.getDouble(10), estate.getDouble(11), estate.getDouble(5),
-                                estate.getDouble(6), estate.getBytes(12), pos);
+                                estate.getInt(7), estate.getInt(8), estate.getInt(9),
+                                estate.getInt(10), estate.getInt(11), estate.getInt(5),
+                                estate.getInt(6), estate.getBytes(12), pos);
                         map.add(temp);
                         break;
                     case "utility":
                         temp = new UtilitySpace(estate.getInt(1), estate.getString(2),
-                                estate.getInt(4), estate.getString(2), pos);
+                                estate.getInt(4), pos);
+                        map.add(temp);
+                        break;
+                    case "railroad":
+                        temp = new RailroadSpace(estate.getInt(1), estate.getString(2),
+                                estate.getInt(4), pos);
                         map.add(temp);
                         break;
                     case "start":
@@ -148,7 +147,7 @@ public class Server {
                         map.add(temp);
                         break;
                     case "tax":
-                        temp = new TaxSpace(estate.getInt(1), estate.getString(2), pos);
+                        temp = new TaxSpace(estate.getInt(1), estate.getString(2), pos, 7);
                         map.add(temp);
                         break;
                     case "jail":
@@ -187,20 +186,16 @@ public class Server {
 
         if (highestPlayerIDBidder != null) {
             Player player = players.get(highestPlayerIDBidder);
-            player.pay(highestBiddingMoney);
+            player.pay(highestBiddingMoney - auctionProperty.getPrice());
             player.buy(auctionProperty);
             auctionProperty.soldTo(player);
 
             //update player to player client
             serverMessage = new ServerMessage("updatePlayer", player);
-            ClientHandler playerClient = clients.get(player.getID());
-            playerClient.getOutputStream().writeUnshared(serverMessage);
-            playerClient.getOutputStream().reset();
+            sendToPlayer(serverMessage, player.getID());
 
             //update player to opponents
-            PlayerObj playerObj = new PlayerObj(player.getX(), player.getY(), player.getMoney(), player.getID());
-            serverMessage = new ServerMessage("updateOpponent", playerObj);
-            sendToAllExcept(player.getID(), serverMessage);
+            updatePlayer(player);
 
             //update map to every player
             serverMessage = new ServerMessage("updateMap", auctionProperty);
@@ -211,17 +206,65 @@ public class Server {
         highestBiddingMoney = null;
     }
 
-    public void drawCard(String deckType) {
+    public void drawCard(DrawCardObj drawCardObj) throws IOException {
         Random randomGenerator = new Random();
         int cardNumber = randomGenerator.nextInt(CARDCOUNT);
-        Card card = deckType.equalsIgnoreCase("community") ? communityDeck.get(cardNumber) : chanceDeck.get(cardNumber);
+        Card card = drawCardObj.getdeckType().equalsIgnoreCase("community") ? communityDeck.get(cardNumber) : chanceDeck.get(cardNumber);
+        String effect = card.getEffect();
+        int effectAmount = card.getEffectAmount();
+        Player player = players.get(drawCardObj.getPlayerID());
 
+        switch (effect) {
+            case ("getPaid"): {
+                player.getPaid(effectAmount);
+                break;
+            }
+
+            case ("pay"): {
+                player.pay(effectAmount);
+                checkBankrupt(player);
+                break;
+            }
+
+            case ("breakJail"): {
+                player.drawBreakJailCard();
+                break;
+            }
+            case ("getJailed"): {
+                player.jailed();
+                ServerMessage serverMessage = new ServerMessage("goToJail", "");
+                sendToPlayer(serverMessage, player.getID());
+                break;
+            }
+
+            case ("moveForward"): {
+                ServerMessage serverMessage = new ServerMessage("moveForward", effectAmount);
+                sendToPlayer(serverMessage, player.getID());
+                break;
+            }
+
+            default:
+                break;
+        }
         //TODO: player act on card effect
         //go = move imidately
         //move = move character
         //gain = gain money
         //pay = pay money
+        //send player data to all clients
+        ServerMessage serverMessage = new ServerMessage("updatePlayer", player);
+        sendToPlayer(serverMessage, player.getID());
+        updatePlayer(player);
     }
+
+    public void payRentPlayer(GetPaidObj getPaidObj) throws IOException {
+        Player player = players.get(getPaidObj.getPlayerID());
+        player.getPaid(getPaidObj.getRent());
+        ServerMessage serverMessage = new ServerMessage("updatePlayer", player);
+        sendToPlayer(serverMessage, player.getID());
+        updatePlayer(player);
+    }
+
 
     private void sendInitPlayerData() throws IOException {
         ServerMessage serverMessage = new ServerMessage("initPlayer", "");
@@ -262,7 +305,7 @@ public class Server {
         sendToAllClients(serverMessage);
     }
 
-    private void sendToAllExcept(int ID, ServerMessage serverMessage) throws IOException {
+    public void sendToAllExcept(int ID, ServerMessage serverMessage) throws IOException {
         for (ClientHandler client : clients) {
             if (client.getID() == ID) {
                 continue;
@@ -272,7 +315,17 @@ public class Server {
         }
     }
 
-    private void initCardData() throws SQLException{
+    private void sendToPlayer(ServerMessage serverMessage, int ID) throws IOException {
+        ClientHandler client = clients.get(ID);
+        client.getOutputStream().writeUnshared(serverMessage);
+        client.getOutputStream().reset();
+    }
+
+    private void checkBankrupt(Player player) {
+        //TODO: check bankrupt
+    }
+
+    private void initCardData() throws SQLException {
         initCommunityCardData();
         initChanceCardData();
     }
