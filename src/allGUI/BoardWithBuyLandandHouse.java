@@ -113,7 +113,7 @@ public class BoardWithBuyLandandHouse extends javax.swing.JFrame {
             buyTwoHouse.setVisible(false);
             buyThreeHouse.setVisible(false);
 
-            popup.setIcon(new javax.swing.ImageIcon("C:\\Users\\us\\Desktop\\Y2S1\\JAVA\\monopolyTest\\src\\Asset 18.png"));
+            popup.setIcon(new javax.swing.ImageIcon("/allImage/Asset 18.png"));
 
             getContentPane().add(popup);
             popup.setBounds(230,0,800,600);
