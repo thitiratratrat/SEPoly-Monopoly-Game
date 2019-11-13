@@ -97,7 +97,9 @@ public class Server {
     private void initMapData() throws SQLException {
         //init map queried from database here
         try {
-            Connection connection = DriverManager.getConnection("jdbc:sqlite://C:/Users/Asus/Desktop/Monopoly/src/SEpoly.db");
+            String sDriverName = "org.sqlite.JDBC";
+            Class.forName(sDriverName);
+            Connection connection = DriverManager.getConnection("jdbc:sqlite:SEpoly.db");
             Statement statement = connection.createStatement();
             ResultSet estate = statement.executeQuery("select * from Map");
             Space temp;
@@ -333,7 +335,7 @@ public class Server {
     private void initCommunityCardData() throws SQLException {
             //TODO: query community card data from database
             try {
-                Connection connection = DriverManager.getConnection("jdbc:sqlite://C:/Users/Asus/Desktop/Monopoly/src/SEpoly.db");
+                Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Asus\\Desktop\\javaProject\\monopoly\\src\\Database\\SEpoly.db");
                 Statement statement = connection.createStatement();
                 ResultSet card = statement.executeQuery("select * from Community_cards");
                 Card temp;
@@ -351,7 +353,7 @@ public class Server {
     private void initChanceCardData() throws SQLException{
         //TODO: query chance card data from database
         try {
-            Connection connection = DriverManager.getConnection("jdbc:sqlite://C:/Users/Asus/Desktop/Monopoly/src/SEpoly.db");
+            Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Asus\\Desktop\\javaProject\\monopoly\\src\\Database\\SEpoly.db");
             Statement statement = connection.createStatement();
             ResultSet card = statement.executeQuery("select * from Chance_cards");
             Card temp;
