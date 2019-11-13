@@ -18,6 +18,7 @@ public class EstateSpace extends PropertySpace {
         this.housePrice = housePrice;
         this.landmarkPrice = landmarkPrice;
         this.image = image;
+        this.positions = positions;
         houseCount = 0;
         landmarkCount = 0;
         rentPrices = new ArrayList<>();
@@ -73,4 +74,12 @@ public class EstateSpace extends PropertySpace {
         houseCount = 0;
     }
     public byte[] getImage(){ return image; }
+
+    public int getDisplayXPos(){
+        return (int)positions[2];
+    }
+
+    public int getDisplayYPos(){
+        return (int)positions[3];
+    }
 }

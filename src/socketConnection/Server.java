@@ -99,7 +99,7 @@ public class Server {
         try {
             String sDriverName = "org.sqlite.JDBC";
             Class.forName(sDriverName);
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:SEpoly.db");
+            Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Asus\\Desktop\\javaProject\\monopoly\\src\\Database\\SEpoly.db");
             Statement statement = connection.createStatement();
             ResultSet estate = statement.executeQuery("select * from Map");
             Space temp;
