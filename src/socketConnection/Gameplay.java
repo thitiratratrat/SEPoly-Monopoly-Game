@@ -6,7 +6,6 @@ import javax.swing.*;
 import java.io.IOException;
 import java.util.*;
 import java.util.Timer;
-import java.util.concurrent.TimeUnit;
 
 public class Gameplay {
     private Client client;
@@ -36,8 +35,9 @@ public class Gameplay {
     public static void main(String[] args) throws IOException {
         Gameplay gameplay = new Gameplay();
         gameplay.startClientConnection();
+        GUI.NewJFrame2 board = new GUI.NewJFrame2();
+        board.display();
         gameplay.start();
-
     }
 
     public void setAddress(String address) {
