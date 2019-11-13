@@ -137,7 +137,7 @@ public class SEPoly extends javax.swing.JFrame {
 
         lobbyBg.setBounds(0,0,800,600);
 
-        startBtn.setVisible(false);
+        startBtn.setVisible(true);
         startBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 startBtnActionPerformed(evt);
@@ -261,8 +261,8 @@ public class SEPoly extends javax.swing.JFrame {
     //******************************************************************************
     //---------------------L O B B Y -----------------------------------------------
     private void startBtnActionPerformed(java.awt.event.MouseEvent evt) {
+        //if num of player == 4
         container.setSelectedIndex(2);
-        //System.out.println(player1.getBackground());
     }
 
 
