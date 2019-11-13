@@ -35,7 +35,7 @@ public class SEPoly extends javax.swing.JFrame {
         text = new javax.swing.JLabel();
         landName = new javax.swing.JLabel("", SwingConstants.CENTER);
         popup = new javax.swing.JLabel();
-        board = new javax.swing.JLabel(new javax.swing.ImageIcon("C://Users/Asus/Desktop/Monopoly/finaljingjing_board.png"));
+        board = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\finaljingjing_board.png"));
 
         //start
         createBtn = new javax.swing.JLabel();
@@ -53,7 +53,7 @@ public class SEPoly extends javax.swing.JFrame {
         player2 = new javax.swing.JLabel();
         player3 = new javax.swing.JLabel();
         player4 = new javax.swing.JLabel();
-        lobbyBg = new javax.swing.JLabel(new javax.swing.ImageIcon("C://Users/Asus/Desktop/Monopoly/lobbyBg.png"));
+        lobbyBg = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\lobbyBg.png"));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SE POLY");
@@ -388,7 +388,7 @@ public class SEPoly extends javax.swing.JFrame {
     private javax.swing.JLabel popup;
     private javax.swing.JLabel landName;
     private javax.swing.JLabel image;
-    private javax.swing.ImageIcon Land_popup = new javax.swing.ImageIcon("C://Users/Asus/Desktop/Monopoly/estate.png");
+    private javax.swing.ImageIcon Land_popup = new javax.swing.ImageIcon("src\\allImage\\estate.png");
 
     private Gameplay game;
     private ArrayList<Space> map;
