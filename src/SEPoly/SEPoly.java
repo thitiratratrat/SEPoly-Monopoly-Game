@@ -212,7 +212,7 @@ public class SEPoly extends javax.swing.JFrame {
         totalPrice.setVisible(false);
         oneHouseCheck.setVisible(false);
         twoHouseCheck.setVisible(false);
-        threeHouseCheck.setVisible(false);:
+        threeHouseCheck.setVisible(false);::
 
 
         gameplay.setAlignmentX(0.0F);
