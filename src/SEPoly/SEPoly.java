@@ -214,7 +214,6 @@ public class SEPoly extends javax.swing.JFrame {
         twoHouseCheck.setVisible(false);
         threeHouseCheck.setVisible(false);
 
-
         gameplay.setAlignmentX(0.0F);
         gameplay.setAlignmentY(0.0F);
         gameplay.setBounds(0,0,800,600);
