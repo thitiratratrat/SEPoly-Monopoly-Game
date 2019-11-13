@@ -373,10 +373,10 @@ public class Gameplay {
                         rent *= diceNumber;
                     }
 
-                    if (isBankrupt(rent)) {
-                        sendPlayerIsBankrupt();
-                        break;
-                    }
+//                    if (isBankrupt(rent)) {
+//                        sendPlayerIsBankrupt();
+//                        break;
+//                    }
 
                     player.pay(rent);
                     sendPlayerToUpdate();
@@ -391,10 +391,10 @@ public class Gameplay {
                 TaxSpace taxSpace = (TaxSpace) space;
                 int taxFee = taxSpace.getTaxFee();
 
-                if (isBankrupt(taxFee)) {
-                    sendPlayerIsBankrupt();
-                    break;
-                }
+//                if (isBankrupt(taxFee)) {
+//                    sendPlayerIsBankrupt();
+//                    break;
+//                }
 
                 player.pay(taxSpace.getTaxFee());
                 sendPlayerToUpdate();
@@ -423,10 +423,10 @@ public class Gameplay {
     private void payJailFine() throws IOException {
         jailTurnCount = 0;
 
-        if (isBankrupt(JAIL_FEE)) {
-            sendPlayerIsBankrupt();
-            return;
-        }
+//        if (isBankrupt(JAIL_FEE)) {
+//            sendPlayerIsBankrupt();
+//            return;
+//        }
 
         player.pay(JAIL_FEE);
         player.getOutOfJail();

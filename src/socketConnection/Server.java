@@ -155,9 +155,9 @@ public class Server {
             }
 
             case ("pay"): {
-                if (isBankrupt(effectAmount)) {
-                    player.pay(effectAmount);
-                }
+//                if (isBankrupt(effectAmount)) {
+//                    player.pay(effectAmount);
+//                }
                 checkBankrupt(player);
                 break;
             }
@@ -295,8 +295,8 @@ public class Server {
         //TODO: query chance card data from database
     }
 
-    private boolean isBankrupt(int payingAmount) {
-
-        return true;
-    }
+//    private boolean isBankrupt(int payingAmount) {
+//
+//        return true;
+//    }
 }
