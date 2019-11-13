@@ -164,7 +164,6 @@ public class Server {
 
             case ("breakJail"): {
                 player.drawBreakJailCard();
-                System.out.println("ชิวาว่า!");
                 break;
             }
 
@@ -172,19 +171,16 @@ public class Server {
                 player.jailed();
                 ServerMessage serverMessage = new ServerMessage("goToJail", "");
                 sendToPlayer(serverMessage, player.getID());
-                System.out.println("ชิวาว่า!");
                 break;
             }
 
             case ("moveForward"): {
                 ServerMessage serverMessage = new ServerMessage("moveForward", effectAmount);
                 sendToPlayer(serverMessage, player.getID());
-                System.out.println("ชิวาว่า!");
                 break;
             }
 
             default:
-                System.out.println("ชิวาว่า!");
                 break;
         }
 
