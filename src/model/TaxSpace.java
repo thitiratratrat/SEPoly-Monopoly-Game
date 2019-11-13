@@ -3,8 +3,8 @@ package model;
 public class TaxSpace extends Space {
     private int taxFee;
 
-    public TaxSpace(int number, String name, int taxFee) {
-        super(number, name);
+    public TaxSpace(int number, String name, int taxFee, double[] positions) {
+        super(number, name, positions);
         action = "pay tax";
         this.taxFee = taxFee;
     }
