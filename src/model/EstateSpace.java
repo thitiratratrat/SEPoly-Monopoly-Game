@@ -3,22 +3,24 @@ package model;
 import java.util.ArrayList;
 
 public class EstateSpace extends PropertySpace {
-    private double housePrice;
-    private double landmarkPrice;
+    final private int MAX_LANDMARK = 1; //??????????????????????
+    private int housePrice;
+    private int landmarkPrice;
     private int houseCount;
     private int landmarkCount;
-    private ArrayList<Double> rentPrices;
+    private ArrayList<Integer> rentPrices;
     private byte[] image;
     private double[] positions;
-    public EstateSpace(int number, String name, int price, double rent, double oneHouseRent,
-                double twoHouseRent, double threeHouseRent, double landmarkRent, double housePrice,
-                       double landmarkPrice, byte[] image, double[] positions) {
+    public EstateSpace(int number, String name, int price, int rent, int oneHouseRent,
+                int twoHouseRent, int threeHouseRent, int landmarkRent, int housePrice,
+                       int landmarkPrice, byte[] image, double[] positions) {
         super(number, name, positions, price);
         this.housePrice = housePrice;
         this.landmarkPrice = landmarkPrice;
+        this.image = image;
         houseCount = 0;
         landmarkCount = 0;
-        rentPrices = new ArrayList<Double>();
+        rentPrices = new ArrayList<>();
 
         rentPrices.add(rent);
         rentPrices.add(oneHouseRent);
@@ -26,12 +28,13 @@ public class EstateSpace extends PropertySpace {
         rentPrices.add(threeHouseRent);
         rentPrices.add(landmarkRent);
     }
+    public ArrayList<Integer> getRentPrices(){ return rentPrices; }
 
-    public double getHousePrice() {
+    public int getHousePrice() {
         return housePrice;
     }
 
-    public double getLandmarkPrice() {
+    public int getLandmarkPrice() {
         return landmarkPrice;
     }
 
@@ -43,15 +46,31 @@ public class EstateSpace extends PropertySpace {
         return landmarkCount;
     }
 
-    public double getRentPrice() {
-        return rentPrices.get(houseCount);
+    public int getRentPrice() {
+        //change 5 to 4 has only 3 house
+        int rentPrice = landmarkCount == MAX_LANDMARK ? rentPrices.get(4) : rentPrices.get(houseCount);
+        return rentPrice;
     }
 
     public void sellHouse(int sellHouseCount) {
         houseCount -= sellHouseCount;
     }
 
+    public void buildHouse(int houseCount) {
+        houseCount += houseCount;
+
+        if (houseCount > 4) {
+            houseCount = 4;
+        }
+    }
+
+    public void buildLandmark() {
+        landmarkCount = MAX_LANDMARK;
+    }
+
     public void sellLandmark() {
         landmarkCount = 0;
+        houseCount = 0;
     }
+    public byte[] getImage(){ return image; }
 }

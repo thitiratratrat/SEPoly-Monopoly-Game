@@ -1,9 +1,15 @@
 package model;
 
 public class TaxSpace extends Space {
-    public TaxSpace(int number, String name, double[] positions){
+    private int taxFee;
+
+    public TaxSpace(int number, String name, double[] positions, int taxFee) {
         super(number, name, positions);
-        action  = "Pay";
-        //amount???
+        action = "pay tax";
+        this.taxFee = taxFee;
+    }
+
+    public int getTaxFee() {
+        return taxFee;
     }
 }
