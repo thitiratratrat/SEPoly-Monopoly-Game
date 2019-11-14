@@ -4,8 +4,8 @@ public abstract class PropertySpace extends Space implements Property {
     protected int price;
     protected Player owner;
 
-    public PropertySpace(int number, String name, double[] positions, int price) {
-        super(number, name, positions);
+    public PropertySpace(int number, String name, double[] positions,byte[] image, int price) {
+        super(number, name, positions, image);
         action = "property";
         this.price = price;
         owner = null;

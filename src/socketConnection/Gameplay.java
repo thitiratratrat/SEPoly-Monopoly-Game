@@ -6,9 +6,6 @@ import javax.swing.*;
 import java.io.IOException;
 import java.util.*;
 import java.util.Timer;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import java.awt.*;
 
 import java.util.ArrayList;
 
@@ -41,10 +38,8 @@ public class Gameplay extends javax.swing.JFrame{
     private int checkTitledeed;
 
     //start
-    private javax.swing.JLabel createBtn;
     private javax.swing.JLabel n;
     private javax.swing.JLabel dot;
-    private javax.swing.JLabel joinBtn;
     private javax.swing.JLabel logoBg;
     private javax.swing.JTextField username;
 
@@ -62,14 +57,20 @@ public class Gameplay extends javax.swing.JFrame{
     private javax.swing.JTabbedPane container;
     private javax.swing.JPanel gameplay;
 
+    //title deed popup
     private javax.swing.JLabel board;
     private javax.swing.JPanel lobby;
     private javax.swing.JPanel start;
     private javax.swing.JLabel text;
-    private javax.swing.JLabel popup;
+    private javax.swing.JLabel titleDeedInfo;
     private javax.swing.JLabel landName;
     private javax.swing.JLabel image;
-    private javax.swing.ImageIcon Land_popup = new javax.swing.ImageIcon("src\\allImage\\estate.png");
+
+    //other space info
+    private javax.swing.JLabel spaceInfo;
+
+    //card
+    private javax.swing.JLabel card;
 
     //for house buying
     private javax.swing.JLabel buyBtn;
@@ -77,9 +78,9 @@ public class Gameplay extends javax.swing.JFrame{
     private javax.swing.JCheckBox oneHouseCheck;
     private javax.swing.JCheckBox twoHouseCheck;
     private javax.swing.JCheckBox threeHouseCheck;
-    private javax.swing.ImageIcon houseBuying_popup = new javax.swing.ImageIcon("src\\allImage\\houseBuying.png");;
     private javax.swing.JLabel totalPrice;
-    private javax.swing.ButtonGroup houseCheckGroup;
+    private javax.swing.JLabel houseBuying;
+
 
 
 
@@ -119,123 +120,98 @@ public class Gameplay extends javax.swing.JFrame{
     private void initUI() {
         //TODO: init UI code here
         checkTitledeed = 0;
-        start = new javax.swing.JPanel();
-        lobby = new javax.swing.JPanel();
-        gameplay = new javax.swing.JPanel();
-
-        container = new javax.swing.JTabbedPane();
-
-        //gameplay
-        image = new javax.swing.JLabel();
-        text = new javax.swing.JLabel();
-        landName = new javax.swing.JLabel("", SwingConstants.CENTER);
-        popup = new javax.swing.JLabel();
-        board = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\finaljingjing_board.png"));
-        //house buying popup
-        //houseCheckGroup = new javax.swing.ButtonGroup();
-
-        cancelBtn = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\Asset 22.png"));
-        buyBtn = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\Asset 21.png"));
-
-        totalPrice = new javax.swing.JLabel();
-        threeHouseCheck= new javax.swing.JCheckBox();
-        twoHouseCheck = new javax.swing.JCheckBox();
-        oneHouseCheck = new javax.swing.JCheckBox();
-        //houseCheckGroup.add(oneHouseCheck);
-        //houseCheckGroup.add(twoHouseCheck);
-        //houseCheckGroup.add(threeHouseCheck);
-
-        //start
-        createBtn = new javax.swing.JLabel();
-        joinBtn = new javax.swing.JLabel();
-        n = new javax.swing.JLabel();
-        username = new javax.swing.JTextField();
-        dot = new javax.swing.JLabel();
-        logoBg = new javax.swing.JLabel();
-
-        //lobby
-        startBtn = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\Asset 30.png"));
-        text2 = new javax.swing.JLabel();
-        roomNumber = new javax.swing.JLabel();
-        player1 = new javax.swing.JLabel();
-        player2 = new javax.swing.JLabel();
-        player3 = new javax.swing.JLabel();
-        player4 = new javax.swing.JLabel();
-        lobbyBg = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\lobbyBg.png"));
-
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SE POLY");
         setPreferredSize(new java.awt.Dimension(800, 638));
         setResizable(false);
         getContentPane().setLayout(null);
-        container.setEnabled(false);
-        container.setBounds(0, -29, 800, 629);
 
-        //******************************************************************************
-        //******************************************************************************
-        //---------------------S T A R T -----------------------------------------------
+        start = new javax.swing.JPanel();
         start.setBounds(0, 0, 800, 600);
         start.setLayout(null);
         start.setBackground(new java.awt.Color(255, 204, 204));
+
+        lobby = new javax.swing.JPanel();
+        lobby.setBounds(0,0,800,600);
+
+        gameplay = new javax.swing.JPanel();
+        gameplay.setBounds(0,0,800,600);
+
+        container = new javax.swing.JTabbedPane();
+        container.addTab("Start", start);
+        container.addTab("Lobby", lobby);
+        container.addTab("Gameplay", gameplay);
+        container.setEnabled(false);
+        container.setBounds(0, -29, 800, 629);
+
+        getContentPane().add(container);
+        container.setSelectedIndex(0);
+
+        // -------------------------------------------------------------
+        // ----------------------- S T A R T ---------------------------
+        // -------------------------------------------------------------
+        startBtn = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\Asset 30.png"));
+        startBtn.setBounds(300,400,196,100);
+        n = new javax.swing.JLabel();
+        n.setBounds(183, 270, 100, 100);
+        n.setFont(new java.awt.Font("Microsoft PhagsPa", 1, 32));
+        n.setText("name ");
+        username = new javax.swing.JTextField();
+        username.setBounds(350, 305, 250, 35);
+        username.setFont(new java.awt.Font("Microsoft PhagsPa", 1, 22));
+        username.setText("Enter your name");
+        dot = new javax.swing.JLabel();
+        dot.setBounds(300, 270, 100, 100);
+        dot.setText("<html><b>:</b></html>");
+        logoBg = new javax.swing.JLabel();
+        logoBg.setBounds(144, 50, 498, 180);
+        logoBg.setIcon(new javax.swing.ImageIcon("src\\allImage\\Asset 11.png"));
+
         start.add(logoBg);
-        start.add(createBtn);
-        start.add(joinBtn);
+        start.add(startBtn);
         start.add(n);
         start.add(dot);
         start.add(username);
 
 
-        createBtn.setBounds(140, 420, 195, 95);
-        joinBtn.setBounds(450, 420, 195, 95);
-        n.setBounds(183, 270, 100, 100);
-        username.setBounds(350, 305, 250, 35);
-        dot.setBounds(300, 270, 100, 100);
-        logoBg.setBounds(144, 50, 498, 180);
 
-        n.setFont(new java.awt.Font("Microsoft PhagsPa", 1, 32));
-        n.setText("name ");
+        // -------------------------------------------------------------
+        // ----------------------- L O B B Y ---------------------------
+        // -------------------------------------------------------------
+        text2 = new javax.swing.JLabel();
+        text2.setFont(new java.awt.Font("Muller Demo ExtraBold", 1, 36));
+        text2.setForeground(new java.awt.Color(0, 0, 51));
+        text2.setText("<html><b>Room  number  : </b></html>");
+        roomNumber = new javax.swing.JLabel();
+        roomNumber.setBounds(400, 57, 100,100);
+        roomNumber.setFont(new java.awt.Font("Muller Demo ExtraBold", 0, 24)); // NOI18N
+        roomNumber.setForeground(new java.awt.Color(153, 0, 0));
+        roomNumber.setText("2958");
+        player1 = new javax.swing.JLabel();
+        player1.setOpaque(true);
+        player1.setBackground(new java.awt.Color(255, 255, 255));
+        player1.setFont(new java.awt.Font("supermarket", 0, 24));
+        player1.setBounds(170,188,450,50);
+        text2.setBounds(93,50,300,100);
+        player2 = new javax.swing.JLabel();
+        player2.setOpaque(true);
+        player2.setBackground(new java.awt.Color(255, 255, 255));
+        player2.setFont(new java.awt.Font("supermarket", 0, 24));
+        player2.setBounds(170,250,450,50);
+        player3 = new javax.swing.JLabel();
+        player3.setOpaque(true);
+        player3.setBackground(new java.awt.Color(255, 255, 255));
+        player3.setFont(new java.awt.Font("supermarket", 0, 24));
+        player3.setBounds(170,312,450,50);
+        player4 = new javax.swing.JLabel();
+        player4.setOpaque(true);
+        player4.setBackground(new java.awt.Color(255, 255, 255));
+        player4.setFont(new java.awt.Font("supermarket", 0, 24));
+        player4.setBounds(170,374,450,50);
+        lobbyBg = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\lobbyBg.png"));
+        lobbyBg.setBounds(0, 0, 800, 600);
 
-        username.setFont(new java.awt.Font("Microsoft PhagsPa", 1, 22));
-        username.setText("Enter your name");
-
-        logoBg.setIcon(new javax.swing.ImageIcon("src\\allImage\\Asset 11.png"));
-        logoBg.setLabelFor(logoBg);
-
-        createBtn.setIcon(new javax.swing.ImageIcon("src\\allImage\\Asset 13.png"));
-
-        createBtn.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                try {
-                    createBtnActionPerformed(evt);
-                } catch (IOException | InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-
-        joinBtn.setIcon(new javax.swing.ImageIcon("src\\allImage\\Asset 14.png")); // NOI18N
-
-        joinBtn.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                joinBtnActionPerformed(evt);
-            }
-        });
-
-
-        dot.setText("<html><b>:</b></html>");
-
-
-        container.addTab("start", start);
-
-        //******************************************************************************
-        //******************************************************************************
-        //---------------------L O B B Y -----------------------------------------------
-        lobby.setAlignmentX(0.0F);
-        lobby.setAlignmentY(0.0F);
-        lobby.setBounds(0, 0, 800, 600);
         lobby.setLayout(null);
-        lobby.add(startBtn);
         lobby.add(text2);
         lobby.add(roomNumber);
         lobby.add(player1);
@@ -244,9 +220,86 @@ public class Gameplay extends javax.swing.JFrame{
         lobby.add(player4);
         lobby.add(lobbyBg);
 
-        lobbyBg.setBounds(0, 0, 800, 600);
 
-        startBtn.setVisible(true);
+
+
+        // -------------------------------------------------------------
+        // -------------------G A M E   P L A Y ------------------------
+        // -------------------------------------------------------------
+        board = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\finaljingjing_board.png"));
+        board.setBounds(0, 0, 800, 600);
+
+        // T I T L E  D E E D  P O P  U P
+        image = new javax.swing.JLabel();
+        text = new javax.swing.JLabel();
+        text.setFont(new java.awt.Font("Microsoft PhagsPa", 0, 13));
+        text.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        text.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
+        text.setBounds(293, 304, 300, 200);
+        landName = new javax.swing.JLabel("", SwingConstants.CENTER);
+        landName.setFont(new java.awt.Font("Microsoft PhagsPa", 0, 15));
+        landName.setBounds(308, 160, 187, 34);
+        titleDeedInfo = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\estate.png"));
+        titleDeedInfo.setBounds(0, 0, 800, 600);
+
+        titleDeedInfo.add(image);
+        titleDeedInfo.add(text);
+        titleDeedInfo.add(landName);
+        titleDeedInfo.setVisible(false);
+
+        // O T H E R   S P A C E
+        spaceInfo = new javax.swing.JLabel();
+        spaceInfo.setBounds(0,0,800,600);
+        spaceInfo.setVisible(false);
+
+        // H O U S E  B U Y I N G  P O P U P
+        cancelBtn = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\Asset 22.png"));
+        cancelBtn.setBounds(290, 390, 90, 39);
+        totalPrice = new javax.swing.JLabel();
+        totalPrice.setFont(new java.awt.Font("Tahoma", 1, 16));
+        totalPrice.setBounds(350, 354, 210, 20);
+        buyBtn = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\Asset 21.png"));
+        buyBtn.setBounds(430, 390, 100, 39);
+        threeHouseCheck= new javax.swing.JCheckBox();
+        threeHouseCheck.setBounds(390, 310, 25, 25);
+        twoHouseCheck = new javax.swing.JCheckBox();
+        twoHouseCheck.setBounds(500, 310, 25, 25);
+        oneHouseCheck = new javax.swing.JCheckBox();
+        oneHouseCheck.setBounds(270, 310, 25, 25);
+
+        houseBuying = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\houseBuying.png"));
+        houseBuying.setBounds(0,0,800,600);
+        houseBuying.add(cancelBtn);
+        houseBuying.add(buyBtn);
+        houseBuying.add(totalPrice);
+        houseBuying.add(oneHouseCheck);
+        houseBuying.add(twoHouseCheck);
+        houseBuying.add(threeHouseCheck);
+        houseBuying.setVisible(false);
+
+        // S H O W  C A R D
+        card = new javax.swing.JLabel();
+        card.setBounds(0,0,800,600);
+        card.setVisible(false);
+
+        gameplay.setLayout(null);
+        gameplay.add(spaceInfo);
+        gameplay.add(card);
+        gameplay.add(houseBuying);
+        gameplay.add(titleDeedInfo);
+        gameplay.add(board);
+
+
+
+
+
+
+
+        // --------------------------------------------------------------------
+        // ----------------- A C T I O N    L I S T E N E R -------------------
+        //---------------------------------------------------------------------
+
+        //start
         startBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 try {
@@ -257,259 +310,137 @@ public class Gameplay extends javax.swing.JFrame{
             }
         });
 
-
-        text2.setFont(new java.awt.Font("Muller Demo ExtraBold", 1, 36));
-        text2.setForeground(new java.awt.Color(0, 0, 51));
-        text2.setText("<html><b>Room  number  : </b></html>");
-
-        roomNumber.setFont(new java.awt.Font("Muller Demo ExtraBold", 0, 24)); // NOI18N
-        roomNumber.setForeground(new java.awt.Color(153, 0, 0));
-        roomNumber.setText("1234");
-
-
-        player1.setOpaque(true);
-        player1.setBackground(new java.awt.Color(255, 255, 255));
-        player1.setFont(new java.awt.Font("supermarket", 0, 24)); // NOI18N
-
-        player2.setOpaque(true);
-        player2.setBackground(new java.awt.Color(255, 255, 255));
-        player2.setFont(new java.awt.Font("supermarket", 0, 24)); // NOI18N
-
-        player3.setOpaque(true);
-        player3.setBackground(new java.awt.Color(255, 255, 255));
-        player3.setFont(new java.awt.Font("supermarket", 0, 24));
-
-        player4.setOpaque(true);
-        player4.setBackground(new java.awt.Color(255, 255, 255));
-        player4.setFont(new java.awt.Font("supermarket", 0, 24));
-
-        text2.setBounds(93,50,300,100);
-        startBtn.setBounds(420,446,196,100);
-        roomNumber.setBounds(400, 57, 100,100);
-        player1.setBounds(170,188,450,50);
-        player2.setBounds(170,250,450,50);
-        player3.setBounds(170,312,450,50);
-        player4.setBounds(170,374,450,50);
-
-
-        container.addTab("lobby", lobby);
-
-        //******************************************************************************
-        //******************************************************************************
-        //---------------------G A M E P L A Y------------------------------------------
-        //house buying popup
-        gameplay.add(buyBtn);
-        gameplay.add(cancelBtn);
-        gameplay.add(totalPrice);
-        gameplay.add(oneHouseCheck);
-        gameplay.add(twoHouseCheck);
-        gameplay.add(threeHouseCheck);
-
-        buyBtn.setVisible(false);
-        cancelBtn.setVisible(false);
-        totalPrice.setVisible(false);
-        oneHouseCheck.setVisible(false);
-        twoHouseCheck.setVisible(false);
-        threeHouseCheck.setVisible(false);
-
-        gameplay.setAlignmentX(0.0F);
-        gameplay.setAlignmentY(0.0F);
-        gameplay.setBounds(0, 0, 800, 600);
-        gameplay.setLayout(null);
-        gameplay.add(image);
-        gameplay.add(text);
-        gameplay.add(landName);
-        gameplay.add(popup);
-        gameplay.add(board);
-
-
-
-        image.setVisible(false);
-
-
-        popup.setBounds(0, 0, 800, 600);
-
-        popup.setBounds(0,0,800,600);
-        popup.setVisible(false);
-        popup.addMouseListener(new java.awt.event.MouseAdapter() {
+        //gameplay
+        titleDeedInfo.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                popupMousePressed(evt);
+                titleDeedMousePressed(evt);
+            }
+        });
+        houseBuying.addMouseListener(new java.awt.event.MouseAdapter(){
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                houseBuyingMousePressed(evt);
             }
         });
 
-        board.setBounds(0, 0, 800, 600);
         board.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 boardMousePressed(evt);
             }
         });
 
-        text.setFont(new java.awt.Font("Microsoft PhagsPa", 0, 13));
-        getContentPane().add(text);
-        text.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-        text.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
-        text.setBounds(293, 304, 300, 200);
-        text.setVisible(false);
-
-        landName.setFont(new java.awt.Font("Microsoft PhagsPa", 0, 15));
-        landName.setBounds(308, 160, 187, 34);
-        landName.setVisible(false);
-
-        cancelBtn.setBounds(290, 390, 90, 39);
-        buyBtn.setBounds(430, 390, 100, 39);
-
-        totalPrice.setFont(new java.awt.Font("Tahoma", 1, 16));
-        totalPrice.setBounds(350, 354, 210, 20);
-
-        threeHouseCheck.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                threeHouseCheckActionPerformed(evt);
+        spaceInfo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                spaceInfoMousePressed(evt);
             }
         });
-        threeHouseCheck.setBounds(390, 310, 25, 25);
 
-        twoHouseCheck.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                twoHouseCheckActionPerformed(evt);
+        card.addMouseListener(new java.awt.event.MouseAdapter(){
+            public void mousePressed(java.awt.event.MouseEvent evt){
+                cardMousePressed(evt);
             }
         });
-        twoHouseCheck.setBounds(500, 310, 25, 25);
 
         oneHouseCheck.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 oneHouseCheckActionPerformed(evt);
             }
         });
-        oneHouseCheck.setBounds(270, 310, 25, 25);
+        twoHouseCheck.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                twoHouseCheckActionPerformed(evt);
+            }
+        });
+        threeHouseCheck.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                threeHouseCheckActionPerformed(evt);
+            }
+        });
 
-        container.addTab("gameplay", gameplay);
-
-        getContentPane().add(container);
-        container.setSelectedIndex(0);
         pack();
     }
+
     //******************************************************************************
     //******************************************************************************
     //---------------------S T A R T -----------------------------------------------
 
-    private void createBtnActionPerformed(java.awt.event.MouseEvent evt) throws IOException, InterruptedException {
-        if (username.getText().length() > 0 && !username.getText().equals("Enter your name")) {
-            container.setSelectedIndex(1);
-        }
-    }
-
-    private void joinBtnActionPerformed(java.awt.event.MouseEvent evt) {
-        if (username.getText().length() > 0 && !username.getText().equals("Enter your name")) {
-            String roomNumber;
-            JOptionPane joinGame = new JOptionPane();
-            //Shows a inputdialog
-            roomNumber = joinGame.showInputDialog("Enter a number: ");
-            //if OK is pushed then (if not strDialogResponse is null)
-            if (roomNumber != null && roomNumber.length() > 0) {
-                container.setSelectedIndex(1);
-            } else if (roomNumber != null) {
-                JOptionPane.showMessageDialog(null, "Plese Enter your room number");
-            }
-        }
-    }
-
-
-
-    //******************************************************************************
-    //******************************************************************************
-    //---------------------L O B B Y -----------------------------------------------
-
     private void startBtnActionPerformed(java.awt.event.MouseEvent evt) throws IOException {
-        connectToServer();
-        startBtn.setEnabled(false);
-        name = username.getText();
-        start();
-        //isOwnedEstate();
+        if (username.getText().length() > 0 && !username.getText().equals("Enter your name")) {
+            connectToServer();
+            startBtn.setEnabled(false);
+            name = username.getText();
+            start();
+        }
     }
-
 
 
     //******************************************************************************
     //******************************************************************************
     //---------------------G A M E P L A Y------------------------------------------
 
-    //close estate detail by clicking anywhere
-    private void popupMousePressed(java.awt.event.MouseEvent evt) {
-        if(checkTitledeed == 1){
-            image.setVisible(false);
-            popup.setVisible(false);
-            text.setVisible(false);
-            landName.setVisible(false);
-            checkTitledeed = 0;
-        }
+    //close title deed by clicking anywhere
+    private void titleDeedMousePressed(java.awt.event.MouseEvent evt) {
+            titleDeedInfo.setVisible(false);
     }
 
+    //close other space info
+    private void spaceInfoMousePressed(java.awt.event.MouseEvent evt) {
+        spaceInfo.setVisible(false);
+    }
     //show estate detail
     private void boardMousePressed(java.awt.event.MouseEvent evt) {
-        checkTitledeed = 1;
         double x = evt.getX();
         double y = evt.getY();
 
-        int c = this.check_board_is_clicked(x,y);
-        if (c != -1) {
-            if (map.get(c) instanceof EstateSpace) {
-                EstateSpace temp = (EstateSpace)map.get(c);
-
-                popup.setIcon(Land_popup);
+        int index = this.board_is_clicked(x,y);
+        if (index != -1) {
+            if (map.get(index) instanceof EstateSpace) {
+                EstateSpace temp = (EstateSpace)map.get(index);
                 String s = "<html><body><pre><b>" +
-                        "PRICE              "+temp.getPrice()+"<br>" +
-                        "RENT               "+temp.getRentPrices().get(0)+"<br>" +
-                        "RENT WITH 1 HOUSE  "+temp.getRentPrices().get(1)+"<br>" +
-                        "RENT WITH 2 HOUSE  "+temp.getRentPrices().get(2)+"<br>" +
-                        "RENT WITH 3 HOUSE  "+temp.getRentPrices().get(3)+"<br>" +
-                        "RENT WITH LANDMARK "+temp.getRentPrices().get(4)+"<br>" +
-                        "HOUSE PRICE        "+temp.getHousePrice()+"<br>" +
-                        "LANDMARK PRICE     "+temp.getLandmarkPrice()+"</b></pre></body></html>";
+                        "PRICE               "+intToString(temp.getPrice())+"<br>" +
+                        "RENT                "+intToString(temp.getRentPrices().get(0))+"<br>" +
+                        "RENT WITH 1 HOUSE   "+intToString(temp.getRentPrices().get(1))+"<br>" +
+                        "RENT WITH 2 HOUSE   "+intToString(temp.getRentPrices().get(2))+"<br>" +
+                        "RENT WITH 3 HOUSE   "+intToString(temp.getRentPrices().get(3))+"<br>" +
+                        "RENT WITH LANDMARK  "+intToString(temp.getRentPrices().get(4))+"<br>" +
+                        "HOUSE PRICE         "+intToString(temp.getHousePrice())+"<br>" +
+                        "LANDMARK PRICE      "+intToString(temp.getLandmarkPrice())+"</b></pre></body></html>";
                 text.setText(s);
                 landName.setText("<html><b>"+temp.getName()+"</b></html>");
-                ImageIcon t = new ImageIcon(((EstateSpace) map.get(c)).getImage());
+                image.setIcon(new ImageIcon((map.get(index)).getImage()));
 
-                if(c>0 && c<8) {
-                    image.setBounds(0 - ((EstateSpace) map.get(c)).getDisplayXPos() + 335,
-                            0 - ((EstateSpace) map.get(c)).getDisplayYPos() + 300,
+                if(index>0 && index<8) {
+                    image.setBounds(0 - ((EstateSpace) map.get(index)).getDisplayXPos() + 335,
+                            0 - ((EstateSpace) map.get(index)).getDisplayYPos() + 300,
                             800, 600);
                 }
-                else if (c < 16){
-                    image.setBounds(0 - ((EstateSpace) map.get(c)).getDisplayXPos() + 340,
-                            0 - ((EstateSpace) map.get(c)).getDisplayYPos() + 265,
+                else if (index < 16){
+                    image.setBounds(0 - ((EstateSpace) map.get(index)).getDisplayXPos() + 340,
+                            0 - ((EstateSpace) map.get(index)).getDisplayYPos() + 265,
                             800, 600);
                 }
-                else if (c < 24){
-                    image.setBounds(0 - ((EstateSpace) map.get(c)).getDisplayXPos() + 380,
-                            0 - ((EstateSpace) map.get(c)).getDisplayYPos() + 280,
+                else if (index < 24){
+                    image.setBounds(0 - ((EstateSpace) map.get(index)).getDisplayXPos() + 380,
+                            0 - ((EstateSpace) map.get(index)).getDisplayYPos() + 280,
                             800, 600);
                 }
                 else{
-                    image.setBounds(0 - ((EstateSpace) map.get(c)).getDisplayXPos() + 380,
-                            0 - ((EstateSpace) map.get(c)).getDisplayYPos() + 290,
+                    image.setBounds(0 - ((EstateSpace) map.get(index)).getDisplayXPos() + 380,
+                            0 - ((EstateSpace) map.get(index)).getDisplayYPos() + 290,
                             800, 600);
                 }
 
 
-                image.setIcon(t);
-                image.setVisible(true);
-                landName.setVisible(true);
-                popup.setVisible(true);
-                text.setVisible(true);
+                titleDeedInfo.setVisible(true);
+            }
+            else{
+                spaceInfo.setIcon(new ImageIcon((map.get(index)).getImage()));
+                spaceInfo.setVisible(true);
             }
         }
     }
 
-
-    private void isOwnedEstate(){
-        popup.setIcon(houseBuying_popup);
-        popup.setVisible(true);
-        buyBtn.setVisible(true);
-        cancelBtn.setVisible(true);
-        oneHouseCheck.setVisible(true);
-        twoHouseCheck.setVisible(true);
-        threeHouseCheck.setVisible(true);
-        totalPrice.setVisible(true);
+    private void houseBuyingMousePressed(java.awt.event.MouseEvent evt) {
+        houseBuying.setVisible(false);
     }
 
     private void oneHouseCheckActionPerformed(java.awt.event.ActionEvent evt) {
@@ -525,30 +456,116 @@ public class Gameplay extends javax.swing.JFrame{
     private void threeHouseCheckActionPerformed(java.awt.event.ActionEvent evt) {
     }
 
+    private void cardMousePressed(java.awt.event.MouseEvent evt){
+        card.setVisible(false);
+    }
+
+    //call when player buy an estate / land on own estate
+    private void showHouseBuying(int indexonboard){
+        houseBuying.setVisible(true);
+        //check player money and num of house to enable check box
+        //call server  to update all
+    }
+
+    //call when player land on community card / chance card
+
+    private void showCard(){
+        //send to massage to show
+    }
+
     private void setName(int playerID){
         switch (playerID){
             case 0:
-                text.setText(name);
-                text.setVisible(true);
+                //player1.setText if tun
                 System.out.println(name);
                 break;
             case 1:
+                System.out.println(name);
                 break;
             case 2:
+                System.out.println(name);
                 break;
             case 3:
+                System.out.println(name);
                 break;
         }
     }
 
 
+    private String intToString(int inp){
+        String temp = "";
+        if(inp >= 1000000){
+            temp += Integer.toString(inp/1000000) + "M ";
+            inp %= 1000000;}
+        if(inp >= 1000)
+            temp += Integer.toString(inp/1000) + "K";
+        return temp;
+    }
+
+    public int board_is_clicked(double x, double y) {
+        for (Space s : map) {
+            if (checkIsPositionsOnSpace(s.getPositions(), x, y)) {
+                return map.indexOf(s);
+            }
+        }
+        return -1;
+    }
+
+    private boolean checkIsPositionsOnSpace(double[] pos, double x, double y) {
+        double x1 = pos[0];
+        double y1 = pos[1];
+        double x2 = pos[2];
+        double y2 = pos[3];
+        double x3 = pos[4];
+        double y3 = pos[5];
+        double x4 = pos[6];
+        double y4 = pos[7];
+
+        double slope_1to2 = (y2 - y1) / (x2 - x1);
+        double slope_2to3 = (y3 - y2) / (x3 - x2);
+        double slope_3to4 = (y4 - y3) / (x4 - x3);
+        double slope_4to1 = (y1 - y4) / (x1 - x4);
+
+        double c_1to2 = (-x1 * slope_1to2) + y1;
+        double c_2to3 = (-x2 * slope_2to3) + y2;
+        double c_3to4 = (-x3 * slope_3to4) + y3;
+        double c_4to1 = (-x4 * slope_4to1) + y4;
+        //upper Y
+        double yUpper1 = (slope_2to3 * x) + c_2to3; //xLeft2
+        double yUpper2 = (slope_3to4 * x) + c_3to4; //xRight2
+        if (y < yUpper1 || y < yUpper2)
+            return false;
+        //lower Y
+        double yLower1 = (slope_1to2 * x) + c_1to2; //xLeft1
+        double yLower2 = (slope_4to1 * x) + c_4to1; //xRight1
+        if (y > yLower1 || y > yLower2)
+            return false;
+        //Left X
+        double xLeft1 = (y - c_1to2) / slope_1to2;
+        double xLeft2 = (y - c_2to3) / slope_2to3;
+        if (x < xLeft1 || x < xLeft2)
+            return false;
+        //Right X
+        double xRight1 = (y - c_4to1) / slope_4to1;
+        double xRight2 = (y - c_3to4) / slope_3to4;
+
+        if (x > xRight1 || x > xRight2)
+            return false;
+
+        return true;
+    }
+
+    //*********************************************************************
+    //*********************************************************************
+
+    //------------------- E N D   U I   P A R T ---------------------------
 
     public void start() throws IOException {
         startSendPlayerPositionTimer();
         startGetGameDataTimer();
     }
-
     //send player position update
+
     private void startSendPlayerPositionTimer() {
         sendPlayerDataTimer = new Timer();
         sendPlayerDataTimer.scheduleAtFixedRate(new TimerTask() {
@@ -565,8 +582,8 @@ public class Gameplay extends javax.swing.JFrame{
             }
         }, 0, TIMER_DELAY);
     }
-
     //for update with no request from gameplay client side
+
     private void startGetGameDataTimer() {
         getGameDataTimer = new Timer();
         getGameDataTimer.scheduleAtFixedRate(new TimerTask() {
@@ -966,59 +983,6 @@ public class Gameplay extends javax.swing.JFrame{
         }
 
         return showSellPropertyUI();
-    }
-
-    public int check_board_is_clicked(double x, double y) {
-        for (Space s : map) {
-            if (check(s.getPositions(), x, y)) {
-                return map.indexOf(s);
-            }
-        }
-        return -1;
-    }
-
-    private boolean check(double[] pos, double x, double y) {
-        double x1 = pos[0];
-        double y1 = pos[1];
-        double x2 = pos[2];
-        double y2 = pos[3];
-        double x3 = pos[4];
-        double y3 = pos[5];
-        double x4 = pos[6];
-        double y4 = pos[7];
-
-        double slope_1to2 = (y2 - y1) / (x2 - x1);
-        double slope_2to3 = (y3 - y2) / (x3 - x2);
-        double slope_3to4 = (y4 - y3) / (x4 - x3);
-        double slope_4to1 = (y1 - y4) / (x1 - x4);
-
-        double c_1to2 = (-x1 * slope_1to2) + y1;
-        double c_2to3 = (-x2 * slope_2to3) + y2;
-        double c_3to4 = (-x3 * slope_3to4) + y3;
-        double c_4to1 = (-x4 * slope_4to1) + y4;
-        //upper Y
-        double yUpper1 = (slope_2to3 * x) + c_2to3; //xLeft2
-        double yUpper2 = (slope_3to4 * x) + c_3to4; //xRight2
-        if (y < yUpper1 || y < yUpper2)
-            return false;
-        //lower Y
-        double yLower1 = (slope_1to2 * x) + c_1to2; //xLeft1
-        double yLower2 = (slope_4to1 * x) + c_4to1; //xRight1
-        if (y > yLower1 || y > yLower2)
-            return false;
-        //Left X
-        double xLeft1 = (y - c_1to2) / slope_1to2;
-        double xLeft2 = (y - c_2to3) / slope_2to3;
-        if (x < xLeft1 || x < xLeft2)
-            return false;
-        //Right X
-        double xRight1 = (y - c_4to1) / slope_4to1;
-        double xRight2 = (y - c_3to4) / slope_3to4;
-
-        if (x > xRight1 || x > xRight2)
-            return false;
-
-        return true;
     }
 
 

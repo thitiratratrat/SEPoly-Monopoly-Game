@@ -6,11 +6,13 @@ public abstract class Space implements Serializable {
     protected String name;
     protected String action;
     protected double[] positions;
+    protected byte[] image;
 
-    public Space(int number, String name, double[] positions) {
+    public Space(int number, String name, double[] positions, byte[] image) {
         this.number = number;
         this.name = name;
         this.positions = positions;
+        this.image = image;
     }
 
     public String getName() {
@@ -27,5 +29,9 @@ public abstract class Space implements Serializable {
 
     public double[] getPositions() {
         return positions;
+    }
+
+    public byte[] getImage() {
+        return image;
     }
 }

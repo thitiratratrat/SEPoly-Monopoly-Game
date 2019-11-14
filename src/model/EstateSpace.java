@@ -9,15 +9,13 @@ public class EstateSpace extends PropertySpace {
     private int landmarkCount;
     private ArrayList<Integer> rentPrices;
     final private int MAX_LANDMARK = 1;
-    private byte[] image;
     private double[] positions;
     public EstateSpace(int number, String name, int price, int rent, int oneHouseRent,
                 int twoHouseRent, int threeHouseRent, int landmarkRent, int housePrice,
                        int landmarkPrice, byte[] image, double[] positions) {
-        super(number, name, positions, price);
+        super(number, name, positions, image, price);
         this.housePrice = housePrice;
         this.landmarkPrice = landmarkPrice;
-        this.image = image;
         this.positions = positions;
         houseCount = 0;
         landmarkCount = 0;
@@ -78,8 +76,6 @@ public class EstateSpace extends PropertySpace {
         sellLandmark();
         super.soldBack();
     }
-
-    public byte[] getImage(){ return image; }
 
     public int getDisplayXPos(){
         return (int)positions[2];
