@@ -1,5 +1,5 @@
 package socketConnection;
-//query commu card and chance card, change starting money and card count
+
 import model.*;
 
 import java.io.IOException;
@@ -26,7 +26,7 @@ public class Server {
     final private int STARTINGMONEY = 1500;
     final private int CARDCOUNT = 10;
 
-    Server(int port) throws IOException {
+    public Server(int port) throws IOException {
         serverSocket = new ServerSocket(port);
         clients = Collections.synchronizedList(new ArrayList<>());
         players = new ArrayList<>();
@@ -37,16 +37,19 @@ public class Server {
 
     public void connect() throws IOException {
         try {
+            System.out.println("waiting for client");
             Socket socket = serverSocket.accept();
+            System.out.println("connected");
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
+            //check if size == 4 ?????
             int ID = players.size();
             ClientHandler clientHandler = new ClientHandler(socket, inputStream, outputStream, this, ID);
             Player player = new Player(STARTINGMONEY, ID);
 
             clients.add(clientHandler);
             players.add(player);
-
+            //send size? to change color in lobby????
             clientHandler.start();
         } catch (Exception e) {
             close();
@@ -106,13 +109,16 @@ public class Server {
     private void initMapData() throws SQLException {
         //init map queried from database here
         try {
-            Connection connection = DriverManager.getConnection("jdbc:sqlite://C:/Users/Asus/Desktop/Monopoly/src/SEpoly.db");
+            String sDriverName = "org.sqlite.JDBC";
+            Class.forName(sDriverName);
+            Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Lenovo\\Documents\\SE\\Year2S1\\Java\\Monopoly\\src\\Database\\SEpoly.db");
             Statement statement = connection.createStatement();
             ResultSet estate = statement.executeQuery("select * from Map");
             Space temp;
-            double[] pos = new double[8];
+
             while (estate.next()) {
                 //System.out.println(estate.getString(3));
+                double[] pos = new double[8];
                 pos[0] = estate.getDouble(13);
                 pos[1] = estate.getDouble(14);
                 pos[2] = estate.getDouble(15);
@@ -121,7 +127,7 @@ public class Server {
                 pos[5] = estate.getDouble(18);
                 pos[6] = estate.getDouble(19);
                 pos[7] = estate.getDouble(20);
-
+                //System.out.println(pos[0]);
                 switch (estate.getString(3)) {
                     case "estate":
                         temp = new EstateSpace(estate.getInt(1), estate.getString(2), estate.getInt(4),
@@ -132,6 +138,11 @@ public class Server {
                         break;
                     case "utility":
                         temp = new UtilitySpace(estate.getInt(1), estate.getString(2),
+                                estate.getInt(4), pos);
+                        map.add(temp);
+                        break;
+                    case "railroad":
+                        temp = new RailroadSpace(estate.getInt(1), estate.getString(2),
                                 estate.getInt(4), pos);
                         map.add(temp);
                         break;
@@ -150,7 +161,7 @@ public class Server {
                         map.add(temp);
                         break;
                     case "tax":
-                        temp = new TaxSpace(estate.getInt(1), estate.getString(2), 7, pos);
+                        temp = new TaxSpace(estate.getInt(1), estate.getString(2), pos, 7);
                         map.add(temp);
                         break;
                     case "jail":
@@ -235,7 +246,6 @@ public class Server {
                 player.drawBreakJailCard();
                 break;
             }
-
             case ("getJailed"): {
                 player.jailed();
                 ServerMessage serverMessage = new ServerMessage("goToJail", "");
@@ -252,7 +262,11 @@ public class Server {
             default:
                 break;
         }
-
+        //TODO: player act on card effect
+        //go = move imidately
+        //move = move character
+        //gain = gain money
+        //pay = pay money
         //send player data to all clients
         ServerMessage serverMessage = new ServerMessage("updatePlayer", player);
         sendToPlayer(serverMessage, player.getID());
@@ -351,7 +365,7 @@ public class Server {
     private void initCommunityCardData() throws SQLException {
             //TODO: query community card data from database
             try {
-                Connection connection = DriverManager.getConnection("jdbc:sqlite://C:/Users/Asus/Desktop/Monopoly/src/SEpoly.db");
+                Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Lenovo\\Documents\\SE\\Year2S1\\Java\\Monopoly\\src\\Database\\SEpoly.db");
                 Statement statement = connection.createStatement();
                 ResultSet card = statement.executeQuery("select * from Community_cards");
                 Card temp;
@@ -369,7 +383,7 @@ public class Server {
     private void initChanceCardData() throws SQLException{
         //TODO: query chance card data from database
         try {
-            Connection connection = DriverManager.getConnection("jdbc:sqlite://C:/Users/Asus/Desktop/Monopoly/src/SEpoly.db");
+            Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Lenovo\\Documents\\SE\\Year2S1\\Java\\Monopoly\\src\\Database\\SEpoly.db");
             Statement statement = connection.createStatement();
             ResultSet card = statement.executeQuery("select * from Chance_cards");
             Card temp;
