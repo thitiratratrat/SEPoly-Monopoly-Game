@@ -1,8 +1,8 @@
 package model;
 
 public class UtilitySpace extends PropertySpace {
-    public UtilitySpace(int number, String name, int price, double[] positions) {
-        super(number, name, positions, price);
+    public UtilitySpace(int number, String name, int price, double[] positions, byte[] image) {
+        super(number, name, positions, image, price);
     }
 
     public int getRentPrice() {

@@ -138,38 +138,38 @@ public class Server {
                         break;
                     case "utility":
                         temp = new UtilitySpace(estate.getInt(1), estate.getString(2),
-                                estate.getInt(4), pos);
+                                estate.getInt(4), pos,estate.getBytes(12));
                         map.add(temp);
                         break;
                     case "railroad":
                         temp = new RailroadSpace(estate.getInt(1), estate.getString(2),
-                                estate.getInt(4), pos);
+                                estate.getInt(4), pos,estate.getBytes(12));
                         map.add(temp);
                         break;
                     case "start":
                         temp = new StartSpace(estate.getInt(1), estate.getString(2),
-                                estate.getInt(4), pos);
+                                estate.getInt(4), pos, estate.getBytes(12));
                         map.add(temp);
                         break;
                     case "card":
                         temp = new CardSpace(estate.getInt(1), estate.getString(2),
-                                estate.getString(2), pos);
+                                estate.getString(2), pos, estate.getBytes(12));
                         map.add(temp);
                         break;
                     case "free parking":
-                        temp = new FreeParkingSpace(estate.getInt(1), estate.getString(2), pos);
+                        temp = new FreeParkingSpace(estate.getInt(1), estate.getString(2), pos, estate.getBytes(12));
                         map.add(temp);
                         break;
                     case "tax":
-                        temp = new TaxSpace(estate.getInt(1), estate.getString(2), pos, 7);
+                        temp = new TaxSpace(estate.getInt(1), estate.getString(2), pos, estate.getBytes(12), 7);
                         map.add(temp);
                         break;
                     case "jail":
-                        temp = new JailSpace(estate.getInt(1), estate.getString(2), pos);
+                        temp = new JailSpace(estate.getInt(1), estate.getString(2), pos, estate.getBytes(12));
                         map.add(temp);
                         break;
                     case "go to jail":
-                        temp = new MoveSpace(estate.getInt(1), estate.getString(2), pos);
+                        temp = new MoveSpace(estate.getInt(1), estate.getString(2), pos, estate.getBytes(12));
                         map.add(temp);
                         break;
 
