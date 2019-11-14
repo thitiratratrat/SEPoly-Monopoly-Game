@@ -5,6 +5,7 @@ public class StartSpace extends Space {
 
     public StartSpace(int number, String name, int goMoney, double[] positions) {
         super(number, name, positions);
+
         this.goMoney = goMoney;
         action = "start";
     }

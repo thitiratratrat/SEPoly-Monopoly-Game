@@ -13,4 +13,3 @@ public class TaxSpace extends Space {
         return taxFee;
     }
 }
-
