@@ -27,18 +27,17 @@ public class Gameplay {
     final private int JAIL_SPACE_NUMBER = 8;
     final private int JAIL_FEE = 50;
 
-    Gameplay() {
-        initMapUI();
-        initUI();
+    public void connectToServer() throws IOException {
+        this.startClientConnection();
     }
 
-    public static void main(String[] args) throws IOException {
+    /*public void run() throws IOException {
         Gameplay gameplay = new Gameplay();
         gameplay.startClientConnection();
         GUI.NewJFrame2 board = new GUI.NewJFrame2();
         board.display();
         gameplay.start();
-    }
+    }*/
 
     public void setAddress(String address) {
         this.address = address;
@@ -60,7 +59,7 @@ public class Gameplay {
         //TODO: init map UI here
     }
 
-    private void start() throws IOException {
+    public void start() throws IOException {
         startSendPlayerPositionTimer();
         startGetGameDataTimer();
     }
@@ -129,7 +128,6 @@ public class Gameplay {
                             updateOpponent(playerObj);
                             break;
                         }
-
                         case ("startAuction"): {
                             PropertySpace auctionProperty = (PropertySpace) serverMessage.getData();
                             highestBidMoney = auctionProperty.getPrice();
@@ -482,10 +480,64 @@ public class Gameplay {
         return showSellPropertyUI();
     }
 
+    public int check_board_is_clicked(double x, double y) {
+        for (Space s : map) {
+            if (check(s.getPositions(), x, y)) {
+                return map.indexOf(s);
+            }
+        }
+        return -1;
+    }
+
+    private boolean check(double[] pos, double x, double y) {
+        double x1 = pos[0];
+        double y1 = pos[1];
+        double x2 = pos[2];
+        double y2 = pos[3];
+        double x3 = pos[4];
+        double y3 = pos[5];
+        double x4 = pos[6];
+        double y4 = pos[7];
+
+        double slope_1to2 = (y2 - y1) / (x2 - x1);
+        double slope_2to3 = (y3 - y2) / (x3 - x2);
+        double slope_3to4 = (y4 - y3) / (x4 - x3);
+        double slope_4to1 = (y1 - y4) / (x1 - x4);
+
+        double c_1to2 = (-x1 * slope_1to2) + y1;
+        double c_2to3 = (-x2 * slope_2to3) + y2;
+        double c_3to4 = (-x3 * slope_3to4) + y3;
+        double c_4to1 = (-x4 * slope_4to1) + y4;
+        //upper Y
+        double yUpper1 = (slope_2to3 * x) + c_2to3; //xLeft2
+        double yUpper2 = (slope_3to4 * x) + c_3to4; //xRight2
+        if (y < yUpper1 || y < yUpper2)
+            return false;
+        //lower Y
+        double yLower1 = (slope_1to2 * x) + c_1to2; //xLeft1
+        double yLower2 = (slope_4to1 * x) + c_4to1; //xRight1
+        if (y > yLower1 || y > yLower2)
+            return false;
+        //Left X
+        double xLeft1 = (y - c_1to2) / slope_1to2;
+        double xLeft2 = (y - c_2to3) / slope_2to3;
+        if (x < xLeft1 || x < xLeft2)
+            return false;
+        //Right X
+        double xRight1 = (y - c_4to1) / slope_4to1;
+        double xRight2 = (y - c_3to4) / slope_3to4;
+
+        if (x > xRight1 || x > xRight2)
+            return false;
+
+        return true;
+    }
+
     private boolean showSellPropertyUI() {
         //TODO: returns boolean if player decides to bankrupt or did not sell enough property
         return false;
     }
+
 
     private void playerBankrupt(int playerID) throws IOException {
         if (playerID == player.getID()) {
@@ -493,11 +545,17 @@ public class Gameplay {
             return;
         }
 
-        for (PlayerObj opponent: opponents) {
+        for (PlayerObj opponent : opponents) {
             if (playerID == opponent.getID()) {
                 opponent = null;
                 break;
             }
         }
     }
+
+    public ArrayList<Space> getMap() {
+        return this.map;
+    }
 }
+
+

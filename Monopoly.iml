@@ -10,7 +10,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../Monopoly/src/sqlite-jdbc-3.27.2.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/src/Database/sqlite-jdbc-3.27.2.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
