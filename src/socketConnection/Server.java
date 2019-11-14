@@ -249,11 +249,7 @@ public class Server {
                 break;
         }
         //TODO: player act on card effect
-        //go = move imidately
-        //move = move character
-        //gain = gain money
-        //pay = pay money
-        //send player data to all clients
+
         ServerMessage serverMessage = new ServerMessage("updatePlayer", player);
         sendToPlayer(serverMessage, player.getID());
         updatePlayer(player);

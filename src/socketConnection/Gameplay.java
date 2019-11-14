@@ -29,8 +29,7 @@ public class Gameplay {
     final private int JAIL_FEE = 50;
 
     public Gameplay() {
-        initMapUI();
-        initUI();
+
     }
 
     public void display() throws IOException {
@@ -56,13 +55,6 @@ public class Gameplay {
         client = new Client(address, port);
     }
 
-    private void initUI() {
-
-    }
-
-    private void initMapUI() {
-
-    }
 
     private void start() {
         //startSendPlayerPositionTimer();

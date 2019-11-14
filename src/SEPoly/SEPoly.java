@@ -18,6 +18,7 @@ public class SEPoly extends javax.swing.JFrame {
         initComponents();
     }
     private void initComponents() throws IOException {
+
         checkTitledeed = 0;
 
 
@@ -36,13 +37,18 @@ public class SEPoly extends javax.swing.JFrame {
         popup = new javax.swing.JLabel();
         board = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\finaljingjing_board.png"));
         //house buying popup
+        //houseCheckGroup = new javax.swing.ButtonGroup();
+
         cancelBtn = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\Asset 22.png"));
-        buyBtn = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\Users\\Asus\\Desktop\\javaProject\\monopoly\\src\\allImage\\Asset 21.png"));
+        buyBtn = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\Asset 21.png"));
+
         totalPrice = new javax.swing.JLabel();
         threeHouseCheck= new javax.swing.JCheckBox();
         twoHouseCheck = new javax.swing.JCheckBox();
         oneHouseCheck = new javax.swing.JCheckBox();
-
+        //houseCheckGroup.add(oneHouseCheck);
+        //houseCheckGroup.add(twoHouseCheck);
+        //houseCheckGroup.add(threeHouseCheck);
 
         //start
         createBtn = new javax.swing.JLabel();
@@ -256,13 +262,11 @@ public class SEPoly extends javax.swing.JFrame {
         landName.setBounds(308,160,187,34);
         landName.setVisible(false);
 
-        cancelBtn.setBounds(290, 400, 90, 39);
-        buyBtn.setBounds(430, 400, 100, 39);
+        cancelBtn.setBounds(290, 390, 90, 39);
+        buyBtn.setBounds(430, 390, 100, 39);
 
         totalPrice.setFont(new java.awt.Font("Tahoma", 1, 16));
-        totalPrice.setText("1400000000");
-        totalPrice.setBounds(350, 365, 210, 20);
-
+        totalPrice.setBounds(350, 354, 210, 20);
 
         threeHouseCheck.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -330,7 +334,7 @@ public class SEPoly extends javax.swing.JFrame {
     private void startBtnActionPerformed(java.awt.event.MouseEvent evt) {
         //if num of player == 4
         container.setSelectedIndex(2);
-        isOwnedEstate();
+        //isOwnedEstate();
     }
 
 
@@ -448,6 +452,10 @@ public class SEPoly extends javax.swing.JFrame {
     }
 
     private void oneHouseCheckActionPerformed(java.awt.event.ActionEvent evt) {
+        if(oneHouseCheck.isSelected())
+            totalPrice.setText("Ddddddd");
+        else
+            totalPrice.setText("GGGggg");
     }
 
     private void twoHouseCheckActionPerformed(java.awt.event.ActionEvent evt) {
@@ -496,6 +504,8 @@ public class SEPoly extends javax.swing.JFrame {
     private javax.swing.JCheckBox threeHouseCheck;
     private javax.swing.ImageIcon houseBuying_popup = new javax.swing.ImageIcon("src\\allImage\\houseBuying.png");;
     private javax.swing.JLabel totalPrice;
+    private javax.swing.ButtonGroup houseCheckGroup;
+
 
     private Gameplay game;
     private ArrayList<Space> map;
