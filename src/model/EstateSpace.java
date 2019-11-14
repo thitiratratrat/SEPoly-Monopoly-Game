@@ -3,12 +3,12 @@ package model;
 import java.util.ArrayList;
 
 public class EstateSpace extends PropertySpace {
-    final private int MAX_LANDMARK = 1; //??????????????????????
     private int housePrice;
     private int landmarkPrice;
     private int houseCount;
     private int landmarkCount;
     private ArrayList<Integer> rentPrices;
+    final private int MAX_LANDMARK = 1;
     private byte[] image;
     private double[] positions;
     public EstateSpace(int number, String name, int price, int rent, int oneHouseRent,
@@ -73,6 +73,12 @@ public class EstateSpace extends PropertySpace {
         landmarkCount = 0;
         houseCount = 0;
     }
+
+    public void soldBack() {
+        sellLandmark();
+        super.soldBack();
+    }
+
     public byte[] getImage(){ return image; }
 
     public int getDisplayXPos(){

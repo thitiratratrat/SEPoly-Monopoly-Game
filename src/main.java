@@ -1,24 +1,39 @@
-import SEPoly.SEPoly;
+import socketConnection.Gameplay;
+import socketConnection.Server;
 import socketConnection.ServerMain;
 
 import java.io.IOException;
 
 public class main {
     public static void main(String[] args) throws IOException {
-        Thread t1 = new Thread(new Runnable() {
+        Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                ServerMain main2 = new ServerMain();
+                //Gameplay gameplay = new Gameplay();
                 try {
-                    main2.start();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
+                    for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                        if ("Nimbus".equals(info.getName())) {
+                            javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                            break;
+                        }
+                    }
+                } catch (ClassNotFoundException ex) {
+                    java.util.logging.Logger.getLogger(Gameplay.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                } catch (InstantiationException ex) {
+                    java.util.logging.Logger.getLogger(Gameplay.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                } catch (IllegalAccessException ex) {
+                    java.util.logging.Logger.getLogger(Gameplay.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+                    java.util.logging.Logger.getLogger(Gameplay.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
                 }
+
+                java.awt.EventQueue.invokeLater(new Runnable() {
+                    public void run() {
+                        new Gameplay().setVisible(true);
+                    }
+                });
             }
         });
-        t1.start();
-        SEPoly.start();
+        thread.start();
     }
 }

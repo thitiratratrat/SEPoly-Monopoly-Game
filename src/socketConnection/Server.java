@@ -23,10 +23,10 @@ public class Server {
     private Integer highestPlayerIDBidder;
     private Integer highestBiddingMoney;
     private PropertySpace auctionProperty;
-    final private double STARTINGMONEY = 1500000;
+    final private int STARTINGMONEY = 1500;
     final private int CARDCOUNT = 10;
 
-    Server(int port) throws IOException {
+    public Server(int port) throws IOException {
         serverSocket = new ServerSocket(port);
         clients = Collections.synchronizedList(new ArrayList<>());
         players = new ArrayList<>();
@@ -37,7 +37,9 @@ public class Server {
 
     public void connect() throws IOException {
         try {
+            System.out.println("waiting for client");
             Socket socket = serverSocket.accept();
+            System.out.println("connected");
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
             //check if size == 4 ?????
@@ -64,6 +66,7 @@ public class Server {
         sendInitOpponentData();
         sendStartGame();
         startNextPlayerTurn(-1);
+
     }
 
 
@@ -75,7 +78,16 @@ public class Server {
     }
 
     public void startNextPlayerTurn(int playerID) throws IOException {
-        int nextPlayerIDTurn = playerID == players.size() - 1 ? 0 : playerID + 1;
+        int nextPlayerIDTurn = 0;
+
+        while (true) {
+            nextPlayerIDTurn = playerID == players.size() - 1 ? 0 : playerID + 1;
+
+            if (players.get(nextPlayerIDTurn) != null) {
+                break;
+            }
+        }
+
         ClientHandler firstPlayerClient = clients.get(nextPlayerIDTurn);
         ServerMessage serverMessage = new ServerMessage("startTurn", "");
 
@@ -223,7 +235,9 @@ public class Server {
             }
 
             case ("pay"): {
-                player.pay(effectAmount);
+//                if (isBankrupt(effectAmount)) {
+//                    player.pay(effectAmount);
+//                }
                 checkBankrupt(player);
                 break;
             }
@@ -263,6 +277,31 @@ public class Server {
         updatePlayer(player);
     }
 
+    public void sendToAllExcept(int ID, ServerMessage serverMessage) throws IOException {
+        for (ClientHandler client : clients) {
+            if (client.getID() == ID) {
+                continue;
+            }
+            client.getOutputStream().writeUnshared(serverMessage);
+            client.getOutputStream().reset();
+        }
+    }
+
+    public void playerBankrupt(int playerID) throws IOException {
+        Player player = players.get(playerID);
+        ServerMessage mapMessage = new ServerMessage("updateMap", "");
+        ArrayList<PropertySpace> properties = player.getAllProperty();
+
+        for (PropertySpace property: properties) {
+            property.soldBack();
+            mapMessage.setData(property);
+            sendToAllClients(mapMessage);
+        }
+
+        players.set(playerID, null);
+        ServerMessage serverMessage = new ServerMessage("bankrupt", playerID);
+        sendToAllClients(serverMessage);
+    }
 
     private void sendInitPlayerData() throws IOException {
         ServerMessage serverMessage = new ServerMessage("initPlayer", "");
@@ -303,15 +342,6 @@ public class Server {
         sendToAllClients(serverMessage);
     }
 
-    public void sendToAllExcept(int ID, ServerMessage serverMessage) throws IOException {
-        for (ClientHandler client : clients) {
-            if (client.getID() == ID) {
-                continue;
-            }
-            client.getOutputStream().writeUnshared(serverMessage);
-            client.getOutputStream().reset();
-        }
-    }
 
     private void sendToPlayer(ServerMessage serverMessage, int ID) throws IOException {
         ClientHandler client = clients.get(ID);
@@ -323,7 +353,7 @@ public class Server {
         //TODO: check bankrupt
     }
 
-    private void initCardData() throws SQLException {
+    private void initCardData() throws SQLException{
         initCommunityCardData();
         initChanceCardData();
     }
@@ -363,4 +393,9 @@ public class Server {
             System.out.println(e);
         }
     }
+
+//    private boolean isBankrupt(int payingAmount) {
+//
+//        return true;
+//    }
 }

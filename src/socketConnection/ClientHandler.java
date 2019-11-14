@@ -77,6 +77,11 @@ class ClientHandler extends Thread {
                         server.sendToAllExcept(propertySpace.getOwner().getID(),  serverMessage);
                     }
 
+                    case("bankrupt"): {
+                        int playerID = (int) serverMessage.getData();
+                        server.playerBankrupt(playerID);
+                    }
+
                     default:
                         break;
                 }
