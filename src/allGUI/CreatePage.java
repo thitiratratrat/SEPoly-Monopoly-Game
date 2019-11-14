@@ -2,10 +2,6 @@ package allGUI;
 
 import java.awt.Color;
 
-/**
- *
- * @author us
- */
 public class CreatePage extends javax.swing.JFrame {
 
     public CreatePage() {
@@ -125,9 +121,6 @@ public class CreatePage extends javax.swing.JFrame {
         System.out.print("aaa");
     }
 
-    /**
-     * @param args the command line arguments
-     */
    public static void main(String args[]) {
 
         try {
