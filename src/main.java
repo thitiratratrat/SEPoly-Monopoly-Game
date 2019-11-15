@@ -35,6 +35,5 @@ public class main {
             }
         });
         thread.start();
-
     }
 }
