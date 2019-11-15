@@ -1,13 +1,18 @@
 package socketConnection;
 
+import DiceAnimate.Dice;
 import model.*;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.*;
 import java.util.Timer;
 
 import java.util.ArrayList;
+
+
 
 public class Gameplay extends javax.swing.JFrame {
     private String name;
@@ -31,11 +36,10 @@ public class Gameplay extends javax.swing.JFrame {
     final private int JAIL_FEE = 50;
     private final int MAX_PLAYERS = 4;
 
-
     //-----------------------------------------------------------------
     //------------------ F O R U I ------------------------------------
     //-----------------------------------------------------------------
-    private int checkTitledeed;
+
 
     //start
     private javax.swing.JLabel n;
@@ -81,6 +85,9 @@ public class Gameplay extends javax.swing.JFrame {
     //card
     private javax.swing.JLabel card;
 
+    //roll but
+    private javax.swing.JLabel rollBtn;
+
     //for house buying
     private javax.swing.JLabel buyBtn;
     private javax.swing.JLabel cancelBtn;
@@ -90,6 +97,8 @@ public class Gameplay extends javax.swing.JFrame {
     private javax.swing.JLabel totalPrice;
     private javax.swing.JLabel houseBuying;
 
+    //dice
+    private Dice dice;
 
     public Gameplay() {
         initUI();
@@ -126,12 +135,15 @@ public class Gameplay extends javax.swing.JFrame {
 
     private void initUI() {
         //TODO: init UI code here
-        checkTitledeed = 0;
+        //Dice
+        dice = new Dice();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SE POLY");
         setPreferredSize(new java.awt.Dimension(800, 638));
         setResizable(false);
         getContentPane().setLayout(null);
+
 
         start = new javax.swing.JPanel();
         start.setBounds(0, 0, 800, 600);
@@ -143,6 +155,7 @@ public class Gameplay extends javax.swing.JFrame {
 
         gameplay = new javax.swing.JPanel();
         gameplay.setBounds(0, 0, 800, 600);
+        gameplay.add(dice);
 
         container = new javax.swing.JTabbedPane();
         container.addTab("Start", start);
@@ -230,16 +243,19 @@ public class Gameplay extends javax.swing.JFrame {
         // -------------------------------------------------------------
         // -------------------G A M E   P L A Y ------------------------
         // -------------------------------------------------------------
+        rollBtn = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\Asset 31.png"));
+        rollBtn.setBounds(369,381,59,50);
+        rollBtn.setEnabled(false);
+
+
         board = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\finaljingjing_board.png"));
         board.setBounds(0, 0, 800, 600);
         moneyPlayer1 = new javax.swing.JLabel();
         moneyPlayer1.setBounds(653, 563, 126, 20);
         moneyPlayer2 = new javax.swing.JLabel();
-        moneyPlayer2.setBounds(24, 563, 126, 20);
-        moneyPlayer2.setHorizontalAlignment(SwingConstants.RIGHT);
+        moneyPlayer2.setBounds(22,563,126,20);
         moneyPlayer3 = new javax.swing.JLabel();
-        moneyPlayer3.setBounds(24, 52, 126, 20);
-        moneyPlayer3.setHorizontalAlignment(SwingConstants.RIGHT);
+        moneyPlayer3.setBounds(22 ,52,126,20);
         moneyPlayer4 = new javax.swing.JLabel();
         moneyPlayer4.setBounds(653, 52, 126, 20);
         namePlayer1 = new javax.swing.JLabel();
@@ -308,6 +324,8 @@ public class Gameplay extends javax.swing.JFrame {
         card.setVisible(false);
 
         gameplay.setLayout(null);
+        gameplay.add(rollBtn);
+
         gameplay.add(spaceInfo);
         gameplay.add(card);
         gameplay.add(houseBuying);
@@ -381,6 +399,16 @@ public class Gameplay extends javax.swing.JFrame {
         threeHouseCheck.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 threeHouseCheckActionPerformed(evt);
+            }
+        });
+
+        rollBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                try {
+                    rollBtnMousePressed(evt);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -486,6 +514,9 @@ public class Gameplay extends javax.swing.JFrame {
         card.setVisible(false);
     }
 
+    private void rollBtnMousePressed(java.awt.event.MouseEvent evt) throws IOException {
+        rollDice();
+    }
     //call when player buy an estate / land on own estate
     private void showHouseBuying(int indexonboard) {
         houseBuying.setVisible(true);
@@ -612,6 +643,7 @@ public class Gameplay extends javax.swing.JFrame {
         return true;
     }
 
+
     //*********************************************************************
     //*********************************************************************
 
@@ -661,7 +693,10 @@ public class Gameplay extends javax.swing.JFrame {
 
                         case ("startTurn"): {
                             isTurn = true;
+                            rollBtn.setEnabled(true);
                             //roll dice -> walk
+                            //enable roll button
+
                             break;
                         }
 
@@ -771,6 +806,7 @@ public class Gameplay extends javax.swing.JFrame {
         isTurn = false;
         ServerMessage serverMessage = new ServerMessage("endTurn", player.getID());
         client.sendData(serverMessage);
+        rollBtn.setEnabled(false);
     }
 
     private void updateOpponent(PlayerObj playerObj) {
@@ -875,17 +911,17 @@ public class Gameplay extends javax.swing.JFrame {
         int[] diceNumbers = new int[2];
         int totalMoveCount = 0;
         Random randomGenerator = new Random();
-
         for (int i = 0; i < diceNumbers.length; i++) {
             int diceNumber = randomGenerator.nextInt(6) + 1;
             diceNumbers[i] = diceNumber;
             totalMoveCount += diceNumber;
         }
+        dice.roll(diceNumbers[0], diceNumbers[1]);
 
         ServerMessage serverMessage = new ServerMessage("updateDice", diceNumbers);
         client.sendData(serverMessage);
         //TODO: display UI dice roll
-
+        //ddd(diceNumbers[0],diceNumbers[1]);
         if (player.isJailed()) {
             checkBreakJail(diceNumbers, totalMoveCount);
         } else {

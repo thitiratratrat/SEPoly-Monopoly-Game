@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class Animator {
     ArrayList<BufferedImage> frames ;
-    BufferedImage sprite;
+    public BufferedImage sprite;
     private volatile boolean running =false;
     private long previosTime,speed ;
     private int frameAtPause ,currentFrame;
