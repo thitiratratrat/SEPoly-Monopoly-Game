@@ -3,6 +3,7 @@ package socketConnection;
 import DiceAnimate.Dice;
 import model.*;
 
+import javax.sound.midi.Soundbank;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -516,6 +517,7 @@ public class Gameplay extends javax.swing.JFrame {
 
     private void rollBtnMousePressed(java.awt.event.MouseEvent evt) throws IOException {
         rollDice();
+        rollBtn.setEnabled(false);
     }
     //call when player buy an estate / land on own estate
     private void showHouseBuying(int indexonboard) {
@@ -591,6 +593,7 @@ public class Gameplay extends javax.swing.JFrame {
     }
 
     public int board_is_clicked(double x, double y) {
+        System.out.println("board is clicked");
         for (Space s : map) {
             if (checkIsPositionsOnSpace(s.getPositions(), x, y)) {
                 return map.indexOf(s);
@@ -703,7 +706,6 @@ public class Gameplay extends javax.swing.JFrame {
                         }
 
                         case ("initMap"): {
-                            System.out.println("hello");
                             map = (ArrayList<Space>) serverMessage.getData();
                             for (Space space: map) {
                                 System.out.println(space.getName());
@@ -781,6 +783,7 @@ public class Gameplay extends javax.swing.JFrame {
 
                         case ("updateDice"): {
                             int[] diceNumbers = (int[]) serverMessage.getData();
+                            dice.roll(diceNumbers[0], diceNumbers[1]);
                             //TODO: display UI dice roll
                             break;
                         }
@@ -922,10 +925,10 @@ public class Gameplay extends javax.swing.JFrame {
             diceNumbers[i] = diceNumber;
             totalMoveCount += diceNumber;
         }
-        dice.roll(diceNumbers[0], diceNumbers[1]);
 
         ServerMessage serverMessage = new ServerMessage("updateDice", diceNumbers);
         client.sendData(serverMessage);
+//        dice.roll(diceNumbers[0], diceNumbers[1]);
         //TODO: display UI dice roll
         //ddd(diceNumbers[0],diceNumbers[1]);
         if (player.isJailed()) {
