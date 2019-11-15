@@ -107,11 +107,6 @@ public class Main extends JFrame {
         rollDice.start();
         rollDice2.start();
 
-
-        System.out.println("Kk");
-
-
-
     }
 
     Image dbImage;
