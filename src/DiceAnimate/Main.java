@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Random;
@@ -15,6 +16,9 @@ public class Main extends JFrame {
     boolean ckA=true;
 
     int die1 = 0, die2 =0 ;
+    long timeToSleep = 2L;
+
+    TimeUnit time = TimeUnit.SECONDS;
 
     public Main(){
         setSize(800,600);
@@ -85,11 +89,11 @@ public class Main extends JFrame {
 
         try
         {
-            Thread.sleep(2000);
+            time.sleep(timeToSleep);
         }
         catch(InterruptedException ex)
         {
-            Thread.currentThread().interrupt();
+            //Thread.currentThread().interrupt();
         }
         rollDice.pause();
         rollDice2.pause();
