@@ -20,11 +20,13 @@ public class Server {
     private ArrayList<Space> map;
     private ArrayList<Card> communityDeck;
     private ArrayList<Card> chanceDeck;
+    private ArrayList<String> names;
     private Integer highestPlayerIDBidder;
     private Integer highestBiddingMoney;
     private PropertySpace auctionProperty;
     final private int STARTINGMONEY = 1500;
     final private int CARDCOUNT = 10;
+    final private int MAX_PLAYER = 4;
 
     public Server(int port) throws IOException {
         serverSocket = new ServerSocket(port);
@@ -33,6 +35,7 @@ public class Server {
         map = new ArrayList<>();
         communityDeck = new ArrayList<>();
         chanceDeck = new ArrayList<>();
+        names = new ArrayList<>();
     }
 
     public void connect() throws IOException {
@@ -64,9 +67,6 @@ public class Server {
         sendMapData();
         sendInitPlayerData();
         sendInitOpponentData();
-        sendStartGame();
-        startNextPlayerTurn(-1);
-
     }
 
 
@@ -102,6 +102,16 @@ public class Server {
         sendToAllExcept(player.getID(), serverMessage);
     }
 
+    public void addNames(String name) throws IOException {
+        names.add(name);
+
+        if (names.size() == MAX_PLAYER) {
+            sendAllNames();
+            sendStartGame();
+            startNextPlayerTurn(-1);
+        }
+    }
+
     public void close() throws IOException {
         serverSocket.close();
     }
@@ -111,7 +121,7 @@ public class Server {
         try {
             String sDriverName = "org.sqlite.JDBC";
             Class.forName(sDriverName);
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Asus\\Desktop\\javaProject\\monopoly\\src\\Database\\SEpoly.db");
+            Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Lenovo\\Documents\\SE\\Year2S1\\Java\\Monopoly\\src\\Database\\SEpoly.db");
             Statement statement = connection.createStatement();
             ResultSet estate = statement.executeQuery("select * from Map");
             Space temp;
@@ -361,7 +371,7 @@ public class Server {
     private void initCommunityCardData() throws SQLException {
             //TODO: query community card data from database
             try {
-                Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Asus\\Desktop\\javaProject\\monopoly\\src\\Database\\SEpoly.db");
+                Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Lenovo\\Documents\\SE\\Year2S1\\Java\\Monopoly\\src\\Database\\SEpoly.db");
                 Statement statement = connection.createStatement();
                 ResultSet card = statement.executeQuery("select * from Community_cards");
                 Card temp;
@@ -379,7 +389,7 @@ public class Server {
     private void initChanceCardData() throws SQLException{
         //TODO: query chance card data from database
         try {
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Asus\\Desktop\\javaProject\\monopoly\\src\\Database\\SEpoly.db");
+            Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Lenovo\\Documents\\SE\\Year2S1\\Java\\Monopoly\\src\\Database\\SEpoly.db");
             Statement statement = connection.createStatement();
             ResultSet card = statement.executeQuery("select * from Chance_cards");
             Card temp;
@@ -392,6 +402,11 @@ public class Server {
         } catch (Exception e) {
             System.out.println(e);
         }
+    }
+
+    private void sendAllNames() throws IOException {
+        ServerMessage serverMessage = new ServerMessage("initNames", names);
+        sendToAllClients(serverMessage);
     }
 
 //    private boolean isBankrupt(int payingAmount) {
