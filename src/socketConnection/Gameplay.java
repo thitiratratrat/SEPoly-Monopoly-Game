@@ -9,7 +9,7 @@ import java.util.Timer;
 
 import java.util.ArrayList;
 
-public class Gameplay extends javax.swing.JFrame{
+public class Gameplay extends javax.swing.JFrame {
     private String name;
     private Client client;
     private Player player;
@@ -24,7 +24,7 @@ public class Gameplay extends javax.swing.JFrame{
     private boolean isMoving = false;
     private int jailTurnCount = 0;
     private int spaceNumber = 0;
-    final private int TIMER_DELAY = 10;
+    final private int TIMER_DELAY = 5;
     final private int SPACE_COUNT = 32;
     final private int BIDTIMER_DELAY = 100000;
     final private int JAIL_SPACE_NUMBER = 8;
@@ -82,8 +82,6 @@ public class Gameplay extends javax.swing.JFrame{
     private javax.swing.JLabel houseBuying;
 
 
-
-
     public Gameplay() {
         initUI();
 //        java.awt.EventQueue.invokeLater(new Runnable() {
@@ -132,10 +130,10 @@ public class Gameplay extends javax.swing.JFrame{
         start.setBackground(new java.awt.Color(255, 204, 204));
 
         lobby = new javax.swing.JPanel();
-        lobby.setBounds(0,0,800,600);
+        lobby.setBounds(0, 0, 800, 600);
 
         gameplay = new javax.swing.JPanel();
-        gameplay.setBounds(0,0,800,600);
+        gameplay.setBounds(0, 0, 800, 600);
 
         container = new javax.swing.JTabbedPane();
         container.addTab("Start", start);
@@ -151,7 +149,7 @@ public class Gameplay extends javax.swing.JFrame{
         // ----------------------- S T A R T ---------------------------
         // -------------------------------------------------------------
         startBtn = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\Asset 30.png"));
-        startBtn.setBounds(300,400,196,100);
+        startBtn.setBounds(300, 400, 196, 100);
         n = new javax.swing.JLabel();
         n.setBounds(183, 270, 100, 100);
         n.setFont(new java.awt.Font("Microsoft PhagsPa", 1, 32));
@@ -174,7 +172,6 @@ public class Gameplay extends javax.swing.JFrame{
         start.add(username);
 
 
-
         // -------------------------------------------------------------
         // ----------------------- L O B B Y ---------------------------
         // -------------------------------------------------------------
@@ -183,7 +180,7 @@ public class Gameplay extends javax.swing.JFrame{
         text2.setForeground(new java.awt.Color(0, 0, 51));
         text2.setText("<html><b>Room  number  : </b></html>");
         roomNumber = new javax.swing.JLabel();
-        roomNumber.setBounds(400, 57, 100,100);
+        roomNumber.setBounds(400, 57, 100, 100);
         roomNumber.setFont(new java.awt.Font("Muller Demo ExtraBold", 0, 24)); // NOI18N
         roomNumber.setForeground(new java.awt.Color(153, 0, 0));
         roomNumber.setText("2958");
@@ -191,23 +188,23 @@ public class Gameplay extends javax.swing.JFrame{
         player1.setOpaque(true);
         player1.setBackground(new java.awt.Color(255, 255, 255));
         player1.setFont(new java.awt.Font("supermarket", 0, 24));
-        player1.setBounds(170,188,450,50);
-        text2.setBounds(93,50,300,100);
+        player1.setBounds(170, 188, 450, 50);
+        text2.setBounds(93, 50, 300, 100);
         player2 = new javax.swing.JLabel();
         player2.setOpaque(true);
         player2.setBackground(new java.awt.Color(255, 255, 255));
         player2.setFont(new java.awt.Font("supermarket", 0, 24));
-        player2.setBounds(170,250,450,50);
+        player2.setBounds(170, 250, 450, 50);
         player3 = new javax.swing.JLabel();
         player3.setOpaque(true);
         player3.setBackground(new java.awt.Color(255, 255, 255));
         player3.setFont(new java.awt.Font("supermarket", 0, 24));
-        player3.setBounds(170,312,450,50);
+        player3.setBounds(170, 312, 450, 50);
         player4 = new javax.swing.JLabel();
         player4.setOpaque(true);
         player4.setBackground(new java.awt.Color(255, 255, 255));
         player4.setFont(new java.awt.Font("supermarket", 0, 24));
-        player4.setBounds(170,374,450,50);
+        player4.setBounds(170, 374, 450, 50);
         lobbyBg = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\lobbyBg.png"));
         lobbyBg.setBounds(0, 0, 800, 600);
 
@@ -219,8 +216,6 @@ public class Gameplay extends javax.swing.JFrame{
         lobby.add(player3);
         lobby.add(player4);
         lobby.add(lobbyBg);
-
-
 
 
         // -------------------------------------------------------------
@@ -249,7 +244,7 @@ public class Gameplay extends javax.swing.JFrame{
 
         // O T H E R   S P A C E
         spaceInfo = new javax.swing.JLabel();
-        spaceInfo.setBounds(0,0,800,600);
+        spaceInfo.setBounds(0, 0, 800, 600);
         spaceInfo.setVisible(false);
 
         // H O U S E  B U Y I N G  P O P U P
@@ -260,7 +255,7 @@ public class Gameplay extends javax.swing.JFrame{
         totalPrice.setBounds(350, 354, 210, 20);
         buyBtn = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\Asset 21.png"));
         buyBtn.setBounds(430, 390, 100, 39);
-        threeHouseCheck= new javax.swing.JCheckBox();
+        threeHouseCheck = new javax.swing.JCheckBox();
         threeHouseCheck.setBounds(390, 310, 25, 25);
         twoHouseCheck = new javax.swing.JCheckBox();
         twoHouseCheck.setBounds(500, 310, 25, 25);
@@ -268,7 +263,7 @@ public class Gameplay extends javax.swing.JFrame{
         oneHouseCheck.setBounds(270, 310, 25, 25);
 
         houseBuying = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\houseBuying.png"));
-        houseBuying.setBounds(0,0,800,600);
+        houseBuying.setBounds(0, 0, 800, 600);
         houseBuying.add(cancelBtn);
         houseBuying.add(buyBtn);
         houseBuying.add(totalPrice);
@@ -279,7 +274,7 @@ public class Gameplay extends javax.swing.JFrame{
 
         // S H O W  C A R D
         card = new javax.swing.JLabel();
-        card.setBounds(0,0,800,600);
+        card.setBounds(0, 0, 800, 600);
         card.setVisible(false);
 
         gameplay.setLayout(null);
@@ -288,8 +283,6 @@ public class Gameplay extends javax.swing.JFrame{
         gameplay.add(houseBuying);
         gameplay.add(titleDeedInfo);
         gameplay.add(board);
-
-
 
 
         // --------------------------------------------------------------------
@@ -313,7 +306,7 @@ public class Gameplay extends javax.swing.JFrame{
                 titleDeedMousePressed(evt);
             }
         });
-        houseBuying.addMouseListener(new java.awt.event.MouseAdapter(){
+        houseBuying.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 houseBuyingMousePressed(evt);
             }
@@ -331,8 +324,8 @@ public class Gameplay extends javax.swing.JFrame{
             }
         });
 
-        card.addMouseListener(new java.awt.event.MouseAdapter(){
-            public void mousePressed(java.awt.event.MouseEvent evt){
+        card.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
                 cardMousePressed(evt);
             }
         });
@@ -366,6 +359,7 @@ public class Gameplay extends javax.swing.JFrame{
             startBtn.setEnabled(false);
             name = username.getText();
             start();
+            sendNameToServer();
         }
     }
 
@@ -376,51 +370,49 @@ public class Gameplay extends javax.swing.JFrame{
 
     //close title deed by clicking anywhere
     private void titleDeedMousePressed(java.awt.event.MouseEvent evt) {
-            titleDeedInfo.setVisible(false);
+        titleDeedInfo.setVisible(false);
     }
 
     //close other space info
     private void spaceInfoMousePressed(java.awt.event.MouseEvent evt) {
         spaceInfo.setVisible(false);
     }
+
     //show estate detail
     private void boardMousePressed(java.awt.event.MouseEvent evt) {
         double x = evt.getX();
         double y = evt.getY();
 
-        int index = this.board_is_clicked(x,y);
+        int index = this.board_is_clicked(x, y);
         if (index != -1) {
             if (map.get(index) instanceof EstateSpace) {
-                EstateSpace temp = (EstateSpace)map.get(index);
+                EstateSpace temp = (EstateSpace) map.get(index);
                 String s = "<html><body><pre><b>" +
-                        "PRICE               "+intToString(temp.getPrice())+"<br>" +
-                        "RENT                "+intToString(temp.getRentPrices().get(0))+"<br>" +
-                        "RENT WITH 1 HOUSE   "+intToString(temp.getRentPrices().get(1))+"<br>" +
-                        "RENT WITH 2 HOUSE   "+intToString(temp.getRentPrices().get(2))+"<br>" +
-                        "RENT WITH 3 HOUSE   "+intToString(temp.getRentPrices().get(3))+"<br>" +
-                        "RENT WITH LANDMARK  "+intToString(temp.getRentPrices().get(4))+"<br>" +
-                        "HOUSE PRICE         "+intToString(temp.getHousePrice())+"<br>" +
-                        "LANDMARK PRICE      "+intToString(temp.getLandmarkPrice())+"</b></pre></body></html>";
+                        "PRICE               " + intToString(temp.getPrice()) + "<br>" +
+                        "RENT                " + intToString(temp.getRentPrices().get(0)) + "<br>" +
+                        "RENT WITH 1 HOUSE   " + intToString(temp.getRentPrices().get(1)) + "<br>" +
+                        "RENT WITH 2 HOUSE   " + intToString(temp.getRentPrices().get(2)) + "<br>" +
+                        "RENT WITH 3 HOUSE   " + intToString(temp.getRentPrices().get(3)) + "<br>" +
+                        "RENT WITH LANDMARK  " + intToString(temp.getRentPrices().get(4)) + "<br>" +
+                        "HOUSE PRICE         " + intToString(temp.getHousePrice()) + "<br>" +
+                        "LANDMARK PRICE      " + intToString(temp.getLandmarkPrice()) + "</b></pre></body></html>";
                 text.setText(s);
-                landName.setText("<html><b>"+temp.getName()+"</b></html>");
+                landName.setText("<html><b>" + temp.getName() + "</b></html>");
                 image.setIcon(new ImageIcon((map.get(index)).getImage()));
 
-                if(index>0 && index<8) {
+                if (index > 0 && index < 8) {
                     image.setBounds(0 - ((EstateSpace) map.get(index)).getDisplayXPos() + 335,
                             0 - ((EstateSpace) map.get(index)).getDisplayYPos() + 300,
                             800, 600);
-                }
-                else if (index < 16){
+                } else if (index < 16) {
                     image.setBounds(0 - ((EstateSpace) map.get(index)).getDisplayXPos() + 340,
                             0 - ((EstateSpace) map.get(index)).getDisplayYPos() + 265,
                             800, 600);
-                }
-                else if (index < 24){
+                } else if (index < 24) {
                     image.setBounds(0 - ((EstateSpace) map.get(index)).getDisplayXPos() + 380,
                             0 - ((EstateSpace) map.get(index)).getDisplayYPos() + 280,
                             800, 600);
-                }
-                else{
+                } else {
                     image.setBounds(0 - ((EstateSpace) map.get(index)).getDisplayXPos() + 380,
                             0 - ((EstateSpace) map.get(index)).getDisplayYPos() + 290,
                             800, 600);
@@ -428,8 +420,7 @@ public class Gameplay extends javax.swing.JFrame{
 
 
                 titleDeedInfo.setVisible(true);
-            }
-            else{
+            } else {
                 spaceInfo.setIcon(new ImageIcon((map.get(index)).getImage()));
                 spaceInfo.setVisible(true);
             }
@@ -441,7 +432,7 @@ public class Gameplay extends javax.swing.JFrame{
     }
 
     private void oneHouseCheckActionPerformed(java.awt.event.ActionEvent evt) {
-        if(oneHouseCheck.isSelected())
+        if (oneHouseCheck.isSelected())
             totalPrice.setText("Ddddddd");
         else
             totalPrice.setText("GGGggg");
@@ -453,12 +444,12 @@ public class Gameplay extends javax.swing.JFrame{
     private void threeHouseCheckActionPerformed(java.awt.event.ActionEvent evt) {
     }
 
-    private void cardMousePressed(java.awt.event.MouseEvent evt){
+    private void cardMousePressed(java.awt.event.MouseEvent evt) {
         card.setVisible(false);
     }
 
     //call when player buy an estate / land on own estate
-    private void showHouseBuying(int indexonboard){
+    private void showHouseBuying(int indexonboard) {
         houseBuying.setVisible(true);
         //check player money and num of house to enable check box
         //call server  to update all
@@ -466,36 +457,40 @@ public class Gameplay extends javax.swing.JFrame{
 
     //call when player land on community card / chance card
 
-    private void showCard(){
+    private void showCard() {
         //send to massage to show
     }
 
-    private void setName(int playerID){
-        switch (playerID){
-            case 0:
-                //player1.setText if tun
-                System.out.println(name);
-                break;
-            case 1:
-                System.out.println(name);
-                break;
-            case 2:
-                System.out.println(name);
-                break;
-            case 3:
-                System.out.println(name);
-                break;
+    private void setName(ArrayList<String> names) {
+        for (int i = 0; i < names.size(); i++) {
+            switch (i) {
+                case 0:
+                    //namePlayer1.setText(names.get(i));
+                    break;
+                case 1:
+                    //namePlayer2.setText(names.get(i));
+                    break;
+                case 2:
+                    //namePlayer3.setText(names.get(i));
+                    break;
+                case 3:
+                    //namePlayer4.setText(names.get(i));
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
 
-    private String intToString(int inp){
+    private String intToString(int inp) {
         String temp = "";
-        if(inp >= 1000000){
-            temp += Integer.toString(inp/1000000) + "M ";
-            inp %= 1000000;}
-        if(inp >= 1000)
-            temp += Integer.toString(inp/1000) + "K";
+        if (inp >= 1000000) {
+            temp += Integer.toString(inp / 1000000) + "M ";
+            inp %= 1000000;
+        }
+        if (inp >= 1000)
+            temp += Integer.toString(inp / 1000) + "K";
         return temp;
     }
 
@@ -597,7 +592,6 @@ public class Gameplay extends javax.swing.JFrame{
                         case ("startGame"): {
                             //TODO: start main game UI
                             container.setSelectedIndex(2);
-                            setName(player.getID());
                             //start();
                             break;
                         }
@@ -610,6 +604,12 @@ public class Gameplay extends javax.swing.JFrame{
 
                         case ("initMap"): {
                             map = (ArrayList<Space>) serverMessage.getData();
+                            break;
+                        }
+
+                        case ("initNames"): {
+                            ArrayList<String> names = (ArrayList<String>) serverMessage.getData();
+                            setName(names);
                             break;
                         }
 
@@ -630,6 +630,7 @@ public class Gameplay extends javax.swing.JFrame{
                             updateOpponent(playerObj);
                             break;
                         }
+
                         case ("startAuction"): {
                             PropertySpace auctionProperty = (PropertySpace) serverMessage.getData();
                             highestBidMoney = auctionProperty.getPrice();
@@ -983,7 +984,6 @@ public class Gameplay extends javax.swing.JFrame{
     }
 
 
-
     private boolean showSellPropertyUI() {
         //TODO: returns boolean if player decides to bankrupt or did not sell enough property
         return false;
@@ -1002,6 +1002,11 @@ public class Gameplay extends javax.swing.JFrame{
                 break;
             }
         }
+    }
+
+    private void sendNameToServer() throws IOException {
+        ServerMessage serverMessage = new ServerMessage("addName", name);
+        client.sendData(serverMessage);
     }
 
     public ArrayList<Space> getMap() {

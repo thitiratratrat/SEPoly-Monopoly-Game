@@ -74,12 +74,18 @@ class ClientHandler extends Thread {
 
                     case ("updateMap"): {
                         PropertySpace propertySpace = (PropertySpace) serverMessage.getData();
-                        server.sendToAllExcept(propertySpace.getOwner().getID(),  serverMessage);
+                        server.sendToAllExcept(propertySpace.getOwner().getID(), serverMessage);
                     }
 
-                    case("bankrupt"): {
+                    case ("bankrupt"): {
                         int playerID = (int) serverMessage.getData();
                         server.playerBankrupt(playerID);
+                    }
+
+                    case ("addName"): {
+                        System.out.println("adding name");
+                        String name = (String) serverMessage.getData();
+                        server.addNames(name);
                     }
 
                     default:
@@ -88,6 +94,7 @@ class ClientHandler extends Thread {
             }
         } catch (Exception e) {
             try {
+                System.out.println("error occured");
                 inputStream.close();
                 outputStream.close();
                 socket.close();
