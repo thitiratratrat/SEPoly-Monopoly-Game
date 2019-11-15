@@ -121,13 +121,13 @@ public class Server {
         try {
             String sDriverName = "org.sqlite.JDBC";
             Class.forName(sDriverName);
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Lenovo\\Documents\\SE\\Year2S1\\Java\\Monopoly\\src\\Database\\SEpoly.db");
+            Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Asus\\Desktop\\javaProject\\monopoly\\src\\Database\\SEpoly.db");
             Statement statement = connection.createStatement();
             ResultSet estate = statement.executeQuery("select * from Map");
             Space temp;
 
             while (estate.next()) {
-                //System.out.println(estate.getString(3));
+                System.out.println(estate.getString(3));
                 double[] pos = new double[8];
                 pos[0] = estate.getDouble(13);
                 pos[1] = estate.getDouble(14);
@@ -379,7 +379,7 @@ public class Server {
     private void initCommunityCardData() throws SQLException {
         //TODO: query community card data from database
         try {
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Lenovo\\Documents\\SE\\Year2S1\\Java\\Monopoly\\src\\Database\\SEpoly.db");
+            Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Asus\\Desktop\\javaProject\\monopoly\\src\\Database\\SEpoly.db");
             Statement statement = connection.createStatement();
             ResultSet card = statement.executeQuery("select * from Community_cards");
             Card temp;
@@ -397,7 +397,7 @@ public class Server {
     private void initChanceCardData() throws SQLException {
         //TODO: query chance card data from database
         try {
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Lenovo\\Documents\\SE\\Year2S1\\Java\\Monopoly\\src\\Database\\SEpoly.db");
+            Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Asus\\Desktop\\javaProject\\monopoly\\src\\Database\\Epoly.db");
             Statement statement = connection.createStatement();
             ResultSet card = statement.executeQuery("select * from Chance_cards");
             Card temp;

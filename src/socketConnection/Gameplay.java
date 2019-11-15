@@ -103,24 +103,11 @@ public class Gameplay extends javax.swing.JFrame {
 
     public Gameplay() {
         initUI();
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                new Gameplay().setVisible(true);
-//            }
-//        });
     }
 
     public void connectToServer() throws IOException {
         this.startClientConnection();
     }
-
-    /*public void run() throws IOException {
-        Gameplay gameplay = new Gameplay();
-        gameplay.startClientConnection();
-        GUI.NewJFrame2 board = new GUI.NewJFrame2();
-        board.display();
-        gameplay.start();
-    }*/
 
     public void setAddress(String address) {
         this.address = address;
@@ -156,7 +143,6 @@ public class Gameplay extends javax.swing.JFrame {
 
         gameplay = new javax.swing.JPanel();
         gameplay.setBounds(0, 0, 800, 600);
-        gameplay.add(dice);
 
         container = new javax.swing.JTabbedPane();
         container.addTab("Start", start);
@@ -255,8 +241,10 @@ public class Gameplay extends javax.swing.JFrame {
         moneyPlayer1.setBounds(653, 563, 126, 20);
         moneyPlayer2 = new javax.swing.JLabel();
         moneyPlayer2.setBounds(22,563,126,20);
+        moneyPlayer2.setHorizontalAlignment(SwingConstants.RIGHT);
         moneyPlayer3 = new javax.swing.JLabel();
         moneyPlayer3.setBounds(22 ,52,126,20);
+        moneyPlayer3.setHorizontalAlignment(SwingConstants.RIGHT);
         moneyPlayer4 = new javax.swing.JLabel();
         moneyPlayer4.setBounds(653, 52, 126, 20);
         namePlayer1 = new javax.swing.JLabel();
@@ -319,18 +307,21 @@ public class Gameplay extends javax.swing.JFrame {
         houseBuying.add(threeHouseCheck);
         houseBuying.setVisible(false);
 
+
         // S H O W  C A R D
         card = new javax.swing.JLabel();
         card.setBounds(0, 0, 800, 600);
         card.setVisible(false);
 
         gameplay.setLayout(null);
-        gameplay.add(rollBtn);
 
+
+        dice.setVisible(false);
         gameplay.add(spaceInfo);
         gameplay.add(card);
         gameplay.add(houseBuying);
         gameplay.add(titleDeedInfo);
+        gameplay.add(rollBtn);
         gameplay.add(namePlayer1);
         gameplay.add(namePlayer2);
         gameplay.add(namePlayer3);
@@ -339,6 +330,8 @@ public class Gameplay extends javax.swing.JFrame {
         gameplay.add(moneyPlayer2);
         gameplay.add(moneyPlayer3);
         gameplay.add(moneyPlayer4);
+        gameplay.add(dice);
+        dice.setBackground(new Color(223,234,184));
         gameplay.add(board);
 
 
@@ -487,6 +480,8 @@ public class Gameplay extends javax.swing.JFrame {
 
 
                 titleDeedInfo.setVisible(true);
+                dice.setVisible(false);
+                titleDeedInfo.grabFocus();
             } else {
                 spaceInfo.setIcon(new ImageIcon((map.get(index)).getImage()));
                 spaceInfo.setVisible(true);
@@ -518,10 +513,12 @@ public class Gameplay extends javax.swing.JFrame {
     private void rollBtnMousePressed(java.awt.event.MouseEvent evt) throws IOException {
         rollDice();
         rollBtn.setEnabled(false);
+
     }
     //call when player buy an estate / land on own estate
     private void showHouseBuying(int indexonboard) {
         houseBuying.setVisible(true);
+        dice.setVisible(false);
         //check player money and num of house to enable check box
         //call server  to update all
     }
@@ -784,6 +781,8 @@ public class Gameplay extends javax.swing.JFrame {
                         case ("updateDice"): {
                             int[] diceNumbers = (int[]) serverMessage.getData();
                             dice.roll(diceNumbers[0], diceNumbers[1]);
+                            dice.setVisible(true);
+
                             //TODO: display UI dice roll
                             break;
                         }
@@ -813,9 +812,11 @@ public class Gameplay extends javax.swing.JFrame {
 
     private void endTurn() throws IOException {
         isTurn = false;
+        rollBtn.setEnabled(false);
+        dice.setVisible(false);
         ServerMessage serverMessage = new ServerMessage("endTurn", player.getID());
         client.sendData(serverMessage);
-        rollBtn.setEnabled(false);
+
     }
 
     private void updateOpponent(PlayerObj playerObj) {
