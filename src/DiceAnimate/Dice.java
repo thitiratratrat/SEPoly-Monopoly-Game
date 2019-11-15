@@ -16,14 +16,14 @@ public class Dice extends JLabel {
     int die1 = 0, die2 =0 ;
 
     public Dice(){
-        setBounds(400,300,100,50);
-        setOpaque(true);
-        //roll(5,3);
+        setBounds(350,200,100,50);
         setVisible(true);
 //        setResizable(false);
 //        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 //        setLocationRelativeTo(null);
     }
+
+
 
     public void roll(int die1, int die2) {
         BufferedImageLoader loader = new BufferedImageLoader() ;
@@ -87,6 +87,7 @@ public class Dice extends JLabel {
     Graphics dbg ;
     public void paint(Graphics g) {
         dbImage = createImage(getWidth(),getHeight());
+        setBackground(new Color(223,234,184));
         dbg = dbImage.getGraphics();
         setOpaque(true);
         paintComponents(dbg);
