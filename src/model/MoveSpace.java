@@ -5,7 +5,7 @@ public class MoveSpace extends Space {
     public MoveSpace(int number, String name, double[] positions, byte[] image) {
             super(number, name, positions, image);
             this.amount = 8;
-            action = "Go";
+            action = "go";
     }
 
     public int getAmount(){
