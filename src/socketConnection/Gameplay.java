@@ -56,6 +56,15 @@ public class Gameplay extends javax.swing.JFrame {
     //gameplay
     private javax.swing.JTabbedPane container;
     private javax.swing.JPanel gameplay;
+    private javax.swing.JLabel moneyPlayer1;
+    private javax.swing.JLabel moneyPlayer2;
+    private javax.swing.JLabel moneyPlayer3;
+    private javax.swing.JLabel moneyPlayer4;
+    private javax.swing.JLabel namePlayer1;
+    private javax.swing.JLabel namePlayer2;
+    private javax.swing.JLabel namePlayer3;
+    private javax.swing.JLabel namePlayer4;
+
 
     //title deed popup
     private javax.swing.JLabel board;
@@ -223,6 +232,27 @@ public class Gameplay extends javax.swing.JFrame {
         // -------------------------------------------------------------
         board = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\finaljingjing_board.png"));
         board.setBounds(0, 0, 800, 600);
+        moneyPlayer1 = new javax.swing.JLabel();
+        moneyPlayer1.setBounds(653, 563, 126, 20);
+        moneyPlayer2 = new javax.swing.JLabel();
+        moneyPlayer2.setBounds(24, 563, 126, 20);
+        moneyPlayer2.setHorizontalAlignment(SwingConstants.RIGHT);
+        moneyPlayer3 = new javax.swing.JLabel();
+        moneyPlayer3.setBounds(24, 52, 126, 20);
+        moneyPlayer3.setHorizontalAlignment(SwingConstants.RIGHT);
+        moneyPlayer4 = new javax.swing.JLabel();
+        moneyPlayer4.setBounds(653, 52, 126, 20);
+        namePlayer1 = new javax.swing.JLabel();
+        namePlayer1.setBounds(653, 535, 126, 20);
+        namePlayer2 = new javax.swing.JLabel();
+        namePlayer2.setBounds(24, 535, 126, 20);
+        namePlayer2.setHorizontalAlignment(SwingConstants.RIGHT);
+        namePlayer3 = new javax.swing.JLabel();
+        namePlayer3.setBounds(24, 24, 126, 20);
+        namePlayer3.setHorizontalAlignment(SwingConstants.RIGHT);
+        namePlayer4 = new javax.swing.JLabel();
+        namePlayer4.setBounds(653, 24, 126, 20);
+
 
         // T I T L E  D E E D  P O P  U P
         image = new javax.swing.JLabel();
@@ -282,6 +312,14 @@ public class Gameplay extends javax.swing.JFrame {
         gameplay.add(card);
         gameplay.add(houseBuying);
         gameplay.add(titleDeedInfo);
+        gameplay.add(namePlayer1);
+        gameplay.add(namePlayer2);
+        gameplay.add(namePlayer3);
+        gameplay.add(namePlayer4);
+        gameplay.add(moneyPlayer1);
+        gameplay.add(moneyPlayer2);
+        gameplay.add(moneyPlayer3);
+        gameplay.add(moneyPlayer4);
         gameplay.add(board);
 
 
@@ -465,16 +503,20 @@ public class Gameplay extends javax.swing.JFrame {
         for (int i = 0; i < names.size(); i++) {
             switch (i) {
                 case 0:
-                    //namePlayer1.setText(names.get(i));
+                    namePlayer1.setText("<html><b><p style = 'font-family:Microsoft PhagsPa; font-size: 20'>"
+                            + names.get(i) + "</p></b></html>");
                     break;
                 case 1:
-                    //namePlayer2.setText(names.get(i));
+                    namePlayer2.setText("<html><b><p style = 'font-family:Microsoft PhagsPa; font-size: 20'>"
+                            + names.get(i) + "</p></b></html>");
                     break;
                 case 2:
-                    //namePlayer3.setText(names.get(i));
+                    namePlayer3.setText("<html><b><p style = 'font-family:Microsoft PhagsPa; font-size: 20'>"
+                            + names.get(i) + "</p></b></html>");
                     break;
                 case 3:
-                    //namePlayer4.setText(names.get(i));
+                    namePlayer4.setText("<html><b><p style = 'font-family:Microsoft PhagsPa; font-size: 20'>"
+                            + names.get(i) + "</p></b></html>");
                     break;
                 default:
                     break;
@@ -482,9 +524,32 @@ public class Gameplay extends javax.swing.JFrame {
         }
     }
 
+    private void setMoney(int playerID, int money) {
+        String moneyText = intToString(money);
+
+        switch (playerID) {
+            case (0):
+                moneyPlayer1.setText(moneyText);
+                break;
+            case (1):
+                moneyPlayer2.setText(moneyText);
+                break;
+            case (2):
+                moneyPlayer3.setText(moneyText);
+                break;
+            case (3):
+                moneyPlayer4.setText(moneyText);
+                break;
+            default:
+                break;
+        }
+    }
+
 
     private String intToString(int inp) {
         String temp = "";
+        if(inp<1000)
+            return Integer.toString(inp);
         if (inp >= 1000000) {
             temp += Integer.toString(inp / 1000000) + "M ";
             inp %= 1000000;
@@ -616,12 +681,16 @@ public class Gameplay extends javax.swing.JFrame {
                         case ("updatePlayer"):
                         case ("initPlayer"): {
                             player = (Player) serverMessage.getData();
+                            setMoney(player.getID(), player.getMoney());
                             //TODO: animate player if changes in x y
                             break;
                         }
 
                         case ("initOpponents"): {
                             opponents = (ArrayList<PlayerObj>) serverMessage.getData();
+                            for (PlayerObj opponent : opponents) {
+                                setMoney(opponent.getID(), opponent.getMoney());
+                            }
                             break;
                         }
 
@@ -706,6 +775,8 @@ public class Gameplay extends javax.swing.JFrame {
                 break;
             }
         }
+
+        setMoney(playerObj.getID(), playerObj.getMoney());
 
         //TODO: animate opponent to move to that position
     }

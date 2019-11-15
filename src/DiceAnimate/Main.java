@@ -1,17 +1,16 @@
 package DiceAnimate ;
 
+import org.w3c.dom.html.HTMLImageElement;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class Main extends JFrame {
     BufferedImage spriteDice;
@@ -19,20 +18,21 @@ public class Main extends JFrame {
     boolean ckA=true;
 
     int die1 = 0, die2 =0 ;
-    long timeToSleep = (long) 2.1;
-
-    TimeUnit time = TimeUnit.SECONDS;
-
     public Main(){
         setSize(800,600);
         setVisible(true);
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        init();
+        try {
+            init();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
     }
 
-    private void init() {
+    private void init() throws InterruptedException {
         BufferedImageLoader loader = new BufferedImageLoader() ;
         BufferedImage diceSpriteSheet= null ;
         try {
@@ -89,15 +89,7 @@ public class Main extends JFrame {
         rollDice2 = new Animator(sprites2);
         rollDice2.setSpeed(100);
         rollDice2.start();
-
-        try
-        {
-            time.sleep(timeToSleep);
-        }
-        catch(InterruptedException ex)
-        {
-            //Thread.currentThread().interrupt();
-        }
+        TimeUnit.SECONDS.sleep(2);
         rollDice.pause();
         rollDice2.pause();
     }
