@@ -1,4 +1,5 @@
 package DiceAnimate;
+
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -8,13 +9,22 @@ public class Animator {
     private volatile boolean running =false;
     private long previosTime,speed ;
     private int frameAtPause ,currentFrame;
+
     public Animator(ArrayList<BufferedImage> frames){
         this.frames = frames;
     }
+
     public void setSpeed(long speed){
         this.speed = speed;
     }
 
+    public void setFrames(){
+        //stop();
+        running = false;
+        previosTime = 0;
+        frameAtPause = 7 ;
+        currentFrame = 6 ;
+    }
     public void update(long time){
         if (running){
             if(time - previosTime >= speed){
@@ -28,6 +38,7 @@ public class Animator {
                 previosTime = time;
             }
         }
+
     }
 
     public void start(){
