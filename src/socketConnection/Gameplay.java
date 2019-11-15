@@ -56,6 +56,15 @@ public class Gameplay extends javax.swing.JFrame{
     //gameplay
     private javax.swing.JTabbedPane container;
     private javax.swing.JPanel gameplay;
+    private javax.swing.JLabel moneyPlayer1;
+    private javax.swing.JLabel moneyPlayer2;
+    private javax.swing.JLabel moneyPlayer3;
+    private javax.swing.JLabel moneyPlayer4;
+    private javax.swing.JLabel namePlayer1;
+    private javax.swing.JLabel namePlayer2;
+    private javax.swing.JLabel namePlayer3;
+    private javax.swing.JLabel namePlayer4;
+
 
     //title deed popup
     private javax.swing.JLabel board;
@@ -228,7 +237,25 @@ public class Gameplay extends javax.swing.JFrame{
         // -------------------------------------------------------------
         board = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\finaljingjing_board.png"));
         board.setBounds(0, 0, 800, 600);
+        moneyPlayer1 = new javax.swing.JLabel();
+        moneyPlayer1.setBounds(653,563,126,20);
+        moneyPlayer2 = new javax.swing.JLabel();
+        moneyPlayer2.setBounds(24,563,126,20);
+        moneyPlayer3 = new javax.swing.JLabel();
+        moneyPlayer3.setBounds(24,52,126,20);
+        moneyPlayer4 = new javax.swing.JLabel();
+        moneyPlayer4.setBounds(653,52,126,20);
 
+        namePlayer1 = new javax.swing.JLabel();
+        namePlayer1.setBounds(653,538,126,20);
+        namePlayer2 = new javax.swing.JLabel();
+        namePlayer2.setBounds(24,538,126,20);
+        namePlayer3 = new javax.swing.JLabel();
+        namePlayer3.setBounds(24,27,126,20);
+        namePlayer4 = new javax.swing.JLabel();
+        namePlayer4.setBounds(653,27,126,20);
+
+        
         // T I T L E  D E E D  P O P  U P
         image = new javax.swing.JLabel();
         text = new javax.swing.JLabel();
@@ -287,6 +314,14 @@ public class Gameplay extends javax.swing.JFrame{
         gameplay.add(card);
         gameplay.add(houseBuying);
         gameplay.add(titleDeedInfo);
+        gameplay.add(namePlayer1);
+        gameplay.add(namePlayer2);
+        gameplay.add(namePlayer3);
+        gameplay.add(namePlayer4);
+        gameplay.add(moneyPlayer1);
+        gameplay.add(moneyPlayer2);
+        gameplay.add(moneyPlayer3);
+        gameplay.add(moneyPlayer4);
         gameplay.add(board);
 
 
