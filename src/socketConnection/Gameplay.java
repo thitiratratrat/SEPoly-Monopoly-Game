@@ -4,14 +4,17 @@ import DiceAnimate.Dice;
 import model.*;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.*;
 import java.util.Timer;
 
 import java.util.ArrayList;
 
+
+
 public class Gameplay extends javax.swing.JFrame {
-    private Dice dice;
     private String name;
     private Client client;
     private Player player;
@@ -33,10 +36,10 @@ public class Gameplay extends javax.swing.JFrame {
     final private int JAIL_FEE = 50;
     private final int MAX_PLAYERS = 4;
 
-
     //-----------------------------------------------------------------
     //------------------ F O R U I ------------------------------------
     //-----------------------------------------------------------------
+
 
     //start
     private javax.swing.JLabel n;
@@ -94,6 +97,8 @@ public class Gameplay extends javax.swing.JFrame {
     private javax.swing.JLabel totalPrice;
     private javax.swing.JLabel houseBuying;
 
+    //dice
+    private Dice dice;
 
     public Gameplay() {
         initUI();
@@ -132,6 +137,7 @@ public class Gameplay extends javax.swing.JFrame {
         //TODO: init UI code here
         //Dice
         dice = new Dice();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SE POLY");
         setPreferredSize(new java.awt.Dimension(800, 638));
@@ -149,6 +155,7 @@ public class Gameplay extends javax.swing.JFrame {
 
         gameplay = new javax.swing.JPanel();
         gameplay.setBounds(0, 0, 800, 600);
+        gameplay.add(dice);
 
         container = new javax.swing.JTabbedPane();
         container.addTab("Start", start);
@@ -317,6 +324,8 @@ public class Gameplay extends javax.swing.JFrame {
         card.setVisible(false);
 
         gameplay.setLayout(null);
+        gameplay.add(rollBtn);
+
         gameplay.add(spaceInfo);
         gameplay.add(card);
         gameplay.add(houseBuying);
@@ -329,7 +338,6 @@ public class Gameplay extends javax.swing.JFrame {
         gameplay.add(moneyPlayer2);
         gameplay.add(moneyPlayer3);
         gameplay.add(moneyPlayer4);
-        gameplay.add(rollBtn);
         gameplay.add(board);
 
 
@@ -635,6 +643,7 @@ public class Gameplay extends javax.swing.JFrame {
         return true;
     }
 
+
     //*********************************************************************
     //*********************************************************************
 
@@ -694,7 +703,11 @@ public class Gameplay extends javax.swing.JFrame {
                         }
 
                         case ("initMap"): {
+                            System.out.println("hello");
                             map = (ArrayList<Space>) serverMessage.getData();
+                            for (Space space: map) {
+                                System.out.println(space.getName());
+                            }
                             break;
                         }
 
@@ -904,17 +917,17 @@ public class Gameplay extends javax.swing.JFrame {
         int[] diceNumbers = new int[2];
         int totalMoveCount = 0;
         Random randomGenerator = new Random();
-
         for (int i = 0; i < diceNumbers.length; i++) {
             int diceNumber = randomGenerator.nextInt(6) + 1;
             diceNumbers[i] = diceNumber;
             totalMoveCount += diceNumber;
         }
+        dice.roll(diceNumbers[0], diceNumbers[1]);
 
         ServerMessage serverMessage = new ServerMessage("updateDice", diceNumbers);
         client.sendData(serverMessage);
         //TODO: display UI dice roll
-        dice.roll(diceNumbers[0],diceNumbers[1]);
+        //ddd(diceNumbers[0],diceNumbers[1]);
         if (player.isJailed()) {
             checkBreakJail(diceNumbers, totalMoveCount);
         } else {

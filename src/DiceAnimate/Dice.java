@@ -8,22 +8,21 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Dice extends JFrame {
+public class Dice extends JLabel {
     BufferedImage spritesIdle ,  spritesIdle2 ;
     Animator rollDice ,rollDice2;
     boolean ckA=true;
 
     int die1 = 0, die2 =0 ;
 
-
-
-
     public Dice(){
-        setSize(800,600);
+        setBounds(400,300,100,50);
+        setOpaque(true);
+        //roll(5,3);
         setVisible(true);
-        setResizable(false);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+//        setResizable(false);
+//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        setLocationRelativeTo(null);
     }
 
     public void roll(int die1, int die2) {
@@ -89,15 +88,17 @@ public class Dice extends JFrame {
     public void paint(Graphics g) {
         dbImage = createImage(getWidth(),getHeight());
         dbg = dbImage.getGraphics();
+        setOpaque(true);
         paintComponents(dbg);
         g.drawImage(dbImage,0,0,null);
     }
 
     public void paintComponents(Graphics g ){
+        setOpaque(true);
         if(rollDice != null ){
             if(rollDice.getCurrentFrame() != 6) {
                 rollDice.update(System.currentTimeMillis());
-                g.drawImage(rollDice.sprite, 380, 460, 50, 50, null);
+                g.drawImage(rollDice.sprite, 0, 0, 50, 50, null);
             }
             else{
                 rollDice.stop();
@@ -106,7 +107,7 @@ public class Dice extends JFrame {
         if(rollDice2 != null ){
             if(rollDice2.getCurrentFrame() != 6) {
                 rollDice2.update(System.currentTimeMillis());
-                g.drawImage(rollDice2.sprite,460,460,50,50,null);
+                g.drawImage(rollDice2.sprite,50,0,50,50,null);
             }
             else{
                 rollDice2.stop();
