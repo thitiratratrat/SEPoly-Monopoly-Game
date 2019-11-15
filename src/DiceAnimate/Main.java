@@ -17,9 +17,6 @@ public class Main extends JFrame {
 
     int die1 = 0, die2 =0 ;
 
-
-
-
     public Main(){
         setSize(800,600);
         setVisible(true);
@@ -125,7 +122,7 @@ public class Main extends JFrame {
         if(rollDice != null ){
             if(rollDice.getCurrentFrame() != 6) {
                 rollDice.update(System.currentTimeMillis());
-                g.drawImage(rollDice.sprite, 380, 460, 50, 50, null);
+                g.drawImage(rollDice.sprite, 10, 10, 50, 50, null);
             }
             else{
                 rollDice.stop();
@@ -134,7 +131,7 @@ public class Main extends JFrame {
         if(rollDice2 != null ){
             if(rollDice2.getCurrentFrame() != 6) {
                 rollDice2.update(System.currentTimeMillis());
-                g.drawImage(rollDice2.sprite,460,460,50,50,null);
+                g.drawImage(rollDice2.sprite,50,10,50,50,null);
             }
             else{
                 rollDice2.stop();
