@@ -17,9 +17,10 @@ public class Dice extends JLabel {
 
     public Dice(){
         setBounds(400,300,100,50);
-        setOpaque(true);
+        setOpaque(false);
         //roll(5,3);
         setVisible(true);
+//        System.out.println(getColorModel());
 //        setResizable(false);
 //        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 //        setLocationRelativeTo(null);
@@ -86,15 +87,19 @@ public class Dice extends JLabel {
     Image dbImage;
     Graphics dbg ;
     public void paint(Graphics g) {
+        super.paint(g);
+        setOpaque(false);
         dbImage = createImage(getWidth(),getHeight());
         dbg = dbImage.getGraphics();
-        setOpaque(true);
+        setOpaque(false);
         paintComponents(dbg);
         g.drawImage(dbImage,0,0,null);
     }
 
-    public void paintComponents(Graphics g ){
-        setOpaque(true);
+    public void paintComponent(Graphics g ){
+//        super.paintComponent(g);
+        setOpaque(false);
+        setBackground(new Color(0,255,0, 12));
         if(rollDice != null ){
             if(rollDice.getCurrentFrame() != 6) {
                 rollDice.update(System.currentTimeMillis());
