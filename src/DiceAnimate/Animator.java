@@ -9,21 +9,14 @@ public class Animator {
     private volatile boolean running =false;
     private long previosTime,speed ;
     private int frameAtPause ,currentFrame;
-
     public Animator(ArrayList<BufferedImage> frames){
         this.frames = frames;
     }
-
     public void setSpeed(long speed){
         this.speed = speed;
     }
-
-    public void setFrames(){
-        //stop();
-        running = false;
-        previosTime = 0;
-        frameAtPause = 7 ;
-        currentFrame = 6 ;
+    public int getCurrentFrame(){
+        return currentFrame;
     }
     public void update(long time){
         if (running){
@@ -38,7 +31,6 @@ public class Animator {
                 previosTime = time;
             }
         }
-
     }
 
     public void start(){
@@ -47,12 +39,23 @@ public class Animator {
         frameAtPause = 0;
         currentFrame = 0 ;
     }
+    public void setCurrentFrame(){
+        if(currentFrame == 6){
+            pause();
+        }
+        else
+        {
+            resume();
+        }
+        //System.out.println(currentFrame);
+    }
 
     public void stop( ){
         running = false;
         previosTime = 0;
         frameAtPause = 0;
         currentFrame = 0 ;
+        //  System.out.println(currentFrame);
     }
     public void pause( ){
         frameAtPause = currentFrame ;
