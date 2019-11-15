@@ -64,7 +64,6 @@ public class Server {
         highestBiddingMoney = null;
         initMapData();
         initCardData();
-        sendMapData();
         sendInitPlayerData();
         sendInitOpponentData();
     }
@@ -186,6 +185,8 @@ public class Server {
                 }
             }
             connection.close();
+
+            sendMapData();
         } catch (Exception e) {
             System.out.println(e);
         }
