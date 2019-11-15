@@ -245,10 +245,10 @@ public class Gameplay extends javax.swing.JFrame {
         namePlayer1 = new javax.swing.JLabel();
         namePlayer1.setBounds(653, 535, 126, 20);
         namePlayer2 = new javax.swing.JLabel();
-        namePlayer2.setBounds(24, 535, 126, 20);
+        namePlayer2.setBounds(22, 535, 126, 20);
         namePlayer2.setHorizontalAlignment(SwingConstants.RIGHT);
         namePlayer3 = new javax.swing.JLabel();
-        namePlayer3.setBounds(24, 24, 126, 20);
+        namePlayer3.setBounds(22, 24, 126, 20);
         namePlayer3.setHorizontalAlignment(SwingConstants.RIGHT);
         namePlayer4 = new javax.swing.JLabel();
         namePlayer4.setBounds(653, 24, 126, 20);
@@ -548,7 +548,7 @@ public class Gameplay extends javax.swing.JFrame {
 
     private String intToString(int inp) {
         String temp = "";
-        if(inp<1000)
+        if (inp < 1000)
             return Integer.toString(inp);
         if (inp >= 1000000) {
             temp += Integer.toString(inp / 1000000) + "M ";
@@ -736,7 +736,7 @@ public class Gameplay extends javax.swing.JFrame {
 
                         case ("goToJail"): {
                             //TODO: animation go to jail
-                            spaceNumber = JAIL_SPACE_NUMBER;
+                            movePlayerTo(JAIL_SPACE_NUMBER);
                             break;
                         }
 
@@ -749,6 +749,13 @@ public class Gameplay extends javax.swing.JFrame {
                         case ("bankrupt"): {
                             int playerID = (int) serverMessage.getData();
                             playerBankrupt(playerID);
+                            break;
+                        }
+
+                        case ("moveTo"): {
+                            int number = (int) serverMessage.getData();
+                            movePlayerTo(number);
+                            break;
                         }
 
                         default:
@@ -905,6 +912,14 @@ public class Gameplay extends javax.swing.JFrame {
         doSpaceAction(spaceNumber, moveCount);
     }
 
+    private void movePlayerTo(int number) throws IOException {
+        isMoving = true;
+        spaceNumber = number;
+        //TODO: animation warp player to space number
+        isMoving = false;
+        doSpaceAction(spaceNumber, 1);
+    }
+
     private void doSpaceAction(int spaceNumber, int diceNumber) throws IOException {
         Space space = map.get(spaceNumber);
         String action = space.getAction();
@@ -961,15 +976,20 @@ public class Gameplay extends javax.swing.JFrame {
 
             case ("pay tax"): {
                 TaxSpace taxSpace = (TaxSpace) space;
-                int taxFee = taxSpace.getTaxFee();
+                double taxFee = taxSpace.getTaxFee();
 
 //                if (isBankrupt(taxFee)) {
 //                    sendPlayerIsBankrupt();
 //                    break;
 //                }
 
-                player.pay(taxSpace.getTaxFee());
+                player.pay(taxSpace.getTaxFee() * player.getMoney());
                 sendPlayerToUpdate();
+                break;
+            }
+
+            case ("go"): {
+                movePlayerTo(((MoveSpace) space).getAmount());
                 break;
             }
 
