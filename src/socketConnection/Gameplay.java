@@ -234,15 +234,15 @@ public class Gameplay extends javax.swing.JFrame{
 
         // -------------------------------------------------------------
         // -------------------G A M E   P L A Y ------------------------
-        // -------------------------------------------------------------
+        // --------------------------------------------------------------
         board = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\finaljingjing_board.png"));
         board.setBounds(0, 0, 800, 600);
         moneyPlayer1 = new javax.swing.JLabel();
         moneyPlayer1.setBounds(653,563,126,20);
         moneyPlayer2 = new javax.swing.JLabel();
-        moneyPlayer2.setBounds(24,563,126,20);
+        moneyPlayer2.setBounds(22,563,126,20);
         moneyPlayer3 = new javax.swing.JLabel();
-        moneyPlayer3.setBounds(24,52,126,20);
+        moneyPlayer3.setBounds(22 ,52,126,20);
         moneyPlayer4 = new javax.swing.JLabel();
         moneyPlayer4.setBounds(653,52,126,20);
 
