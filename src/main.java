@@ -6,7 +6,6 @@ import java.io.IOException;
 
 public class main {
     public static void main(String[] args) throws IOException {
-        for (int i = 0; i < 4; i++) {
             Thread thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -37,6 +36,6 @@ public class main {
             });
             thread.start();
 
-        }
+
     }
 }
