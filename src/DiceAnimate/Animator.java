@@ -18,10 +18,13 @@ public class Animator {
         this.speed = speed;
     }
 
-    public void setFrames(int frameNum){
-        stop();
-        frameAtPause = frameNum ;
+    public void setFrames(){
+        running = false;
+        previosTime =0 ;
+        currentFrame = 7 ;
+        frameAtPause = 7 ;
     }
+
     public void update(long time){
         if (running){
             if(time - previosTime >= speed){
