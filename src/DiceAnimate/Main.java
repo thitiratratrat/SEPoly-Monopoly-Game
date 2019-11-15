@@ -2,9 +2,12 @@ package DiceAnimate ;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,7 +19,7 @@ public class Main extends JFrame {
     boolean ckA=true;
 
     int die1 = 0, die2 =0 ;
-    long timeToSleep = 2L;
+    long timeToSleep = (long) 2.1;
 
     TimeUnit time = TimeUnit.SECONDS;
 
