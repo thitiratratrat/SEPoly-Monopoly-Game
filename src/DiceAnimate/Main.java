@@ -1,18 +1,17 @@
-package DiceAnimate ;
-
+package DiceAnimate;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Random;
 
 public class Main extends JFrame {
-    BufferedImage spritesIdle ;
-    BufferedImage spritesIdle2 ;
+    BufferedImage spritesIdle ,  spritesIdle2 ;
     Animator rollDice ,rollDice2;
     boolean ckA=true;
 
@@ -70,6 +69,15 @@ public class Main extends JFrame {
             case 6: sprites.add(diceSS.grabSprite(276, 184, 92,92));break;
         }
 
+      /*  switch (die1) {
+            case 1: spritesIdle = diceSS.grabSprite(184, 92, 92,92);break;
+            case 2: spritesIdle = diceSS.grabSprite(276, 92, 92,92);break;
+            case 3:  spritesIdle = diceSS.grabSprite(0, 184, 92,92);break;
+            case 4: spritesIdle = diceSS.grabSprite(92, 184, 92,92);break;
+            case 5: spritesIdle = diceSS.grabSprite(184, 184, 92,92);break;
+            case 6: spritesIdle = diceSS.grabSprite(276, 184, 92,92);break;
+        }
+*/
         sprites2.add(diceSS2.grabSprite(0, 0, 92,92));//1
         sprites2.add(diceSS2.grabSprite(92, 0, 92,92));//2
         sprites2.add(diceSS2.grabSprite(184, 0, 92,92));//3
@@ -85,29 +93,28 @@ public class Main extends JFrame {
             case 5: sprites2.add(diceSS2.grabSprite(184, 184, 92,92));break;
             case 6: sprites2.add(diceSS2.grabSprite(276, 184, 92,92));break;
         }
-
+       /* switch (die2) {
+            case 1: spritesIdle2 = diceSS.grabSprite(184, 92, 92,92);break;
+            case 2: spritesIdle2 = diceSS.grabSprite(276, 92, 92,92);break;
+            case 3:  spritesIdle2 = diceSS.grabSprite(0, 184, 92,92);break;
+            case 4: spritesIdle2 = diceSS.grabSprite(92, 184, 92,92);break;
+            case 5: spritesIdle2 = diceSS.grabSprite(184, 184, 92,92);break;
+            case 6: spritesIdle2 = diceSS.grabSprite(276, 184, 92,92);break;
+        }
+*/
         rollDice = new Animator(sprites);
         rollDice.setSpeed(100);
-        rollDice.start();
-
         rollDice2 = new Animator(sprites2);
         rollDice2.setSpeed(100);
+
+        rollDice.start();
         rollDice2.start();
 
-        try
-        {
-            Thread.sleep(2000);
-        }
-        catch(InterruptedException ex)
-        {
-            //Thread.currentThread().interrupt();
-        }
-        System.out.println("kk");
 
-        rollDice.setFrames();
-        rollDice2.setFrames();
+        System.out.println("Kk");
 
-        //paintNewDice();
+
+
     }
 
     Image dbImage;
@@ -121,13 +128,23 @@ public class Main extends JFrame {
 
     public void paintComponents(Graphics g ){
         if(rollDice != null ){
-            rollDice.update(System.currentTimeMillis());
-            g.drawImage(rollDice.sprite,380,460,50,50,null);
-
+            if(rollDice.getCurrentFrame() != 6) {
+                rollDice.update(System.currentTimeMillis());
+                g.drawImage(rollDice.sprite, 380, 460, 50, 50, null);
+            }
+            else{
+                rollDice.stop();
+            }
         }
         if(rollDice2 != null ){
-            rollDice2.update(System.currentTimeMillis());
-            g.drawImage(rollDice2.sprite,460,460,50,50,null);
+            if(rollDice2.getCurrentFrame() != 6) {
+                rollDice2.update(System.currentTimeMillis());
+                g.drawImage(rollDice2.sprite,460,460,50,50,null);
+            }
+            else{
+                rollDice2.stop();
+            }
+
         }
         repaint();
     }
