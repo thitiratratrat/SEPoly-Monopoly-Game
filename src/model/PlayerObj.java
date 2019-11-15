@@ -6,9 +6,9 @@ public class PlayerObj implements Serializable {
     private int x;
     private int y;
     private int ID;
-    private double money;
+    private int money;
 
-    public PlayerObj(int x, int y, double money, int ID) {
+    public PlayerObj(int x, int y, int money, int ID) {
         this.x = x;
         this.y = y;
         this.money = money;
@@ -23,7 +23,7 @@ public class PlayerObj implements Serializable {
         this.y = y;
     }
 
-    public void setMoney(double money) {
+    public void setMoney(int money) {
         this.money = money;
     }
 
@@ -35,7 +35,7 @@ public class PlayerObj implements Serializable {
         return y;
     }
 
-    public double getMoney() {
+    public int getMoney() {
         return money;
     }
 

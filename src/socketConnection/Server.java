@@ -20,11 +20,13 @@ public class Server {
     private ArrayList<Space> map;
     private ArrayList<Card> communityDeck;
     private ArrayList<Card> chanceDeck;
+    private ArrayList<String> names;
     private Integer highestPlayerIDBidder;
     private Integer highestBiddingMoney;
     private PropertySpace auctionProperty;
-    final private int STARTINGMONEY = 1500;
+    final private int STARTINGMONEY = 1500000;
     final private int CARDCOUNT = 10;
+    final private int MAX_PLAYER = 4;
 
     public Server(int port) throws IOException {
         serverSocket = new ServerSocket(port);
@@ -33,6 +35,7 @@ public class Server {
         map = new ArrayList<>();
         communityDeck = new ArrayList<>();
         chanceDeck = new ArrayList<>();
+        names = new ArrayList<>();
     }
 
     public void connect() throws IOException {
@@ -64,9 +67,6 @@ public class Server {
         sendMapData();
         sendInitPlayerData();
         sendInitOpponentData();
-        sendStartGame();
-        startNextPlayerTurn(-1);
-
     }
 
 
@@ -102,6 +102,16 @@ public class Server {
         sendToAllExcept(player.getID(), serverMessage);
     }
 
+    public void addNames(String name) throws IOException {
+        names.add(name);
+
+        if (names.size() == MAX_PLAYER) {
+            sendAllNames();
+            sendStartGame();
+            startNextPlayerTurn(-1);
+        }
+    }
+
     public void close() throws IOException {
         serverSocket.close();
     }
@@ -111,7 +121,7 @@ public class Server {
         try {
             String sDriverName = "org.sqlite.JDBC";
             Class.forName(sDriverName);
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Asus\\Desktop\\javaProject\\monopoly\\src\\Database\\SEpoly.db");
+            Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Lenovo\\Documents\\SE\\Year2S1\\Java\\Monopoly\\src\\Database\\SEpoly.db");
             Statement statement = connection.createStatement();
             ResultSet estate = statement.executeQuery("select * from Map");
             Space temp;
@@ -138,12 +148,12 @@ public class Server {
                         break;
                     case "utility":
                         temp = new UtilitySpace(estate.getInt(1), estate.getString(2),
-                                estate.getInt(4), pos,estate.getBytes(12));
+                                estate.getInt(4), pos, estate.getBytes(12));
                         map.add(temp);
                         break;
                     case "railroad":
                         temp = new RailroadSpace(estate.getInt(1), estate.getString(2),
-                                estate.getInt(4), pos,estate.getBytes(12));
+                                estate.getInt(4), pos, estate.getBytes(12));
                         map.add(temp);
                         break;
                     case "start":
@@ -161,7 +171,7 @@ public class Server {
                         map.add(temp);
                         break;
                     case "tax":
-                        temp = new TaxSpace(estate.getInt(1), estate.getString(2), pos, estate.getBytes(12), 7);
+                        temp = new TaxSpace(estate.getInt(1), estate.getString(2), pos, estate.getBytes(12));
                         map.add(temp);
                         break;
                     case "jail":
@@ -235,10 +245,11 @@ public class Server {
             }
 
             case ("pay"): {
+                player.pay(effectAmount);
 //                if (isBankrupt(effectAmount)) {
 //                    player.pay(effectAmount);
 //                }
-                checkBankrupt(player);
+//                checkBankrupt(player);
                 break;
             }
 
@@ -255,6 +266,12 @@ public class Server {
 
             case ("moveForward"): {
                 ServerMessage serverMessage = new ServerMessage("moveForward", effectAmount);
+                sendToPlayer(serverMessage, player.getID());
+                break;
+            }
+
+            case ("moveTo"): {
+                ServerMessage serverMessage = new ServerMessage("moveTo", effectAmount);
                 sendToPlayer(serverMessage, player.getID());
                 break;
             }
@@ -292,7 +309,7 @@ public class Server {
         ServerMessage mapMessage = new ServerMessage("updateMap", "");
         ArrayList<PropertySpace> properties = player.getAllProperty();
 
-        for (PropertySpace property: properties) {
+        for (PropertySpace property : properties) {
             property.soldBack();
             mapMessage.setData(property);
             sendToAllClients(mapMessage);
@@ -353,45 +370,50 @@ public class Server {
         //TODO: check bankrupt
     }
 
-    private void initCardData() throws SQLException{
+    private void initCardData() throws SQLException {
         initCommunityCardData();
         initChanceCardData();
     }
 
     private void initCommunityCardData() throws SQLException {
-            //TODO: query community card data from database
-            try {
-                Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Asus\\Desktop\\javaProject\\monopoly\\src\\Database\\SEpoly.db");
-                Statement statement = connection.createStatement();
-                ResultSet card = statement.executeQuery("select * from Community_cards");
-                Card temp;
-                while (card.next()) {
-                        //System.out.println(card.getString(3) + card.getInt(4));
-                        temp = new Card(card.getString(3),card.getInt(4),card.getBytes(5));
-                        communityDeck.add(temp);
-                    }
-                connection.close();
-            } catch (Exception e) {
-                System.out.println(e);
-            }
-        }
-
-    private void initChanceCardData() throws SQLException{
-        //TODO: query chance card data from database
+        //TODO: query community card data from database
         try {
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Asus\\Desktop\\javaProject\\monopoly\\src\\Database\\SEpoly.db");
+            Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Lenovo\\Documents\\SE\\Year2S1\\Java\\Monopoly\\src\\Database\\SEpoly.db");
             Statement statement = connection.createStatement();
-            ResultSet card = statement.executeQuery("select * from Chance_cards");
+            ResultSet card = statement.executeQuery("select * from Community_cards");
             Card temp;
             while (card.next()) {
                 //System.out.println(card.getString(3) + card.getInt(4));
-                temp = new Card(card.getString(3),card.getInt(4),card.getBytes(5));
+                temp = new Card(card.getString(3), card.getInt(4), card.getBytes(5));
                 communityDeck.add(temp);
             }
             connection.close();
         } catch (Exception e) {
             System.out.println(e);
         }
+    }
+
+    private void initChanceCardData() throws SQLException {
+        //TODO: query chance card data from database
+        try {
+            Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Lenovo\\Documents\\SE\\Year2S1\\Java\\Monopoly\\src\\Database\\SEpoly.db");
+            Statement statement = connection.createStatement();
+            ResultSet card = statement.executeQuery("select * from Chance_cards");
+            Card temp;
+            while (card.next()) {
+                //System.out.println(card.getString(3) + card.getInt(4));
+                temp = new Card(card.getString(3), card.getInt(4), card.getBytes(5));
+                communityDeck.add(temp);
+            }
+            connection.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    private void sendAllNames() throws IOException {
+        ServerMessage serverMessage = new ServerMessage("initNames", names);
+        sendToAllClients(serverMessage);
     }
 
 //    private boolean isBankrupt(int payingAmount) {
