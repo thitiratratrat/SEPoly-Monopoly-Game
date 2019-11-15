@@ -655,9 +655,7 @@ public class Gameplay extends javax.swing.JFrame {
                     String action = serverMessage.getAction();
                     switch (action) {
                         case ("startGame"): {
-                            //TODO: start main game UI
                             container.setSelectedIndex(2);
-                            //start();
                             break;
                         }
 
