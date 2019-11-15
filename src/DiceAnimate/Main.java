@@ -16,9 +16,6 @@ public class Main extends JFrame {
     boolean ckA=true;
 
     int die1 = 0, die2 =0 ;
-    long timeToSleep = 2L;
-
-    TimeUnit time = TimeUnit.SECONDS;
 
     public Main(){
         setSize(800,600);
@@ -89,14 +86,15 @@ public class Main extends JFrame {
 
         try
         {
-            time.sleep(timeToSleep);
+            Thread.sleep(2000);
         }
         catch(InterruptedException ex)
         {
             //Thread.currentThread().interrupt();
         }
-        rollDice.pause();
-        rollDice2.pause();
+        rollDice.setFrames(die1);
+        rollDice2.setFrames(die2);
+
     }
 
     Image dbImage;
