@@ -66,15 +66,7 @@ public class Main extends JFrame {
             case 6: sprites.add(diceSS.grabSprite(276, 184, 92,92));break;
         }
 
-      /*  switch (die1) {
-            case 1: spritesIdle = diceSS.grabSprite(184, 92, 92,92);break;
-            case 2: spritesIdle = diceSS.grabSprite(276, 92, 92,92);break;
-            case 3:  spritesIdle = diceSS.grabSprite(0, 184, 92,92);break;
-            case 4: spritesIdle = diceSS.grabSprite(92, 184, 92,92);break;
-            case 5: spritesIdle = diceSS.grabSprite(184, 184, 92,92);break;
-            case 6: spritesIdle = diceSS.grabSprite(276, 184, 92,92);break;
-        }
-*/
+
         sprites2.add(diceSS2.grabSprite(0, 0, 92,92));//1
         sprites2.add(diceSS2.grabSprite(92, 0, 92,92));//2
         sprites2.add(diceSS2.grabSprite(184, 0, 92,92));//3
@@ -90,15 +82,7 @@ public class Main extends JFrame {
             case 5: sprites2.add(diceSS2.grabSprite(184, 184, 92,92));break;
             case 6: sprites2.add(diceSS2.grabSprite(276, 184, 92,92));break;
         }
-       /* switch (die2) {
-            case 1: spritesIdle2 = diceSS.grabSprite(184, 92, 92,92);break;
-            case 2: spritesIdle2 = diceSS.grabSprite(276, 92, 92,92);break;
-            case 3:  spritesIdle2 = diceSS.grabSprite(0, 184, 92,92);break;
-            case 4: spritesIdle2 = diceSS.grabSprite(92, 184, 92,92);break;
-            case 5: spritesIdle2 = diceSS.grabSprite(184, 184, 92,92);break;
-            case 6: spritesIdle2 = diceSS.grabSprite(276, 184, 92,92);break;
-        }
-*/
+
         rollDice = new Animator(sprites);
         rollDice.setSpeed(100);
         rollDice2 = new Animator(sprites2);
@@ -112,8 +96,10 @@ public class Main extends JFrame {
     Image dbImage;
     Graphics dbg ;
     public void paint(Graphics g) {
-        dbImage = createImage(getWidth(),getHeight());
+
+        dbImage = createImage(getWidth(), getHeight());
         dbg = dbImage.getGraphics();
+        setBackground(Color.BLUE);
         paintComponents(dbg);
         g.drawImage(dbImage,0,0,null);
     }
@@ -136,19 +122,10 @@ public class Main extends JFrame {
             else{
                 rollDice2.stop();
             }
-
         }
         repaint();
     }
 
-    Graphics g ;
-
-    public void paintNewDice() {
-
-        g.drawImage(spritesIdle,460, 460, 50,50 ,null);
-        g.drawImage(spritesIdle2,460, 460, 50,50 ,null);
-        //repaint();
-    }
 
     public static void main(String[] args) {
         Main main = new Main();
