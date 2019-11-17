@@ -5,4 +5,5 @@ public interface Movable {
     public void setY(int y);
     public int getX();
     public int getY();
+    public int getID();
 }

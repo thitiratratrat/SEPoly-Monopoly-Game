@@ -65,30 +65,39 @@ class ClientHandler extends Thread {
 
                     case ("updateDice"): {
                         server.sendToAllClients(serverMessage);
+                        break;
                     }
 
                     case ("getPaid"): {
                         GetPaidObj getPaidObj = (GetPaidObj) serverMessage.getData();
                         server.payRentPlayer(getPaidObj);
+                        break;
                     }
 
                     case ("updateMap"): {
                         PropertySpace propertySpace = (PropertySpace) serverMessage.getData();
                         server.sendToAllExcept(propertySpace.getOwner().getID(), serverMessage);
+                        break;
                     }
 
                     case ("bankrupt"): {
                         int playerID = (int) serverMessage.getData();
                         server.playerBankrupt(playerID);
+                        break;
                     }
 
                     case ("addName"): {
                         String name = (String) serverMessage.getData();
                         server.addNames(name);
+                        break;
                     }
 
-                    case ("movePlayerForward"): {
-                        server.sendToAllExcept();
+                    case ("moveOpponentTo"):
+                    case ("moveOpponentForward"): {
+                        MoveAnimateObj moveObj = (MoveAnimateObj) serverMessage.getData();
+                        int ID = moveObj.getPlayer().getID();
+                        server.sendToAllExcept(ID, serverMessage);
+                        break;
                     }
 
                     default:

@@ -657,7 +657,7 @@ public class Gameplay extends javax.swing.JFrame {
     //------------------- E N D   U I   P A R T ---------------------------
 
     public void start() throws IOException {
-        startSendPlayerPositionTimer();
+//        startSendPlayerPositionTimer();
         startGetGameDataTimer();
     }
     //send player position update
@@ -799,15 +799,15 @@ public class Gameplay extends javax.swing.JFrame {
                             break;
                         }
 
-                        case ("movePlayerForward"): {
+                        case ("moveOpponentForward"): {
                             MoveAnimateObj moveObj = (MoveAnimateObj) serverMessage.getData();
-                            //TODO: animate player id forward
+                            //TODO: animate opponent id forward
                             break;
                         }
 
-                        case ("movePlayerTo"): {
+                        case ("moveOpponentTo"): {
                             MoveAnimateObj moveObj = (MoveAnimateObj) serverMessage.getData();
-                            //TODO: animate player id to specific position
+                            //TODO: animate player opponent to specific position
                             break;
                         }
 
@@ -915,13 +915,13 @@ public class Gameplay extends javax.swing.JFrame {
 
     private void sendPlayerToMoveForward(int moveCount) throws IOException {
         MoveAnimateObj moveObj = new MoveAnimateObj(player, moveCount);
-        ServerMessage serverMessage = new ServerMessage("movePlayerForward", moveObj);
+        ServerMessage serverMessage = new ServerMessage("moveOpponentForward", moveObj);
         client.sendData(serverMessage);
     }
 
     private void sendPlayerToMoveTo(int spaceNumber) throws IOException {
         MoveAnimateObj moveObj = new MoveAnimateObj(player, spaceNumber);
-        ServerMessage serverMessage = new ServerMessage("movePlayerTo", moveObj);
+        ServerMessage serverMessage = new ServerMessage("moveOpponentTo", moveObj);
         client.sendData(serverMessage);
     }
 
@@ -976,6 +976,7 @@ public class Gameplay extends javax.swing.JFrame {
             }
         }
         //TODO: animation move player forward
+        sendPlayerToMoveForward(moveCount);
         isMoving = false;
         doSpaceAction(spaceNumber, moveCount);
     }
@@ -984,6 +985,7 @@ public class Gameplay extends javax.swing.JFrame {
         isMoving = true;
         spaceNumber = number;
         //TODO: animation warp player to space number
+        sendPlayerToMoveTo(number);
         isMoving = false;
         doSpaceAction(spaceNumber, 1);
     }
