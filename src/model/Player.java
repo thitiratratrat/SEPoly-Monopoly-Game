@@ -41,6 +41,7 @@ public class Player implements Serializable {
         asset += property.getPrice() / 2;
     }
 
+    //multiple house???
     public void buyHouse(EstateSpace estateSpace) {
         int price = estateSpace.getHousePrice();
 
