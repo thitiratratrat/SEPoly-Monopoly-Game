@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-public class Player implements Serializable {
+public class Player implements Serializable, Movable {
     private ArrayList<UtilitySpace> utilities;
     private ArrayList<EstateSpace> estates;
     private ArrayList<RailroadSpace> railroads;
@@ -41,12 +41,11 @@ public class Player implements Serializable {
         asset += property.getPrice() / 2;
     }
 
-    //multiple house???
-    public void buyHouse(EstateSpace estateSpace) {
+    public void buyHouse(EstateSpace estateSpace, int houseCount) {
         int price = estateSpace.getHousePrice();
 
         pay(price);
-        estateSpace.buildHouse(1);
+        estateSpace.buildHouse(houseCount);
         asset += price / 2;
     }
 
