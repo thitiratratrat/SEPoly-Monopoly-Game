@@ -30,7 +30,7 @@ public class Gameplay extends javax.swing.JFrame {
     private boolean isTurn = false;
     private boolean isMoving = false;
     private int jailTurnCount = 0;
-    private int spaceNumber = 1;
+    private int spaceNumber = 0;
     final private int TIMER_DELAY = 5;
     final private int SPACE_COUNT = 32;
     final private int BIDTIMER_DELAY = 100000;
@@ -403,7 +403,7 @@ public class Gameplay extends javax.swing.JFrame {
         landmarkBuying.add(text3);
         landmarkBuying.add(buyBtn2);
         landmarkBuying.add(cancelBtn2);
-        //landmarkBuying.setVisible(false);
+        landmarkBuying.setVisible(false);
 
 
         // S H O W  C A R D
@@ -724,13 +724,16 @@ public class Gameplay extends javax.swing.JFrame {
 
     // land buying
     private void showLandBuying(PropertySpace space){
+        System.out.println(space.getNumber() + space.getName());
             landTitle.setText(space.getName());
             text4.setText("Price : " + intToString(space.getPrice()));
+            landBuying.setVisible(true);
     }
 
     private void buyLandMousePressed(java.awt.event.MouseEvent evt) throws IOException {
         PropertySpace space = (PropertySpace) map.get(spaceNumber);
         buy(space);
+        landBuying.setVisible(false);
     }
 
     // house buying
@@ -820,6 +823,7 @@ public class Gameplay extends javax.swing.JFrame {
 
     private void buyHouseMousePressed(java.awt.event.MouseEvent evt) throws IOException {
         buyHouse((EstateSpace) map.get(spaceNumber));
+        houseBuying.setVisible(false);
     }
 
 
@@ -833,6 +837,7 @@ public class Gameplay extends javax.swing.JFrame {
 
     private void buyLandmarkMousePressed(java.awt.event.MouseEvent evt) throws IOException {
         buyLandmark((EstateSpace) map.get(spaceNumber));
+        landBuying.setVisible(false);
     }
 
     private void cardMousePressed(java.awt.event.MouseEvent evt) {
@@ -1099,6 +1104,8 @@ public class Gameplay extends javax.swing.JFrame {
                             int[] diceNumbers = (int[]) serverMessage.getData();
                             //TODO: display UI dice roll
                             dice.roll(diceNumbers[0], diceNumbers[1]);
+                            System.out.println(diceNumbers[0]+"   "+diceNumbers[1]);
+                            System.out.println(map.get(diceNumbers[0]+diceNumbers[1]).getNumber());
                             dice.setVisible(true);
                             break;
                         }
@@ -1238,13 +1245,13 @@ public class Gameplay extends javax.swing.JFrame {
             diceNumbers[i] = diceNumber;
             totalMoveCount += diceNumber;
             spaceNumber += diceNumber;
-
+            System.out.println("spacenum = "+spaceNumber);
         }
+        System.out.println("rollDice " + diceNumbers[0] + "    " + diceNumbers[1]);
         ServerMessage serverMessage = new ServerMessage("updateDice", diceNumbers);
         client.sendData(serverMessage);
 //        dice.roll(diceNumbers[0], diceNumbers[1]);
         //TODO: display UI dice roll
-        //ddd(diceNumbers[0],diceNumbers[1]);
         if (player.isJailed()) {
             checkBreakJail(diceNumbers, totalMoveCount);
         } else {
@@ -1306,7 +1313,9 @@ public class Gameplay extends javax.swing.JFrame {
             case ("property"): {
                 PropertySpace propertySpace = (PropertySpace) space;
                 Player owner = propertySpace.getOwner();
-                if (owner == null) {
+                System.out.println(owner==null);
+                if (owner==null) {
+                    System.out.println(spaceNumber);
                     //TODO: display UI to let player choose to buy or put up for auction
                     showLandBuying(propertySpace);
                 } else if (owner.getID() == player.getID()) {
@@ -1333,7 +1342,6 @@ public class Gameplay extends javax.swing.JFrame {
 //                        sendPlayerIsBankrupt();
 //                        break;
 //                    }
-
                     player.pay(rent);
                     sendPlayerToUpdate();
                     GetPaidObj getPaidObj = new GetPaidObj(propertySpace.getOwner().getID(), rent);
