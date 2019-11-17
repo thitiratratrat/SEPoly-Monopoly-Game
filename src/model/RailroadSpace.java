@@ -1,13 +1,16 @@
 package model;
 
 public class RailroadSpace extends PropertySpace {
-    final private int  BASE_RENT_PRICE = 25;
+    final private int BASE_RENT_PRICE = 100000;
 
-    public RailroadSpace(int number, String name, int price) {
-        super(number, name, price);
+    public RailroadSpace(int number, String name, int price, double[] positions, byte[] image) {
+        super(number, name, positions, image, price);
     }
 
     public int getRentPrice() {
-        return owner.getRailroadCount() * BASE_RENT_PRICE;
+        int rentPrice = owner.getRailroadCount() < 2 ? BASE_RENT_PRICE : 3 * BASE_RENT_PRICE;
+
+        return rentPrice;
     }
+
 }
