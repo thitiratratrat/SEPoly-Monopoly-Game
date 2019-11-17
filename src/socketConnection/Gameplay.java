@@ -14,7 +14,6 @@ import java.util.Timer;
 import java.util.ArrayList;
 
 
-
 public class Gameplay extends javax.swing.JFrame {
     private String name;
     private Client client;
@@ -29,18 +28,18 @@ public class Gameplay extends javax.swing.JFrame {
     private boolean isTurn = false;
     private boolean isMoving = false;
     private int jailTurnCount = 0;
-    private int spaceNumber = 1;
+    private int spaceNumber = 0;
     final private int TIMER_DELAY = 5;
     final private int SPACE_COUNT = 32;
     final private int BIDTIMER_DELAY = 100000;
     final private int JAIL_SPACE_NUMBER = 8;
-    final private int JAIL_FEE = 200000;
+    final private int JAIL_FEE = 50;
     private final int MAX_PLAYERS = 4;
 
     //-----------------------------------------------------------------
     //------------------ F O R U I ------------------------------------
     //-----------------------------------------------------------------
-    private int price;
+
 
     //start
     private javax.swing.JLabel n;
@@ -98,75 +97,29 @@ public class Gameplay extends javax.swing.JFrame {
     private javax.swing.JLabel totalPrice;
     private javax.swing.JLabel houseBuying;
 
-    //for landmark buying
-    private javax.swing.JLabel landmarkBuying;
-    private javax.swing.JLabel buyBtn2;
-    private javax.swing.JLabel cancelBtn2;
-    private javax.swing.JLabel title;
-    private javax.swing.JLabel text3;
-    private javax.swing.JLabel landmarkImg;
-
-    //land buying
-    private javax.swing.JLabel landTitle;
-    private javax.swing.JLabel text4;
-    private javax.swing.JLabel cancelBtn3;
-    private javax.swing.JLabel buyBtn3;
-    private javax.swing.JLabel landBuying;
-
     //dice
     private Dice dice;
 
-    //jail  break
-    private javax.swing.JLabel stayBtn;
-    private javax.swing.JLabel useBtn;
-    private javax.swing.JLabel payBtn;
-    private javax.swing.JLabel jailBreak;
-
-    //auction
-    private javax.swing.JLabel title2;
-    private javax.swing.JLabel image2;
-    private javax.swing.JLabel highestBid;
-    private javax.swing.JLabel timeLeft;
-    private javax.swing.JLabel bidBtn;
-    private javax.swing.JLabel passBtn;
-    private javax.swing.JTextField bidPlace;
-    private javax.swing.JLabel auction;
-
-    //house-landmark
-    private javax.swing.JLabel icBuilding;
-    private javax.swing.JLabel lCanteen;
-    private javax.swing.JLabel yellowBin;
-    private javax.swing.JLabel blueBin;
-    private javax.swing.JLabel redBin;
-    private javax.swing.JLabel floorEight;
-    private javax.swing.JLabel ic16;
-    private javax.swing.JLabel ic01;
-    private javax.swing.JLabel ic02;
-    private javax.swing.JLabel ic03;
-    private javax.swing.JLabel market;
-    private javax.swing.JLabel seven;
-    private javax.swing.JLabel ptec;
-    private javax.swing.JLabel alumniRes;
-    private javax.swing.JLabel alumniCafe;
-    private javax.swing.JLabel ic06;
-    private javax.swing.JLabel ic04;
-    private javax.swing.JLabel fireEscape;
-    private javax.swing.JLabel waterCooler;
-    private javax.swing.JLabel floorSix;
-
-    private ArrayList<JLabel> estate;
-
-
-
-
-
     public Gameplay() {
         initUI();
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new Gameplay().setVisible(true);
+//            }
+//        });
     }
 
     public void connectToServer() throws IOException {
         this.startClientConnection();
     }
+
+    /*public void run() throws IOException {
+        Gameplay gameplay = new Gameplay();
+        gameplay.startClientConnection();
+        GUI.NewJFrame2 board = new GUI.NewJFrame2();
+        board.display();
+        gameplay.start();
+    }*/
 
     public void setAddress(String address) {
         this.address = address;
@@ -181,6 +134,12 @@ public class Gameplay extends javax.swing.JFrame {
     }
 
     private void initUI() {
+        //TODO: init UI code here
+        //Dice
+        dice = new Dice();
+        dice.setOpaque(false);
+        dice.setBackground(new Color(255, 0, 0, 20));
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SE POLY");
         setPreferredSize(new java.awt.Dimension(800, 638));
@@ -198,6 +157,7 @@ public class Gameplay extends javax.swing.JFrame {
 
         gameplay = new javax.swing.JPanel();
         gameplay.setBounds(0, 0, 800, 600);
+        gameplay.add(dice);
 
         container = new javax.swing.JTabbedPane();
         container.addTab("Start", start);
@@ -286,7 +246,7 @@ public class Gameplay extends javax.swing.JFrame {
         // -------------------G A M E   P L A Y ------------------------
         // -------------------------------------------------------------
         rollBtn = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\Asset 31.png"));
-        rollBtn.setBounds(369,381,59,50);
+        rollBtn.setBounds(369, 381, 59, 50);
         rollBtn.setEnabled(false);
 
 
@@ -295,11 +255,12 @@ public class Gameplay extends javax.swing.JFrame {
         moneyPlayer1 = new javax.swing.JLabel();
         moneyPlayer1.setBounds(653, 563, 126, 20);
         moneyPlayer2 = new javax.swing.JLabel();
-        moneyPlayer2.setBounds(22,563,126,20);
+        moneyPlayer2.setBounds(22, 563, 126, 20);
         moneyPlayer2.setHorizontalAlignment(SwingConstants.RIGHT);
         moneyPlayer3 = new javax.swing.JLabel();
-        moneyPlayer3.setBounds(22 ,52,126,20);
+        moneyPlayer3.setBounds(22, 52, 126, 20);
         moneyPlayer3.setHorizontalAlignment(SwingConstants.RIGHT);
+
         moneyPlayer4 = new javax.swing.JLabel();
         moneyPlayer4.setBounds(653, 52, 126, 20);
         namePlayer1 = new javax.swing.JLabel();
@@ -337,26 +298,6 @@ public class Gameplay extends javax.swing.JFrame {
         spaceInfo.setBounds(0, 0, 800, 600);
         spaceInfo.setVisible(false);
 
-        // L A N D    B U Y I N G
-        landTitle = new javax.swing.JLabel("", SwingConstants.CENTER);
-        landTitle.setFont(new java.awt.Font("Microsoft PhagsPa", 0, 15));
-        landTitle.setBounds(308, 160, 187, 34);
-        text4 = new javax.swing.JLabel("", SwingConstants.CENTER);
-        text4.setFont(new java.awt.Font("Microsoft PhagsPa", 0, 15));
-        text4.setBounds(308,210,187,30);
-        buyBtn3 = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\Asset 21.png"));
-        buyBtn3.setBounds(416,248,100,39);
-        cancelBtn3 = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\Asset 22.png"));
-        cancelBtn3.setBounds(295,248,100,39);
-        landBuying = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\landBuying.png"));
-        landBuying.setBounds(0,0,800,600);
-
-        landBuying.add(landTitle);
-        landBuying.add(text4);
-        landBuying.add(buyBtn3);
-        landBuying.add(cancelBtn3);
-        landBuying.setVisible(false);
-
         // H O U S E  B U Y I N G  P O P U P
         cancelBtn = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\Asset 22.png"));
         cancelBtn.setBounds(290, 390, 90, 39);
@@ -366,9 +307,9 @@ public class Gameplay extends javax.swing.JFrame {
         buyBtn = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\Asset 21.png"));
         buyBtn.setBounds(430, 390, 100, 39);
         threeHouseCheck = new javax.swing.JCheckBox();
-        threeHouseCheck.setBounds(500, 310, 25, 25);
+        threeHouseCheck.setBounds(390, 310, 25, 25);
         twoHouseCheck = new javax.swing.JCheckBox();
-        twoHouseCheck.setBounds(390, 310, 25, 25);
+        twoHouseCheck.setBounds(500, 310, 25, 25);
         oneHouseCheck = new javax.swing.JCheckBox();
         oneHouseCheck.setBounds(270, 310, 25, 25);
 
@@ -382,131 +323,18 @@ public class Gameplay extends javax.swing.JFrame {
         houseBuying.add(threeHouseCheck);
         houseBuying.setVisible(false);
 
-        // L A N D  M A R K  B U Y I N G
-        title = new javax.swing.JLabel("", SwingConstants.CENTER);
-        title.setFont(new java.awt.Font("Microsoft PhagsPa", 0, 15));
-        title.setBounds(308, 160, 187, 34);
-        landmarkImg =  new javax.swing.JLabel();
-        text3 = new javax.swing.JLabel("", SwingConstants.CENTER);
-        text3.setFont(new java.awt.Font("Microsoft PhagsPa", 0, 15));
-        text3.setBounds(305,320, 200,100);
-        cancelBtn2 = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\Asset 22.png"));
-        cancelBtn2.setBounds(302,357,100,39);
-        buyBtn2 = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\Asset 21.png"));
-        buyBtn2.setBounds(407,357,100,39);
-        landmarkBuying = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\landmarkBuying.png"));
-
-        landmarkBuying.add(title);
-        landmarkBuying.add(landmarkImg);
-        landmarkBuying.add(text3);
-        landmarkBuying.add(buyBtn2);
-        landmarkBuying.add(cancelBtn2);
-        landmarkBuying.setVisible(false);
-
-
         // S H O W  C A R D
         card = new javax.swing.JLabel();
         card.setBounds(0, 0, 800, 600);
         card.setVisible(false);
 
-        // J A I L  B R E A K
-        stayBtn = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\stayBtn.png"));
-        stayBtn.setBounds(471,238,36,16);
-        useBtn = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\useBtn.png"));
-        useBtn.setBounds(471,261,36,16);
-        payBtn = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\payBtn.png"));
-        payBtn.setBounds(471,212,36,16);
-        jailBreak = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\jailBreak.png"));
-        jailBreak.add(stayBtn);
-        jailBreak.add(useBtn);
-        jailBreak.add(payBtn);
-        jailBreak.setVisible(false);
-
-        // A U C T I O N
-        title2 = new javax.swing.JLabel("", SwingConstants.CENTER);
-        title2.setFont(new java.awt.Font("Microsoft PhagsPa", 0, 15));
-        title2.setBounds(308, 160, 187, 34);
-        image2 = new javax.swing.JLabel();
-        highestBid = new javax.swing.JLabel();
-        highestBid.setBounds(291,314,107,28);
-        timeLeft = new javax.swing.JLabel();
-        timeLeft.setBounds(402,314,107,28);
-        bidBtn = new javax.swing.JLabel();
-        bidBtn.setBounds(299,423,82,32);
-        passBtn = new javax.swing.JLabel();
-        passBtn.setBounds(417,423,82,32);
-        bidPlace = new javax.swing.JTextField();
-        bidPlace.setBounds(303, 369, 198, 27);
-        bidPlace.setFont(new java.awt.Font("Microsoft PhagsPa", 2, 15));
-        bidPlace.setText("Place your bid here");
-        auction = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\auction.png"));
-        auction.setBounds(0,0,800,600);
-        auction.setVisible(false);
-
-        //Dice
-        dice = new Dice();
-        dice.setVisible(false);
-
-        //house-landmark
-        icBuilding = new javax.swing.JLabel();
-        lCanteen = new javax.swing.JLabel();
-        yellowBin = new javax.swing.JLabel();
-        blueBin = new javax.swing.JLabel();
-        redBin = new javax.swing.JLabel();
-        floorEight = new javax.swing.JLabel();
-        ic16 = new javax.swing.JLabel();
-        ic01 = new javax.swing.JLabel();
-        ic02 = new javax.swing.JLabel();
-        ic03 = new javax.swing.JLabel();
-        market = new javax.swing.JLabel();
-        seven = new javax.swing.JLabel();
-        ptec = new javax.swing.JLabel();
-        alumniRes = new javax.swing.JLabel();
-        alumniCafe = new javax.swing.JLabel();
-        ic06 = new javax.swing.JLabel();
-        ic04 = new javax.swing.JLabel();
-        fireEscape = new javax.swing.JLabel();
-        waterCooler = new javax.swing.JLabel();
-        floorSix = new javax.swing.JLabel();
-
-        estate.add(null);
-        estate.add(icBuilding);
-        estate.add(null);
-        estate.add(lCanteen);
-        estate.add(null);
-        estate.add(yellowBin);
-        estate.add(blueBin);
-        estate.add(redBin);
-        estate.add(null);
-        estate.add(null);
-        estate.add(floorEight);
-        estate.add(ic16);
-        estate.add(null);
-        estate.add(ic01);
-
-
         gameplay.setLayout(null);
+        gameplay.add(rollBtn);
+
         gameplay.add(spaceInfo);
         gameplay.add(card);
         gameplay.add(houseBuying);
         gameplay.add(titleDeedInfo);
-        gameplay.add(landmarkBuying);
-        gameplay.add(landBuying);
-        gameplay.add(jailBreak);
-        gameplay.add(auction);
-
-        auction.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-        landBuying.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-        spaceInfo.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-        card.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-        houseBuying.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-        titleDeedInfo.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-        landmarkBuying.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-        jailBreak.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-
-        gameplay.add(rollBtn);
-        rollBtn.setVerticalAlignment(SwingConstants.CENTER);
-
         gameplay.add(namePlayer1);
         gameplay.add(namePlayer2);
         gameplay.add(namePlayer3);
@@ -515,11 +343,7 @@ public class Gameplay extends javax.swing.JFrame {
         gameplay.add(moneyPlayer2);
         gameplay.add(moneyPlayer3);
         gameplay.add(moneyPlayer4);
-        gameplay.add(dice);
         gameplay.add(board);
-        dice.setVerticalAlignment(SwingConstants.BOTTOM);
-        //dice.setBackground(new Color(223,234,184));
-        board.setVerticalAlignment(SwingConstants.BOTTOM);
 
 
         // --------------------------------------------------------------------
@@ -540,7 +364,12 @@ public class Gameplay extends javax.swing.JFrame {
         //gameplay
         titleDeedInfo.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                hideLabel(evt,titleDeedInfo);
+                titleDeedMousePressed(evt);
+            }
+        });
+        houseBuying.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                houseBuyingMousePressed(evt);
             }
         });
 
@@ -552,26 +381,13 @@ public class Gameplay extends javax.swing.JFrame {
 
         spaceInfo.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                hideLabel(evt, spaceInfo);
+                spaceInfoMousePressed(evt);
             }
         });
 
         card.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 cardMousePressed(evt);
-            }
-        });
-
-        // house buy
-        cancelBtn.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                hideLabel(evt, houseBuying);
-            }
-        });
-
-        buyBtn.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                buyHouseMousePressed(evt);
             }
         });
 
@@ -591,7 +407,6 @@ public class Gameplay extends javax.swing.JFrame {
             }
         });
 
-        // dice
         rollBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 try {
@@ -599,19 +414,6 @@ public class Gameplay extends javax.swing.JFrame {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }
-        });
-
-        //land buy
-        buyBtn3.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                buyLandMousePressed(evt);
-            }
-        });
-
-        cancelBtn3.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                hideLabel(evt,landBuying);
             }
         });
 
@@ -637,9 +439,14 @@ public class Gameplay extends javax.swing.JFrame {
     //******************************************************************************
     //---------------------G A M E P L A Y------------------------------------------
 
-    // hide Label
-    private void hideLabel(java.awt.event.MouseEvent evt, JLabel label) {
-        label.setVisible(false);
+    //close title deed by clicking anywhere
+    private void titleDeedMousePressed(java.awt.event.MouseEvent evt) {
+        titleDeedInfo.setVisible(false);
+    }
+
+    //close other space info
+    private void spaceInfoMousePressed(java.awt.event.MouseEvent evt) {
+        spaceInfo.setVisible(false);
     }
 
     //show estate detail
@@ -662,9 +469,28 @@ public class Gameplay extends javax.swing.JFrame {
                         "LANDMARK PRICE      " + intToString(temp.getLandmarkPrice()) + "</b></pre></body></html>";
                 text.setText(s);
                 landName.setText("<html><b>" + temp.getName() + "</b></html>");
-                setImage(image,index);
+                image.setIcon(new ImageIcon((map.get(index)).getImage()));
+
+                if (index > 0 && index < 8) {
+                    image.setBounds(0 - ((EstateSpace) map.get(index)).getDisplayXPos() + 335,
+                            0 - ((EstateSpace) map.get(index)).getDisplayYPos() + 300,
+                            800, 600);
+                } else if (index < 16) {
+                    image.setBounds(0 - ((EstateSpace) map.get(index)).getDisplayXPos() + 340,
+                            0 - ((EstateSpace) map.get(index)).getDisplayYPos() + 265,
+                            800, 600);
+                } else if (index < 24) {
+                    image.setBounds(0 - ((EstateSpace) map.get(index)).getDisplayXPos() + 380,
+                            0 - ((EstateSpace) map.get(index)).getDisplayYPos() + 280,
+                            800, 600);
+                } else {
+                    image.setBounds(0 - ((EstateSpace) map.get(index)).getDisplayXPos() + 380,
+                            0 - ((EstateSpace) map.get(index)).getDisplayYPos() + 290,
+                            800, 600);
+                }
+
+
                 titleDeedInfo.setVisible(true);
-                dice.setVisible(false);
             } else {
                 spaceInfo.setIcon(new ImageIcon((map.get(index)).getImage()));
                 spaceInfo.setVisible(true);
@@ -672,135 +498,21 @@ public class Gameplay extends javax.swing.JFrame {
         }
     }
 
-    //set img for show
-    private void setImage(JLabel image, int index){
-        image.setIcon(new ImageIcon((map.get(index)).getImage()));
-        if (index > 0 && index < 8) {
-            image.setBounds(0 - ((EstateSpace) map.get(index)).getDisplayXPos() + 335,
-                    0 - ((EstateSpace) map.get(index)).getDisplayYPos() + 300,
-                    800, 600);
-        } else if (index < 16) {
-            image.setBounds(0 - ((EstateSpace) map.get(index)).getDisplayXPos() + 340,
-                    0 - ((EstateSpace) map.get(index)).getDisplayYPos() + 265,
-                    800, 600);
-        } else if (index < 24) {
-            image.setBounds(0 - ((EstateSpace) map.get(index)).getDisplayXPos() + 380,
-                    0 - ((EstateSpace) map.get(index)).getDisplayYPos() + 280,
-                    800, 600);
-        } else {
-            image.setBounds(0 - ((EstateSpace) map.get(index)).getDisplayXPos() + 380,
-                    0 - ((EstateSpace) map.get(index)).getDisplayYPos() + 290,
-                    800, 600);
-        }
+    private void houseBuyingMousePressed(java.awt.event.MouseEvent evt) {
+        houseBuying.setVisible(false);
     }
 
-    private void showlandBuying(){/*
-            landTitle.setText(space.getName());
-            text4.setText(intToString(space.getPrice()));*/
-    }
-
-    private void buyLandMousePressed(java.awt.event.MouseEvent evt) {
-        PropertySpace space = (PropertySpace) map.get(spaceNumber);
-        player.buy(space); //???
-        if(space instanceof EstateSpace){
-            if(player.getMoney() >= ((EstateSpace) space).getHousePrice()){
-                showHouseBuying(((EstateSpace) space));
-            }
-        }
-    }
-
-    private void showHouseBuying(EstateSpace space){
-        if (space.getOwner() == player) {
-            int houseCount = space.getHouseCount();
-            int money = player.getMoney();
-            price = space.getHousePrice();
-            int temp = price;
-            oneHouseCheck.setEnabled(false);
-            twoHouseCheck.setEnabled(false);
-            threeHouseCheck.setEnabled(false);
-            for (int i = houseCount; i <= 2; i++) {
-                if (i == 0 && money >= temp) {
-                    oneHouseCheck.setEnabled(true);
-                    temp += price;
-                } else
-                    break;
-                if (i == 1 && money >= temp) {
-                    twoHouseCheck.setEnabled(true);
-                    temp += price;
-                } else
-                    break;
-                if (i == 2 && money >= temp) {
-                    threeHouseCheck.setEnabled(true);
-                    temp += price;
-                } else
-                    break;
-            }
-            if (oneHouseCheck.isEnabled() || twoHouseCheck.isEnabled() || threeHouseCheck.isEnabled()) {
-                houseBuying.setVisible(true);
-            }
-        }
-    }
-
-    private void showLandmarkBuying(){
-        landmarkBuying.setVisible(true);
-    }
-
-    //add price = price*2
     private void oneHouseCheckActionPerformed(java.awt.event.ActionEvent evt) {
         if (oneHouseCheck.isSelected())
-            totalPrice.setText(intToString(((EstateSpace)map.get(spaceNumber)).getPrice()));
-        else{
-            twoHouseCheck.setSelected(false);
-            threeHouseCheck.setSelected(false);
-            totalPrice.setText("");
-        }
+            totalPrice.setText("Ddddddd");
+        else
+            totalPrice.setText("GGGggg");
     }
 
     private void twoHouseCheckActionPerformed(java.awt.event.ActionEvent evt) {
-        price = ((EstateSpace)map.get(spaceNumber)).getPrice();
-        if (twoHouseCheck.isSelected() && !oneHouseCheck.isEnabled())
-            totalPrice.setText(intToString(price));
-        else if(twoHouseCheck.isSelected() && oneHouseCheck.isEnabled()){
-            oneHouseCheck.setSelected(true);
-            totalPrice.setText(intToString(price*2));
-        }
-        else{
-            threeHouseCheck.setSelected(false);
-            if(oneHouseCheck.isSelected())
-                totalPrice.setText(intToString(price));
-            else
-                totalPrice.setText("");
-        }
-
     }
 
     private void threeHouseCheckActionPerformed(java.awt.event.ActionEvent evt) {
-        price = ((EstateSpace)map.get(spaceNumber)).getPrice();
-        if (threeHouseCheck.isSelected() && !oneHouseCheck.isEnabled() && !twoHouseCheck.isEnabled())
-            totalPrice.setText(intToString(price));
-        else if(threeHouseCheck.isSelected() && !oneHouseCheck.isEnabled() && twoHouseCheck.isEnabled()){
-            twoHouseCheck.setSelected(true);
-            totalPrice.setText(intToString(price*2));
-        }
-        else if (threeHouseCheck.isSelected() && oneHouseCheck.isEnabled() && twoHouseCheck.isEnabled()){
-            oneHouseCheck.setSelected(true);
-            twoHouseCheck.setSelected(true);
-            totalPrice.setText(intToString(price*3));
-        }
-        else{
-            if(oneHouseCheck.isSelected() && twoHouseCheck.isSelected())
-                totalPrice.setText(intToString(price*2));
-            else if (oneHouseCheck.isSelected())
-                totalPrice.setText(intToString(price));
-            else if(!oneHouseCheck.isEnabled() && twoHouseCheck.isSelected())
-                totalPrice.setText(intToString(price));
-            else
-                totalPrice.setText("");
-        }
-    }
-
-    private void buyHouseMousePressed(java.awt.event.MouseEvent evt) {
-        System.out.println("sth");
     }
 
     private void cardMousePressed(java.awt.event.MouseEvent evt) {
@@ -809,14 +521,11 @@ public class Gameplay extends javax.swing.JFrame {
 
     private void rollBtnMousePressed(java.awt.event.MouseEvent evt) throws IOException {
         rollDice();
-        rollBtn.setEnabled(false);
-
     }
 
     //call when player buy an estate / land on own estate
     private void showHouseBuying(int indexonboard) {
         houseBuying.setVisible(true);
-        dice.setVisible(false);
         //check player money and num of house to enable check box
         //call server  to update all
     }
@@ -941,24 +650,14 @@ public class Gameplay extends javax.swing.JFrame {
         return true;
     }
 
-    private boolean checkSpaceStatus(){
-        Space space = map.get(spaceNumber);
-        if(space instanceof PropertySpace){
-            if(((PropertySpace) space).getOwner() == null){
-                return true;
-            }
-        }
-        return false;
-    }
-
-
 
     //*********************************************************************
     //*********************************************************************
+
     //------------------- E N D   U I   P A R T ---------------------------
 
     public void start() throws IOException {
-        startSendPlayerPositionTimer();
+//        startSendPlayerPositionTimer();
         startGetGameDataTimer();
     }
     //send player position update
@@ -995,24 +694,21 @@ public class Gameplay extends javax.swing.JFrame {
                     String action = serverMessage.getAction();
                     switch (action) {
                         case ("startGame"): {
-                            //TODO: start main game UI
                             container.setSelectedIndex(2);
-                            //start();
                             break;
                         }
 
                         case ("startTurn"): {
                             isTurn = true;
                             rollBtn.setEnabled(true);
-                            //walk
+                            //roll dice -> walk
+                            //enable roll button
+
                             break;
                         }
 
                         case ("initMap"): {
                             map = (ArrayList<Space>) serverMessage.getData();
-                            for (Space space: map) {
-                                System.out.println(space.getName());
-                            }
                             break;
                         }
 
@@ -1086,9 +782,8 @@ public class Gameplay extends javax.swing.JFrame {
 
                         case ("updateDice"): {
                             int[] diceNumbers = (int[]) serverMessage.getData();
-                            //TODO: display UI dice roll
                             dice.roll(diceNumbers[0], diceNumbers[1]);
-                            dice.setVisible(true);
+                            //TODO: display UI dice roll
                             break;
                         }
 
@@ -1103,6 +798,19 @@ public class Gameplay extends javax.swing.JFrame {
                             movePlayerTo(number);
                             break;
                         }
+
+                        case ("moveOpponentForward"): {
+                            MoveAnimateObj moveObj = (MoveAnimateObj) serverMessage.getData();
+                            //TODO: animate opponent id forward
+                            break;
+                        }
+
+                        case ("moveOpponentTo"): {
+                            MoveAnimateObj moveObj = (MoveAnimateObj) serverMessage.getData();
+                            //TODO: animate player opponent to specific position
+                            break;
+                        }
+
                         default:
                             break;
                     }
@@ -1116,11 +824,9 @@ public class Gameplay extends javax.swing.JFrame {
 
     private void endTurn() throws IOException {
         isTurn = false;
-        rollBtn.setEnabled(false);
-        dice.setVisible(false);
         ServerMessage serverMessage = new ServerMessage("endTurn", player.getID());
         client.sendData(serverMessage);
-
+        rollBtn.setEnabled(false);
     }
 
     private void updateOpponent(PlayerObj playerObj) {
@@ -1143,12 +849,13 @@ public class Gameplay extends javax.swing.JFrame {
 
         if (propertySpace instanceof EstateSpace) {
             //TODO: UI option to buy house
+            houseBuying.setVisible(true);
         }
     }
 
-    private void buyHouse(EstateSpace estateSpace) throws IOException {
+    private void buyHouse(EstateSpace estateSpace, int houseCount) throws IOException {
         //TODO: UI not enable if player does not have enough money
-        player.buyHouse(estateSpace);
+        player.buyHouse(estateSpace, houseCount);
         sendMapToUpdate(estateSpace);
         sendPlayerToUpdate();
         //TODO: animation build house
@@ -1206,6 +913,18 @@ public class Gameplay extends javax.swing.JFrame {
         client.sendData(serverMessage);
     }
 
+    private void sendPlayerToMoveForward(int moveCount) throws IOException {
+        MoveAnimateObj moveObj = new MoveAnimateObj(player, moveCount);
+        ServerMessage serverMessage = new ServerMessage("moveOpponentForward", moveObj);
+        client.sendData(serverMessage);
+    }
+
+    private void sendPlayerToMoveTo(int spaceNumber) throws IOException {
+        MoveAnimateObj moveObj = new MoveAnimateObj(player, spaceNumber);
+        ServerMessage serverMessage = new ServerMessage("moveOpponentTo", moveObj);
+        client.sendData(serverMessage);
+    }
+
     private void startAuction(PropertySpace property) throws IOException {
         ServerMessage serverMessage = new ServerMessage("startAuction", property);
         client.sendData(serverMessage);
@@ -1222,6 +941,7 @@ public class Gameplay extends javax.swing.JFrame {
     }
 
     private void rollDice() throws IOException {
+        rollBtn.setEnabled(false);
         int[] diceNumbers = new int[2];
         int totalMoveCount = 0;
         Random randomGenerator = new Random();
@@ -1229,9 +949,8 @@ public class Gameplay extends javax.swing.JFrame {
             int diceNumber = randomGenerator.nextInt(6) + 1;
             diceNumbers[i] = diceNumber;
             totalMoveCount += diceNumber;
-            spaceNumber += diceNumber;
-
         }
+
         ServerMessage serverMessage = new ServerMessage("updateDice", diceNumbers);
         client.sendData(serverMessage);
 //        dice.roll(diceNumbers[0], diceNumbers[1]);
@@ -1257,6 +976,7 @@ public class Gameplay extends javax.swing.JFrame {
             }
         }
         //TODO: animation move player forward
+        sendPlayerToMoveForward(moveCount);
         isMoving = false;
         doSpaceAction(spaceNumber, moveCount);
     }
@@ -1265,6 +985,7 @@ public class Gameplay extends javax.swing.JFrame {
         isMoving = true;
         spaceNumber = number;
         //TODO: animation warp player to space number
+        sendPlayerToMoveTo(number);
         isMoving = false;
         doSpaceAction(spaceNumber, 1);
     }
@@ -1300,6 +1021,7 @@ public class Gameplay extends javax.swing.JFrame {
                 Player owner = propertySpace.getOwner();
                 if (owner == null) {
                     //TODO: display UI to let player choose to buy or put up for auction
+                    houseBuying.setVisible(true);
                 } else if (owner.getID() == player.getID()) {
                     //TODO: display UI to let player choose to buy house if player has enough money
                 } else {
@@ -1339,6 +1061,7 @@ public class Gameplay extends javax.swing.JFrame {
 
             case ("go"): {
                 movePlayerTo(((MoveSpace) space).getAmount());
+                sendPlayerToUpdate();
                 break;
             }
 

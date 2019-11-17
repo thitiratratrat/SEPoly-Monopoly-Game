@@ -16,14 +16,14 @@ public class Dice extends JLabel {
     int die1 = 0, die2 =0 ;
 
     public Dice(){
-        setBounds(350,200,100,50);
+        setBounds(400,300,100,50);
+        //roll(5,3);
         setVisible(true);
+//        System.out.println(getColorModel());
 //        setResizable(false);
 //        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 //        setLocationRelativeTo(null);
     }
-
-
 
     public void roll(int die1, int die2) {
         BufferedImageLoader loader = new BufferedImageLoader() ;
@@ -80,22 +80,24 @@ public class Dice extends JLabel {
 
         rollDice.start();
         rollDice2.start();
-
     }
 
     Image dbImage;
     Graphics dbg ;
     public void paint(Graphics g) {
+        super.paint(g);
+//        setOpaque(false);
         dbImage = createImage(getWidth(),getHeight());
-        setBackground(new Color(0,0,0));
         dbg = dbImage.getGraphics();
-        setOpaque(true);
+        setOpaque(false);
         paintComponents(dbg);
         g.drawImage(dbImage,0,0,null);
     }
 
     public void paintComponents(Graphics g ){
-        setOpaque(true);
+        g.setColor( getBackground() );
+        g.fillRect(0, 0, getWidth(), getHeight());
+
         if(rollDice != null ){
             if(rollDice.getCurrentFrame() != 6) {
                 rollDice.update(System.currentTimeMillis());
@@ -116,6 +118,7 @@ public class Dice extends JLabel {
 
         }
         repaint();
+//        super.paintComponents(g);
     }
 
 }
