@@ -738,7 +738,6 @@ public class Gameplay extends javax.swing.JFrame {
     // house buying
     private void showHouseBuying(EstateSpace space){
         int houseCount = space.getHouseCount();
-        System.out.println(houseCount);
         int money = player.getMoney();
         price = space.getHousePrice();
         int temp = price;
@@ -746,7 +745,6 @@ public class Gameplay extends javax.swing.JFrame {
         twoHouseCheck.setEnabled(false);
         threeHouseCheck.setEnabled(false);
         for (int i = houseCount; i <= 2; i++) {
-            System.out.println(temp + "    " + money);
             if (i == 0 && money >= temp) {
                 oneHouseCheck.setEnabled(true);
                 temp += price;
