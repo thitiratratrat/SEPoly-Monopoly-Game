@@ -724,7 +724,6 @@ public class Gameplay extends javax.swing.JFrame {
 
     // land buying
     private void showLandBuying(PropertySpace space){
-        System.out.println(space.getNumber() + space.getName());
             landTitle.setText(space.getName());
             text4.setText("Price : " + intToString(space.getPrice()));
             landBuying.setVisible(true);
@@ -739,6 +738,7 @@ public class Gameplay extends javax.swing.JFrame {
     // house buying
     private void showHouseBuying(EstateSpace space){
         int houseCount = space.getHouseCount();
+        System.out.println(houseCount);
         int money = player.getMoney();
         price = space.getHousePrice();
         int temp = price;
@@ -746,21 +746,19 @@ public class Gameplay extends javax.swing.JFrame {
         twoHouseCheck.setEnabled(false);
         threeHouseCheck.setEnabled(false);
         for (int i = houseCount; i <= 2; i++) {
+            System.out.println(temp + "    " + money);
             if (i == 0 && money >= temp) {
                 oneHouseCheck.setEnabled(true);
                 temp += price;
-            } else
-                break;
+            }
             if (i == 1 && money >= temp) {
                 twoHouseCheck.setEnabled(true);
                 temp += price;
-            } else
-                break;
+            }
             if (i == 2 && money >= temp) {
                 threeHouseCheck.setEnabled(true);
                 temp += price;
-            } else
-                break;
+            }
         }
         if (oneHouseCheck.isEnabled() || twoHouseCheck.isEnabled() || threeHouseCheck.isEnabled()) {
             houseBuying.setVisible(true);
@@ -1104,8 +1102,6 @@ public class Gameplay extends javax.swing.JFrame {
                             int[] diceNumbers = (int[]) serverMessage.getData();
                             //TODO: display UI dice roll
                             dice.roll(diceNumbers[0], diceNumbers[1]);
-                            System.out.println(diceNumbers[0]+"   "+diceNumbers[1]);
-                            System.out.println(map.get(diceNumbers[0]+diceNumbers[1]).getNumber());
                             dice.setVisible(true);
                             break;
                         }
@@ -1244,10 +1240,7 @@ public class Gameplay extends javax.swing.JFrame {
             int diceNumber = randomGenerator.nextInt(6) + 1;
             diceNumbers[i] = diceNumber;
             totalMoveCount += diceNumber;
-            spaceNumber += diceNumber;
-            System.out.println("spacenum = "+spaceNumber);
         }
-        System.out.println("rollDice " + diceNumbers[0] + "    " + diceNumbers[1]);
         ServerMessage serverMessage = new ServerMessage("updateDice", diceNumbers);
         client.sendData(serverMessage);
 //        dice.roll(diceNumbers[0], diceNumbers[1]);
@@ -1313,9 +1306,7 @@ public class Gameplay extends javax.swing.JFrame {
             case ("property"): {
                 PropertySpace propertySpace = (PropertySpace) space;
                 Player owner = propertySpace.getOwner();
-                System.out.println(owner==null);
                 if (owner==null) {
-                    System.out.println(spaceNumber);
                     //TODO: display UI to let player choose to buy or put up for auction
                     showLandBuying(propertySpace);
                 } else if (owner.getID() == player.getID()) {
