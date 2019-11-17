@@ -87,7 +87,7 @@ public class Dice extends JLabel {
     Graphics dbg ;
     public void paint(Graphics g) {
         dbImage = createImage(getWidth(),getHeight());
-        setBackground(new Color(223,234,184));
+        setBackground(new Color(0,0,0));
         dbg = dbImage.getGraphics();
         setOpaque(true);
         paintComponents(dbg);
