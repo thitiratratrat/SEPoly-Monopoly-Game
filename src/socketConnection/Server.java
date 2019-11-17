@@ -127,7 +127,6 @@ public class Server {
             Space temp;
 
             while (estate.next()) {
-                System.out.println(estate.getString(3));
                 double[] pos = new double[8];
                 pos[0] = estate.getDouble(13);
                 pos[1] = estate.getDouble(14);

@@ -2,6 +2,7 @@ package socketConnection;
 
 import DiceAnimate.Dice;
 import model.*;
+import org.w3c.dom.events.Event;
 
 import javax.sound.midi.Soundbank;
 import javax.swing.*;
@@ -395,13 +396,14 @@ public class Gameplay extends javax.swing.JFrame {
         buyBtn2 = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\Asset 21.png"));
         buyBtn2.setBounds(407,357,100,39);
         landmarkBuying = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\landmarkBuying.png"));
+        landmarkBuying.setBounds(0,0,800,600);
 
         landmarkBuying.add(title);
         landmarkBuying.add(landmarkImg);
         landmarkBuying.add(text3);
         landmarkBuying.add(buyBtn2);
         landmarkBuying.add(cancelBtn2);
-        landmarkBuying.setVisible(false);
+        //landmarkBuying.setVisible(false);
 
 
         // S H O W  C A R D
@@ -469,7 +471,7 @@ public class Gameplay extends javax.swing.JFrame {
         waterCooler = new javax.swing.JLabel();
         floorSix = new javax.swing.JLabel();
 
-        estate.add(null);
+/*        estate.add(null);
         estate.add(icBuilding);
         estate.add(null);
         estate.add(lCanteen);
@@ -482,7 +484,7 @@ public class Gameplay extends javax.swing.JFrame {
         estate.add(floorEight);
         estate.add(ic16);
         estate.add(null);
-        estate.add(ic01);
+        estate.add(ic01);*/
 
 
         gameplay.setLayout(null);
@@ -571,7 +573,11 @@ public class Gameplay extends javax.swing.JFrame {
 
         buyBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                buyHouseMousePressed(evt);
+                try {
+                    buyHouseMousePressed(evt);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -591,6 +597,42 @@ public class Gameplay extends javax.swing.JFrame {
             }
         });
 
+
+        //land buy
+        buyBtn3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                try {
+                    buyLandMousePressed(evt);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        cancelBtn3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                hideLabel(evt,landBuying);
+            }
+        });
+
+        // landmark buy
+        cancelBtn2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                hideLabel(evt, landmarkBuying);
+            }
+        });
+
+        buyBtn2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                try {
+                    buyLandmarkMousePressed(evt);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+
         // dice
         rollBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
@@ -601,20 +643,6 @@ public class Gameplay extends javax.swing.JFrame {
                 }
             }
         });
-
-        //land buy
-        buyBtn3.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                buyLandMousePressed(evt);
-            }
-        });
-
-        cancelBtn3.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                hideLabel(evt,landBuying);
-            }
-        });
-
         pack();
     }
 
@@ -694,58 +722,49 @@ public class Gameplay extends javax.swing.JFrame {
         }
     }
 
-    private void showlandBuying(){/*
+    // land buying
+    private void showLandBuying(PropertySpace space){
             landTitle.setText(space.getName());
-            text4.setText(intToString(space.getPrice()));*/
+            text4.setText("Price : " + intToString(space.getPrice()));
     }
 
-    private void buyLandMousePressed(java.awt.event.MouseEvent evt) {
+    private void buyLandMousePressed(java.awt.event.MouseEvent evt) throws IOException {
         PropertySpace space = (PropertySpace) map.get(spaceNumber);
-        player.buy(space); //???
-        if(space instanceof EstateSpace){
-            if(player.getMoney() >= ((EstateSpace) space).getHousePrice()){
-                showHouseBuying(((EstateSpace) space));
-            }
-        }
+        buy(space);
     }
 
+    // house buying
     private void showHouseBuying(EstateSpace space){
-        if (space.getOwner() == player) {
-            int houseCount = space.getHouseCount();
-            int money = player.getMoney();
-            price = space.getHousePrice();
-            int temp = price;
-            oneHouseCheck.setEnabled(false);
-            twoHouseCheck.setEnabled(false);
-            threeHouseCheck.setEnabled(false);
-            for (int i = houseCount; i <= 2; i++) {
-                if (i == 0 && money >= temp) {
-                    oneHouseCheck.setEnabled(true);
-                    temp += price;
-                } else
-                    break;
-                if (i == 1 && money >= temp) {
-                    twoHouseCheck.setEnabled(true);
-                    temp += price;
-                } else
-                    break;
-                if (i == 2 && money >= temp) {
-                    threeHouseCheck.setEnabled(true);
-                    temp += price;
-                } else
-                    break;
-            }
-            if (oneHouseCheck.isEnabled() || twoHouseCheck.isEnabled() || threeHouseCheck.isEnabled()) {
-                houseBuying.setVisible(true);
-            }
+        int houseCount = space.getHouseCount();
+        int money = player.getMoney();
+        price = space.getHousePrice();
+        int temp = price;
+        oneHouseCheck.setEnabled(false);
+        twoHouseCheck.setEnabled(false);
+        threeHouseCheck.setEnabled(false);
+        for (int i = houseCount; i <= 2; i++) {
+            if (i == 0 && money >= temp) {
+                oneHouseCheck.setEnabled(true);
+                temp += price;
+            } else
+                break;
+            if (i == 1 && money >= temp) {
+                twoHouseCheck.setEnabled(true);
+                temp += price;
+            } else
+                break;
+            if (i == 2 && money >= temp) {
+                threeHouseCheck.setEnabled(true);
+                temp += price;
+            } else
+                break;
         }
+        if (oneHouseCheck.isEnabled() || twoHouseCheck.isEnabled() || threeHouseCheck.isEnabled()) {
+            houseBuying.setVisible(true);
+        }
+
     }
 
-    private void showLandmarkBuying(){
-        landmarkBuying.setVisible(true);
-    }
-
-    //add price = price*2
     private void oneHouseCheckActionPerformed(java.awt.event.ActionEvent evt) {
         if (oneHouseCheck.isSelected())
             totalPrice.setText(intToString(((EstateSpace)map.get(spaceNumber)).getPrice()));
@@ -799,8 +818,21 @@ public class Gameplay extends javax.swing.JFrame {
         }
     }
 
-    private void buyHouseMousePressed(java.awt.event.MouseEvent evt) {
-        System.out.println("sth");
+    private void buyHouseMousePressed(java.awt.event.MouseEvent evt) throws IOException {
+        buyHouse((EstateSpace) map.get(spaceNumber));
+    }
+
+
+    //landmark buying
+    private void showLandmarkBuying(EstateSpace space){
+        title.setText(space.getName());
+        setImage(landmarkImg, map.indexOf(space));
+        text3.setText("Landmark Price : " + intToString(space.getLandmarkPrice()));
+        landmarkBuying.setVisible(true);
+    }
+
+    private void buyLandmarkMousePressed(java.awt.event.MouseEvent evt) throws IOException {
+        buyLandmark((EstateSpace) map.get(spaceNumber));
     }
 
     private void cardMousePressed(java.awt.event.MouseEvent evt) {
@@ -813,13 +845,7 @@ public class Gameplay extends javax.swing.JFrame {
 
     }
 
-    //call when player buy an estate / land on own estate
-    private void showHouseBuying(int indexonboard) {
-        houseBuying.setVisible(true);
-        dice.setVisible(false);
-        //check player money and num of house to enable check box
-        //call server  to update all
-    }
+
 
     //call when player land on community card / chance card
 
@@ -873,7 +899,6 @@ public class Gameplay extends javax.swing.JFrame {
         }
     }
 
-
     private String intToString(int inp) {
         String temp = "";
         if (inp < 1000)
@@ -888,7 +913,6 @@ public class Gameplay extends javax.swing.JFrame {
     }
 
     public int board_is_clicked(double x, double y) {
-        System.out.println("board is clicked");
         for (Space s : map) {
             if (checkIsPositionsOnSpace(s.getPositions(), x, y)) {
                 return map.indexOf(s);
@@ -941,15 +965,6 @@ public class Gameplay extends javax.swing.JFrame {
         return true;
     }
 
-    private boolean checkSpaceStatus(){
-        Space space = map.get(spaceNumber);
-        if(space instanceof PropertySpace){
-            if(((PropertySpace) space).getOwner() == null){
-                return true;
-            }
-        }
-        return false;
-    }
 
 
 
@@ -995,7 +1010,6 @@ public class Gameplay extends javax.swing.JFrame {
                     String action = serverMessage.getAction();
                     switch (action) {
                         case ("startGame"): {
-                            //TODO: start main game UI
                             container.setSelectedIndex(2);
                             //start();
                             break;
@@ -1010,9 +1024,6 @@ public class Gameplay extends javax.swing.JFrame {
 
                         case ("initMap"): {
                             map = (ArrayList<Space>) serverMessage.getData();
-                            for (Space space: map) {
-                                System.out.println(space.getName());
-                            }
                             break;
                         }
 
@@ -1143,24 +1154,20 @@ public class Gameplay extends javax.swing.JFrame {
         sendMapToUpdate(propertySpace);
 
         if (propertySpace instanceof EstateSpace) {
-            //TODO: UI option to buy house
+            if(player.getMoney() >= ((EstateSpace) propertySpace).getHousePrice()){
+                showHouseBuying(((EstateSpace) propertySpace));
+            }
         }
     }
 
     private void buyHouse(EstateSpace estateSpace) throws IOException {
-        //TODO: UI not enable if player does not have enough money
-        player.buyHouse(estateSpace);
+        player.buyHouse(estateSpace,price/estateSpace.getHousePrice());
         sendMapToUpdate(estateSpace);
         sendPlayerToUpdate();
         //TODO: animation build house
     }
 
     private void buyLandmark(EstateSpace estateSpace) throws IOException {
-        //TODO: UI is not enable if player does not have 4 houses
-        if (estateSpace.getHouseCount() != 4) {
-            return;
-        }
-
         player.buyLandmark(estateSpace);
         sendMapToUpdate(estateSpace);
         sendPlayerToUpdate();
@@ -1301,15 +1308,27 @@ public class Gameplay extends javax.swing.JFrame {
                 Player owner = propertySpace.getOwner();
                 if (owner == null) {
                     //TODO: display UI to let player choose to buy or put up for auction
+                    showLandBuying(propertySpace);
                 } else if (owner.getID() == player.getID()) {
-                    //TODO: display UI to let player choose to buy house if player has enough money
+                    if(propertySpace instanceof EstateSpace){
+                        if(((EstateSpace) propertySpace).getHouseCount() < 3){
+                            if(player.getMoney() >= ((EstateSpace) propertySpace).getHousePrice()) {
+                                showHouseBuying((EstateSpace) propertySpace);
+                            }
+                        }
+                        else{
+                            if(player.getMoney() >= ((EstateSpace) propertySpace).getLandmarkPrice()) {
+                                showLandmarkBuying((EstateSpace) propertySpace);
+                            }
+                        }
+                    }
                 } else {
                     int rent = propertySpace.getRentPrice();
 
                     if (propertySpace instanceof UtilitySpace) {
                         rent *= diceNumber;
                     }
-
+                    // RAILROAD?????
 //                    if (isBankrupt(rent)) {
 //                        sendPlayerIsBankrupt();
 //                        break;
@@ -1321,6 +1340,7 @@ public class Gameplay extends javax.swing.JFrame {
                     ServerMessage serverMessage = new ServerMessage("getPaid", getPaidObj);
                     client.sendData(serverMessage);
                 }
+                endTurn();
                 break;
             }
 
@@ -1450,7 +1470,4 @@ public class Gameplay extends javax.swing.JFrame {
         client.sendData(serverMessage);
     }
 
-    public ArrayList<Space> getMap() {
-        return this.map;
-    }
 }
