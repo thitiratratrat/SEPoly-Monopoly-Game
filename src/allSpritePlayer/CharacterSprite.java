@@ -2,16 +2,38 @@ package allSpritePlayer;
 
 import model.Movable;
 
-import javax.management.ObjectName;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.net.PortUnreachableException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+public class Play extends JFrame {
+
+    Movable mainPlayer;
+    int diceNumber ;
+    public Play( ){
+        initComponents();
+    }
+    private void initComponents(){
+        CharacterSprite player1 = new CharacterSprite(mainPlayer);
+        add(player1 );
+        Timer t = new Timer(300, new MoveForward(player1, mainPlayer, diceNumber));
+        t.start();
+    }
+
+    public static void main(String[] args) {
+        Play main = new Play();
+        main.setSize(800,600);
+        main.setVisible(true);
+        main.setResizable(false);
+        main.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        main.setLocationRelativeTo(null);
+    }
+}
 
 public class CharacterSprite extends JPanel{
     BufferedImage spriteIdleL, spriteIdleR;
