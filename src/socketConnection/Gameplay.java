@@ -3,6 +3,7 @@ package socketConnection;
 import DiceAnimate.Dice;
 import model.*;
 
+import javax.sound.midi.Soundbank;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -11,7 +12,6 @@ import java.util.*;
 import java.util.Timer;
 
 import java.util.ArrayList;
-
 
 
 public class Gameplay extends javax.swing.JFrame {
@@ -137,6 +137,8 @@ public class Gameplay extends javax.swing.JFrame {
         //TODO: init UI code here
         //Dice
         dice = new Dice();
+        dice.setOpaque(false);
+        dice.setBackground(new Color(255, 0, 0, 20));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SE POLY");
@@ -244,7 +246,7 @@ public class Gameplay extends javax.swing.JFrame {
         // -------------------G A M E   P L A Y ------------------------
         // -------------------------------------------------------------
         rollBtn = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\Asset 31.png"));
-        rollBtn.setBounds(369,381,59,50);
+        rollBtn.setBounds(369, 381, 59, 50);
         rollBtn.setEnabled(false);
 
 
@@ -253,9 +255,12 @@ public class Gameplay extends javax.swing.JFrame {
         moneyPlayer1 = new javax.swing.JLabel();
         moneyPlayer1.setBounds(653, 563, 126, 20);
         moneyPlayer2 = new javax.swing.JLabel();
-        moneyPlayer2.setBounds(22,563,126,20);
+        moneyPlayer2.setBounds(22, 563, 126, 20);
+        moneyPlayer2.setHorizontalAlignment(SwingConstants.RIGHT);
         moneyPlayer3 = new javax.swing.JLabel();
-        moneyPlayer3.setBounds(22 ,52,126,20);
+        moneyPlayer3.setBounds(22, 52, 126, 20);
+        moneyPlayer3.setHorizontalAlignment(SwingConstants.RIGHT);
+
         moneyPlayer4 = new javax.swing.JLabel();
         moneyPlayer4.setBounds(653, 52, 126, 20);
         namePlayer1 = new javax.swing.JLabel();
@@ -517,6 +522,7 @@ public class Gameplay extends javax.swing.JFrame {
     private void rollBtnMousePressed(java.awt.event.MouseEvent evt) throws IOException {
         rollDice();
     }
+
     //call when player buy an estate / land on own estate
     private void showHouseBuying(int indexonboard) {
         houseBuying.setVisible(true);
@@ -591,6 +597,7 @@ public class Gameplay extends javax.swing.JFrame {
     }
 
     public int board_is_clicked(double x, double y) {
+        System.out.println("board is clicked");
         for (Space s : map) {
             if (checkIsPositionsOnSpace(s.getPositions(), x, y)) {
                 return map.indexOf(s);
@@ -650,7 +657,7 @@ public class Gameplay extends javax.swing.JFrame {
     //------------------- E N D   U I   P A R T ---------------------------
 
     public void start() throws IOException {
-        startSendPlayerPositionTimer();
+//        startSendPlayerPositionTimer();
         startGetGameDataTimer();
     }
     //send player position update
@@ -775,6 +782,7 @@ public class Gameplay extends javax.swing.JFrame {
 
                         case ("updateDice"): {
                             int[] diceNumbers = (int[]) serverMessage.getData();
+                            dice.roll(diceNumbers[0], diceNumbers[1]);
                             //TODO: display UI dice roll
                             break;
                         }
@@ -788,6 +796,18 @@ public class Gameplay extends javax.swing.JFrame {
                         case ("moveTo"): {
                             int number = (int) serverMessage.getData();
                             movePlayerTo(number);
+                            break;
+                        }
+
+                        case ("moveOpponentForward"): {
+                            MoveAnimateObj moveObj = (MoveAnimateObj) serverMessage.getData();
+                            //TODO: animate opponent id forward
+                            break;
+                        }
+
+                        case ("moveOpponentTo"): {
+                            MoveAnimateObj moveObj = (MoveAnimateObj) serverMessage.getData();
+                            //TODO: animate player opponent to specific position
                             break;
                         }
 
@@ -829,12 +849,13 @@ public class Gameplay extends javax.swing.JFrame {
 
         if (propertySpace instanceof EstateSpace) {
             //TODO: UI option to buy house
+            houseBuying.setVisible(true);
         }
     }
 
-    private void buyHouse(EstateSpace estateSpace) throws IOException {
+    private void buyHouse(EstateSpace estateSpace, int houseCount) throws IOException {
         //TODO: UI not enable if player does not have enough money
-        player.buyHouse(estateSpace);
+        player.buyHouse(estateSpace, houseCount);
         sendMapToUpdate(estateSpace);
         sendPlayerToUpdate();
         //TODO: animation build house
@@ -892,6 +913,18 @@ public class Gameplay extends javax.swing.JFrame {
         client.sendData(serverMessage);
     }
 
+    private void sendPlayerToMoveForward(int moveCount) throws IOException {
+        MoveAnimateObj moveObj = new MoveAnimateObj(player, moveCount);
+        ServerMessage serverMessage = new ServerMessage("moveOpponentForward", moveObj);
+        client.sendData(serverMessage);
+    }
+
+    private void sendPlayerToMoveTo(int spaceNumber) throws IOException {
+        MoveAnimateObj moveObj = new MoveAnimateObj(player, spaceNumber);
+        ServerMessage serverMessage = new ServerMessage("moveOpponentTo", moveObj);
+        client.sendData(serverMessage);
+    }
+
     private void startAuction(PropertySpace property) throws IOException {
         ServerMessage serverMessage = new ServerMessage("startAuction", property);
         client.sendData(serverMessage);
@@ -908,6 +941,7 @@ public class Gameplay extends javax.swing.JFrame {
     }
 
     private void rollDice() throws IOException {
+        rollBtn.setEnabled(false);
         int[] diceNumbers = new int[2];
         int totalMoveCount = 0;
         Random randomGenerator = new Random();
@@ -916,10 +950,10 @@ public class Gameplay extends javax.swing.JFrame {
             diceNumbers[i] = diceNumber;
             totalMoveCount += diceNumber;
         }
-        dice.roll(diceNumbers[0], diceNumbers[1]);
 
         ServerMessage serverMessage = new ServerMessage("updateDice", diceNumbers);
         client.sendData(serverMessage);
+//        dice.roll(diceNumbers[0], diceNumbers[1]);
         //TODO: display UI dice roll
         //ddd(diceNumbers[0],diceNumbers[1]);
         if (player.isJailed()) {
@@ -942,6 +976,7 @@ public class Gameplay extends javax.swing.JFrame {
             }
         }
         //TODO: animation move player forward
+        sendPlayerToMoveForward(moveCount);
         isMoving = false;
         doSpaceAction(spaceNumber, moveCount);
     }
@@ -950,6 +985,7 @@ public class Gameplay extends javax.swing.JFrame {
         isMoving = true;
         spaceNumber = number;
         //TODO: animation warp player to space number
+        sendPlayerToMoveTo(number);
         isMoving = false;
         doSpaceAction(spaceNumber, 1);
     }
@@ -985,6 +1021,7 @@ public class Gameplay extends javax.swing.JFrame {
                 Player owner = propertySpace.getOwner();
                 if (owner == null) {
                     //TODO: display UI to let player choose to buy or put up for auction
+                    houseBuying.setVisible(true);
                 } else if (owner.getID() == player.getID()) {
                     //TODO: display UI to let player choose to buy house if player has enough money
                 } else {
@@ -1024,6 +1061,7 @@ public class Gameplay extends javax.swing.JFrame {
 
             case ("go"): {
                 movePlayerTo(((MoveSpace) space).getAmount());
+                sendPlayerToUpdate();
                 break;
             }
 
