@@ -68,7 +68,7 @@ class MoveForward implements ActionListener {
     static int diceNumber ;
     static int posX , posY;
     int  count ;
-    public MoveForward(CharacterSprite allSprite , model.Movable player, int diceNumber){
+    public MoveForward(CharacterSprite allSprite , Movable player, int diceNumber){
         this.allSprite = allSprite;
         this.diceNumber = diceNumber;
         this.posX = player.getX();
