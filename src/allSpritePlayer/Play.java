@@ -20,7 +20,7 @@ public class Play extends JFrame {
     }
     private void initComponents(){
         CharacterSprite player1 = new CharacterSprite(mainPlayer);
-        add(player1 );
+        add(player1);
         Timer t = new Timer(300, new MoveForward(player1, mainPlayer, diceNumber));
         t.start();
     }
@@ -35,7 +35,7 @@ public class Play extends JFrame {
     }
 }
 
-public class CharacterSprite extends JPanel{
+class CharacterSprite extends JPanel{
     BufferedImage spriteIdleL, spriteIdleR;
 
     public CharacterSprite(Movable player){
