@@ -9,7 +9,7 @@ public class MoveAnimateObj {
         moveNumber = number;
     }
 
-    public Movable getPlayerID() {
+    public Movable getPlayer() {
         return player;
     }
 
