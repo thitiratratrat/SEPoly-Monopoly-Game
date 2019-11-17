@@ -9,6 +9,7 @@ public class EstateSpace extends PropertySpace {
     private int landmarkCount;
     private ArrayList<Integer> rentPrices;
     final private int MAX_LANDMARK = 1;
+    final private int MAX_HOUSE_COUNT = 3;
     private double[] positions;
     public EstateSpace(int number, String name, int price, int rent, int oneHouseRent,
                 int twoHouseRent, int threeHouseRent, int landmarkRent, int housePrice,
@@ -58,8 +59,8 @@ public class EstateSpace extends PropertySpace {
     public void buildHouse(int houseCount) {
         houseCount += houseCount;
 
-        if (houseCount > 4) {
-            houseCount = 4;
+        if (houseCount > MAX_HOUSE_COUNT) {
+            houseCount = MAX_HOUSE_COUNT;
         }
     }
 
