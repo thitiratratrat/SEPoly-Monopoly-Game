@@ -724,7 +724,6 @@ public class Gameplay extends javax.swing.JFrame {
 
     // land buying
     private void showLandBuying(PropertySpace space){
-        System.out.println(space.getNumber() + space.getName());
             landTitle.setText(space.getName());
             text4.setText("Price : " + intToString(space.getPrice()));
             landBuying.setVisible(true);
@@ -1104,8 +1103,6 @@ public class Gameplay extends javax.swing.JFrame {
                             int[] diceNumbers = (int[]) serverMessage.getData();
                             //TODO: display UI dice roll
                             dice.roll(diceNumbers[0], diceNumbers[1]);
-                            System.out.println(diceNumbers[0]+"   "+diceNumbers[1]);
-                            System.out.println(map.get(diceNumbers[0]+diceNumbers[1]).getNumber());
                             dice.setVisible(true);
                             break;
                         }
@@ -1244,10 +1241,7 @@ public class Gameplay extends javax.swing.JFrame {
             int diceNumber = randomGenerator.nextInt(6) + 1;
             diceNumbers[i] = diceNumber;
             totalMoveCount += diceNumber;
-            spaceNumber += diceNumber;
-            System.out.println("spacenum = "+spaceNumber);
         }
-        System.out.println("rollDice " + diceNumbers[0] + "    " + diceNumbers[1]);
         ServerMessage serverMessage = new ServerMessage("updateDice", diceNumbers);
         client.sendData(serverMessage);
 //        dice.roll(diceNumbers[0], diceNumbers[1]);
@@ -1313,9 +1307,7 @@ public class Gameplay extends javax.swing.JFrame {
             case ("property"): {
                 PropertySpace propertySpace = (PropertySpace) space;
                 Player owner = propertySpace.getOwner();
-                System.out.println(owner==null);
                 if (owner==null) {
-                    System.out.println(spaceNumber);
                     //TODO: display UI to let player choose to buy or put up for auction
                     showLandBuying(propertySpace);
                 } else if (owner.getID() == player.getID()) {

@@ -1,6 +1,8 @@
 package model;
 
-public class GetPaidObj {
+import java.io.Serializable;
+
+public class GetPaidObj implements Serializable {
     private int playerID;
     private int rent;
 

@@ -1,6 +1,8 @@
 package model;
 
-public class DrawCardObj {
+import java.io.Serializable;
+
+public class DrawCardObj implements Serializable {
     private int playerID;
     private String deckType;
 
