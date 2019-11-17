@@ -127,7 +127,8 @@ class ShowPlayer1 extends JPanel {
             case 0: spriteSheet = loader.loadImage("/allImage/ratSprite.png");break;
             case 1: spriteSheet = loader.loadImage("/allImage/pupSprite.png");break;
             case 2: spriteSheet = loader.loadImage("/allImage/PDAMIAN.png");break;
-            case 3: spriteSheet = loader.loadImage("/allImage/maidSprite.png");break; }
+            case 3: spriteSheet = loader.loadImage("/allImage/maidSprite.png");break;
+        }
             spriteSheetBoard = loader.loadImage("/allImage/finaljingjing_board.png");
             diceSpriteSheet = loader.loadImage("/allImage/newDice.png" );
         } catch (IOException ex) {
@@ -246,4 +247,4 @@ class ShowPlayer1 extends JPanel {
 
 
 
-
+//movePlayer(Movable player, int spacenumber)
