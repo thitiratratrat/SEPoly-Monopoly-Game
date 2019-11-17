@@ -137,6 +137,8 @@ public class Gameplay extends javax.swing.JFrame {
         //TODO: init UI code here
         //Dice
         dice = new Dice();
+        dice.setOpaque(false);
+        dice.setBackground(new Color(255, 0, 0, 20));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SE POLY");
@@ -797,6 +799,18 @@ public class Gameplay extends javax.swing.JFrame {
                             break;
                         }
 
+                        case ("movePlayerForward"): {
+                            MoveAnimateObj moveObj = (MoveAnimateObj) serverMessage.getData();
+                            //TODO: animate player id forward
+                            break;
+                        }
+
+                        case ("movePlayerTo"): {
+                            MoveAnimateObj moveObj = (MoveAnimateObj) serverMessage.getData();
+                            //TODO: animate player id to specific position
+                            break;
+                        }
+
                         default:
                             break;
                     }
@@ -835,12 +849,13 @@ public class Gameplay extends javax.swing.JFrame {
 
         if (propertySpace instanceof EstateSpace) {
             //TODO: UI option to buy house
+            houseBuying.setVisible(true);
         }
     }
 
-    private void buyHouse(EstateSpace estateSpace) throws IOException {
+    private void buyHouse(EstateSpace estateSpace, int houseCount) throws IOException {
         //TODO: UI not enable if player does not have enough money
-        player.buyHouse(estateSpace);
+        player.buyHouse(estateSpace, houseCount);
         sendMapToUpdate(estateSpace);
         sendPlayerToUpdate();
         //TODO: animation build house
@@ -895,6 +910,18 @@ public class Gameplay extends javax.swing.JFrame {
 
     private void sendPlayerToUpdate() throws IOException {
         ServerMessage serverMessage = new ServerMessage("updatePlayer", player);
+        client.sendData(serverMessage);
+    }
+
+    private void sendPlayerToMoveForward(int moveCount) throws IOException {
+        MoveAnimateObj moveObj = new MoveAnimateObj(player, moveCount);
+        ServerMessage serverMessage = new ServerMessage("movePlayerForward", moveObj);
+        client.sendData(serverMessage);
+    }
+
+    private void sendPlayerToMoveTo(int spaceNumber) throws IOException {
+        MoveAnimateObj moveObj = new MoveAnimateObj(player, spaceNumber);
+        ServerMessage serverMessage = new ServerMessage("movePlayerTo", moveObj);
         client.sendData(serverMessage);
     }
 
@@ -1032,6 +1059,7 @@ public class Gameplay extends javax.swing.JFrame {
 
             case ("go"): {
                 movePlayerTo(((MoveSpace) space).getAmount());
+                sendPlayerToUpdate();
                 break;
             }
 
