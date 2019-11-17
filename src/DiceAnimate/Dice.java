@@ -17,7 +17,6 @@ public class Dice extends JLabel {
 
     public Dice(){
         setBounds(400,300,100,50);
-        setOpaque(false);
         //roll(5,3);
         setVisible(true);
 //        System.out.println(getColorModel());
@@ -81,14 +80,13 @@ public class Dice extends JLabel {
 
         rollDice.start();
         rollDice2.start();
-
     }
 
     Image dbImage;
     Graphics dbg ;
     public void paint(Graphics g) {
         super.paint(g);
-        setOpaque(false);
+//        setOpaque(false);
         dbImage = createImage(getWidth(),getHeight());
         dbg = dbImage.getGraphics();
         setOpaque(false);
@@ -96,10 +94,10 @@ public class Dice extends JLabel {
         g.drawImage(dbImage,0,0,null);
     }
 
-    public void paintComponent(Graphics g ){
-//        super.paintComponent(g);
-        setOpaque(false);
-        setBackground(new Color(0,255,0, 12));
+    public void paintComponents(Graphics g ){
+        g.setColor( getBackground() );
+        g.fillRect(0, 0, getWidth(), getHeight());
+
         if(rollDice != null ){
             if(rollDice.getCurrentFrame() != 6) {
                 rollDice.update(System.currentTimeMillis());
@@ -120,6 +118,7 @@ public class Dice extends JLabel {
 
         }
         repaint();
+//        super.paintComponents(g);
     }
 
 }

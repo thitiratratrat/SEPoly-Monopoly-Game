@@ -83,9 +83,12 @@ class ClientHandler extends Thread {
                     }
 
                     case ("addName"): {
-                        System.out.println("adding name");
                         String name = (String) serverMessage.getData();
                         server.addNames(name);
+                    }
+
+                    case ("movePlayerForward"): {
+                        server.sendToAllExcept();
                     }
 
                     default:
