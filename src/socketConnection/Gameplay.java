@@ -541,7 +541,10 @@ public class Gameplay extends javax.swing.JFrame {
         gameplay.add(dice);
         gameplay.add(board);
         dice.setVerticalAlignment(SwingConstants.BOTTOM);
+        //dice.setIcon(new ImageIcon("\\src\\allImage\\finaljingjing_board.png"));
         dice.setBackground(new Color(223,234,184));
+        dice.setBounds(343,185,100,50);
+        //dice.setBackground(new Color(0x0));
         board.setVerticalAlignment(SwingConstants.BOTTOM);
 
 
@@ -625,7 +628,7 @@ public class Gameplay extends javax.swing.JFrame {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 try {
                     buyLandMousePressed(evt);
-                } catch (IOException e) {
+                } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 }
             }
@@ -660,7 +663,7 @@ public class Gameplay extends javax.swing.JFrame {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 try {
                     rollBtnMousePressed(evt);
-                } catch (IOException e) {
+                } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 }
             }
@@ -745,20 +748,20 @@ public class Gameplay extends javax.swing.JFrame {
     }
 
     // land buying
-    private void showLandBuying(PropertySpace space){
-            landTitle.setText(space.getName());
+    private void showLandBuying(PropertySpace space) throws InterruptedException {
+        landTitle.setText(space.getName());
             text4.setText("Price : " + intToString(space.getPrice()));
             landBuying.setVisible(true);
     }
 
-    private void buyLandMousePressed(java.awt.event.MouseEvent evt) throws IOException {
+    private void buyLandMousePressed(java.awt.event.MouseEvent evt) throws IOException, InterruptedException {
         PropertySpace space = (PropertySpace) map.get(spaceNumber);
         buy(space);
         landBuying.setVisible(false);
     }
 
     // house buying
-    private void showHouseBuying(EstateSpace space){
+    private void showHouseBuying(EstateSpace space) throws InterruptedException {
         int houseCount = space.getHouseCount();
         int money = player.getMoney();
         price = space.getHousePrice();
@@ -846,7 +849,8 @@ public class Gameplay extends javax.swing.JFrame {
 
 
     //landmark buying
-    private void showLandmarkBuying(EstateSpace space){
+    private void showLandmarkBuying(EstateSpace space) throws InterruptedException {
+        Thread.sleep(800);
         title.setText(space.getName());
         setImage(landmarkImg, map.indexOf(space));
         text3.setText("Landmark Price : " + intToString(space.getLandmarkPrice()));
@@ -862,7 +866,7 @@ public class Gameplay extends javax.swing.JFrame {
         card.setVisible(false);
     }
 
-    private void rollBtnMousePressed(java.awt.event.MouseEvent evt) throws IOException {
+    private void rollBtnMousePressed(java.awt.event.MouseEvent evt) throws IOException, InterruptedException {
         rollDice();
         rollBtn.setEnabled(false);
 
@@ -1148,7 +1152,7 @@ public class Gameplay extends javax.swing.JFrame {
                             break;
                     }
 
-                } catch (IOException e) {
+                } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 }
             }
@@ -1177,7 +1181,7 @@ public class Gameplay extends javax.swing.JFrame {
         //TODO: animate opponent to move to that position
     }
 
-    private void buy(PropertySpace propertySpace) throws IOException {
+    private void buy(PropertySpace propertySpace) throws IOException, InterruptedException {
         player.buy(propertySpace);
         sendPlayerToUpdate();
         sendMapToUpdate(propertySpace);
@@ -1258,7 +1262,7 @@ public class Gameplay extends javax.swing.JFrame {
         client.sendData(serverMessage);
     }
 
-    private void rollDice() throws IOException {
+    private void rollDice() throws IOException, InterruptedException {
         int[] diceNumbers = new int[2];
         int totalMoveCount = 0;
         Random randomGenerator = new Random();
@@ -1278,7 +1282,7 @@ public class Gameplay extends javax.swing.JFrame {
         }
     }
 
-    private void movePlayerForward(int moveCount) throws IOException {
+    private void movePlayerForward(int moveCount) throws IOException, InterruptedException {
         isMoving = true;
         spaceNumber += moveCount;
         diceNum = moveCount;
@@ -1303,10 +1307,14 @@ public class Gameplay extends javax.swing.JFrame {
         spaceNumber = number;
         //TODO: animation warp player to space number
         isMoving = false;
-        doSpaceAction(spaceNumber, 1);
+        try {
+            doSpaceAction(spaceNumber, 1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void doSpaceAction(int spaceNumber, int diceNumber) throws IOException {
+    private void doSpaceAction(int spaceNumber, int diceNumber) throws IOException, InterruptedException {
         Space space = map.get(spaceNumber);
         String action = space.getAction();
 
@@ -1397,7 +1405,7 @@ public class Gameplay extends javax.swing.JFrame {
 
     }
 
-    private void checkBreakJail(int[] diceNumbers, int moveCount) throws IOException {
+    private void checkBreakJail(int[] diceNumbers, int moveCount) throws IOException, InterruptedException {
         if (diceNumbers[0] == diceNumbers[1]) {
             jailTurnCount = 0;
             player.getOutOfJail();
