@@ -792,7 +792,7 @@ public class Gameplay extends javax.swing.JFrame {
 
     private void oneHouseCheckActionPerformed(java.awt.event.ActionEvent evt) {
         if (oneHouseCheck.isSelected())
-            totalPrice.setText(intToString(((EstateSpace) map.get(spaceNumber)).getPrice()));
+            totalPrice.setText(intToString(((EstateSpace) map.get(spaceNumber)).getHousePrice()));
         else {
             twoHouseCheck.setSelected(false);
             threeHouseCheck.setSelected(false);
@@ -801,7 +801,7 @@ public class Gameplay extends javax.swing.JFrame {
     }
 
     private void twoHouseCheckActionPerformed(java.awt.event.ActionEvent evt) {
-        price = ((EstateSpace) map.get(spaceNumber)).getPrice();
+        price = ((EstateSpace) map.get(spaceNumber)).getHousePrice();
         if (twoHouseCheck.isSelected() && !oneHouseCheck.isEnabled())
             totalPrice.setText(intToString(price));
         else if (twoHouseCheck.isSelected() && oneHouseCheck.isEnabled()) {
@@ -818,7 +818,7 @@ public class Gameplay extends javax.swing.JFrame {
     }
 
     private void threeHouseCheckActionPerformed(java.awt.event.ActionEvent evt) {
-        price = ((EstateSpace) map.get(spaceNumber)).getPrice();
+        price = ((EstateSpace) map.get(spaceNumber)).getHousePrice();
         if (threeHouseCheck.isSelected() && !oneHouseCheck.isEnabled() && !twoHouseCheck.isEnabled())
             totalPrice.setText(intToString(price));
         else if (threeHouseCheck.isSelected() && !oneHouseCheck.isEnabled() && twoHouseCheck.isEnabled()) {
@@ -1354,7 +1354,10 @@ public class Gameplay extends javax.swing.JFrame {
                 Player owner = propertySpace.getOwner();
                 if (owner == null) {
                     //TODO: display UI to let player choose to buy or put up for auction
-                    showLandBuying(propertySpace);
+                    if(player.getMoney() >= propertySpace.getPrice())
+                        showLandBuying(propertySpace);
+                    else
+                        endTurn();
                 } else if (owner.getID() == player.getID()) {
                     if (propertySpace instanceof EstateSpace) {
                         if (((EstateSpace) propertySpace).getHouseCount() < 3) {
@@ -1581,7 +1584,7 @@ class CharacterSprite extends JLabel {
             System.out.println("Player sprite: " + player.getID());
             switch (player.getID()) {
                 case 0:
-                    spriteSheet = ImageIO.read(new File("C:\\Users\\Lenovo\\Documents\\SE\\Year2S1\\Java\\Monopoly\\src\\allImage\\ratSprite.png"));
+                    spriteSheet = loader.loadImage("/allImage/ratSprite.png");
                     break;
                 case 1:
                     spriteSheet = loader.loadImage("/allImage/pupSprite.png");
