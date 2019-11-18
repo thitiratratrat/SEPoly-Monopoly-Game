@@ -1062,8 +1062,8 @@ public class Gameplay extends javax.swing.JFrame {
                             System.out.println(player.getID());
                             //TODO: animate player if changes in x y
 
-//                            javax.swing.Timer t = new javax.swing.Timer(300, new MoveForward(displayPlayer1, player, diceNum));
-//                            t.start();
+                           // javax.swing.Timer t = new javax.swing.Timer(300, new MoveForward(displayPlayer.get(player.getID()), player, diceNum));
+                           // t.start();
                             setMoney(player.getID(), player.getMoney());
                             break;
                         }
@@ -1076,7 +1076,9 @@ public class Gameplay extends javax.swing.JFrame {
 
                         case ("updateOpponent"): {
                             PlayerObj playerObj = (PlayerObj) serverMessage.getData();
+
                             updateOpponent(playerObj);
+
                             setMoney(playerObj.getID(), playerObj.getMoney());
                             break;
                         }
@@ -1145,10 +1147,12 @@ public class Gameplay extends javax.swing.JFrame {
                             MoveAnimateObj moveObj = (MoveAnimateObj) serverMessage.getData();
                             Movable opponent = moveObj.getPlayer();
                             int moveCount = moveObj.getMoveNumber();
+
+                            System.out.println("Move Player: " + opponent.getID()+ " Number : " + moveCount);
                             //TODO: animate opponent id forward
+                            //edit
                             javax.swing.Timer t = new javax.swing.Timer(300, new MoveForward(displayPlayer.get(opponent.getID()),opponent,moveCount));
                             t.start();
-
                             break;
                         }
 
@@ -1185,10 +1189,10 @@ public class Gameplay extends javax.swing.JFrame {
                 break;
             }
         }
-
         setMoney(playerObj.getID(), playerObj.getMoney());
 
-        //TODO: animate opponent to move to that position
+        //TODO: animate opponent id forward
+
     }
 
     private void buy(PropertySpace propertySpace) throws IOException {
@@ -1465,19 +1469,18 @@ public class Gameplay extends javax.swing.JFrame {
         CharacterSprite sprite = new CharacterSprite(player);
         sprite.setBounds(360, 460, 50, 50);
         sprite.setVisible(true);
-        gameplay.add(sprite);
         setMoney(player.getID(), player.getMoney());
         displayPlayer.set(player.getID(), sprite);
+        gameplay.add(sprite);
 
         for (PlayerObj opponent : opponents) {
-
             sprite = new CharacterSprite(opponent);
             sprite.setBounds(360, 460, 50, 50);
             sprite.setVisible(true);
-            gameplay.add(sprite);
             setMoney(opponent.getID(), opponent.getMoney());
+
             displayPlayer.set(opponent.getID(), sprite);
-            //System.out.println("iiii: "+ displayPlayer.get(opponent.getID()));
+            gameplay.add(sprite);
 
         }
         gameplay.add(board);
