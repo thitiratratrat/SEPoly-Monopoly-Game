@@ -15,6 +15,7 @@ public class Play extends JFrame {
 
     Movable mainPlayer;
     int diceNumber ;
+
     public Play( ){
         initComponents();
     }
@@ -74,7 +75,6 @@ class CharacterSprite extends JPanel{
     @Override
     public void paintComponents(Graphics g) {
         super.paintComponents(g);
-        //g.drawImage(board, 0, 0, 800, 600, null);
         if ((MoveForward.posX >= 80 && MoveForward.posX < 672 && MoveForward.posY <= 276) ||
                 (MoveForward.posY >= 60 && MoveForward.posY <= 268)) {
             g.drawImage(spriteIdleR, MoveForward.posX, MoveForward.posY, 50, 50, null);

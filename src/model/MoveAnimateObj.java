@@ -1,6 +1,8 @@
 package model;
 
-public class MoveAnimateObj {
+import java.io.Serializable;
+
+public class MoveAnimateObj implements Serializable {
     private Movable player;
     private int moveNumber;
 

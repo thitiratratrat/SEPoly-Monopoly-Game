@@ -25,8 +25,8 @@ public class PlayEx extends JFrame {
         Random random = new Random();
         die1  = random.nextInt(6) + 1;
         die2  = random.nextInt(6) + 1;
-        diceNumber = die1 + die2 ;
 
+        die1 = die2 = 0;
         //ShowPlayer1 p1 = new ShowPlayer1(0 , die1, die2);
 
         add(new ShowPlayer1(0 , die1, die2) );
@@ -38,7 +38,7 @@ public class PlayEx extends JFrame {
     }
 
     public static void main(String[] args) {
-        Play main = new Play();
+        PlayEx main = new PlayEx();
 
 
         main.setSize(800,600);
@@ -166,7 +166,7 @@ class ShowPlayer1 extends JPanel {
                     case 3: spriteSheet = loader.loadImage("/maidSprite.png");break; }
             }*/
 
-            spriteSheetBoard = loader.loadImage("/board.png");
+            spriteSheetBoard = loader.loadImage("/allImage/finaljingjing_board.png");
             diceSpriteSheet = loader.loadImage("/allImage/newDice.png" );
         } catch (IOException ex) {
             Logger.getLogger(PlayEx.class.getName()).log(Level.SEVERE, null, ex);
