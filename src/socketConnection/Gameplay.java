@@ -672,12 +672,12 @@ public class Gameplay extends javax.swing.JFrame {
 
     private void startBtnActionPerformed(java.awt.event.MouseEvent evt) throws IOException {
         if (username.getText().length() > 0 && !username.getText().equals("Enter your name")) {
-            connectToServer();
-            startBtn.setEnabled(false);
-            name = username.getText();
-            start();
-            sendNameToServer();
         }
+        connectToServer();
+        startBtn.setEnabled(false);
+        name = username.getText();
+        start();
+        sendNameToServer();
     }
 
 
@@ -1141,7 +1141,7 @@ public class Gameplay extends javax.swing.JFrame {
                             Movable opponent = moveObj.getPlayer();
                             int moveCount = moveObj.getMoveNumber();
                             //TODO: animate opponent id forward
-                            System.out.print("opponent : " );
+                            System.out.print("opponent : ");
                             System.out.println(opponent.getID());
                             javax.swing.Timer t = new javax.swing.Timer(300, new MoveForward(displayPlayer.get(opponent.getID()), opponent, moveCount));
                             t.start();
