@@ -27,7 +27,7 @@ public class Server {
     final private int STARTINGMONEY = 1500000;
     final private int CARDCOUNT = 9;
     final private int MAX_PLAYER = 4;
-    final private String basePath = "C:\\Users\\Lenovo\\Documents\\SE\\Year2S1\\Java\\Monopoly\\";
+    final private String basePath = "C:\\Users\\Asus\\Desktop\\javaProject\\monopoly\\";
     final private String databasePath = "jdbc:sqlite:" + basePath + "src\\Database\\SEpoly.db";
 
     public Server(int port) throws IOException {
