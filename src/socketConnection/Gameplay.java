@@ -770,6 +770,7 @@ public class Gameplay extends javax.swing.JFrame {
         oneHouseCheck.setSelected(false);
         twoHouseCheck.setSelected(false);
         threeHouseCheck.setSelected(false);
+        totalPrice.setText("");
         for (int i = houseCount; i <= 2; i++) {
             if (i == 0 && money >= temp) {
                 oneHouseCheck.setEnabled(true);
@@ -1487,7 +1488,7 @@ public class Gameplay extends javax.swing.JFrame {
         }
         System.out.println("test2");
         gameplay.add(board);
-        board.setVisible(false);
+        //board.setVisible(false);
     }
 
     private void updateMap(PropertySpace propertySpace) {
