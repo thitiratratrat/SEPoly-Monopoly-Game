@@ -3,8 +3,8 @@ package model;
 import java.io.Serializable;
 
 public class PlayerObj implements Serializable, Movable {
-    private int x;
-    private int y;
+    private int x = 360;
+    private int y = 460;
     private int ID;
     private int money;
 
