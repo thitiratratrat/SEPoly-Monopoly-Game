@@ -5,12 +5,14 @@ import allSpritePlayer.BufferedImageLoader;
 import allSpritePlayer.SpriteSheet;
 import model.*;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.Timer;
@@ -18,6 +20,7 @@ import java.util.Timer;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import model.Movable;
 
 import javax.swing.*;
@@ -29,9 +32,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 public class Gameplay extends javax.swing.JFrame {
-    socketConnection.CharacterSprite displayPlayer;
     private String name;
     private Client client;
     private Player player;
@@ -52,9 +53,10 @@ public class Gameplay extends javax.swing.JFrame {
     final private int JAIL_SPACE_NUMBER = 8;
     final private int JAIL_FEE = 200000;
     private final int MAX_PLAYERS = 4;
+    private ArrayList<CharacterSprite> displayPlayer = new ArrayList<>(MAX_PLAYERS);
 
     //character
-    private int diceNum  = 0;
+    private int diceNum = 0;
 
     //-----------------------------------------------------------------
     //------------------ F O R U I ------------------------------------
@@ -79,7 +81,7 @@ public class Gameplay extends javax.swing.JFrame {
 
     //gameplay
     private javax.swing.JTabbedPane container;
-    private javax.swing.JPanel gameplay;
+    public static javax.swing.JPanel gameplay;
     private javax.swing.JLabel moneyPlayer1;
     private javax.swing.JLabel moneyPlayer2;
     private javax.swing.JLabel moneyPlayer3;
@@ -174,9 +176,6 @@ public class Gameplay extends javax.swing.JFrame {
     private javax.swing.JLabel floorSix;
 
     private ArrayList<JLabel> estate;
-
-
-
 
 
     public Gameplay() {
@@ -306,7 +305,7 @@ public class Gameplay extends javax.swing.JFrame {
         // -------------------G A M E   P L A Y ------------------------
         // -------------------------------------------------------------
         rollBtn = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\Asset 31.png"));
-        rollBtn.setBounds(369,381,59,50);
+        rollBtn.setBounds(369, 381, 59, 50);
         rollBtn.setEnabled(false);
 
 
@@ -315,10 +314,10 @@ public class Gameplay extends javax.swing.JFrame {
         moneyPlayer1 = new javax.swing.JLabel();
         moneyPlayer1.setBounds(653, 563, 126, 20);
         moneyPlayer2 = new javax.swing.JLabel();
-        moneyPlayer2.setBounds(22,563,126,20);
+        moneyPlayer2.setBounds(22, 563, 126, 20);
         moneyPlayer2.setHorizontalAlignment(SwingConstants.RIGHT);
         moneyPlayer3 = new javax.swing.JLabel();
-        moneyPlayer3.setBounds(22 ,52,126,20);
+        moneyPlayer3.setBounds(22, 52, 126, 20);
         moneyPlayer3.setHorizontalAlignment(SwingConstants.RIGHT);
         moneyPlayer4 = new javax.swing.JLabel();
         moneyPlayer4.setBounds(653, 52, 126, 20);
@@ -363,13 +362,13 @@ public class Gameplay extends javax.swing.JFrame {
         landTitle.setBounds(308, 160, 187, 34);
         text4 = new javax.swing.JLabel("", SwingConstants.CENTER);
         text4.setFont(new java.awt.Font("Microsoft PhagsPa", 0, 15));
-        text4.setBounds(308,210,187,30);
+        text4.setBounds(308, 210, 187, 30);
         buyBtn3 = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\Asset 21.png"));
-        buyBtn3.setBounds(416,248,100,39);
+        buyBtn3.setBounds(416, 248, 100, 39);
         cancelBtn3 = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\Asset 22.png"));
-        cancelBtn3.setBounds(295,248,100,39);
+        cancelBtn3.setBounds(295, 248, 100, 39);
         landBuying = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\landBuying.png"));
-        landBuying.setBounds(0,0,800,600);
+        landBuying.setBounds(0, 0, 800, 600);
 
         landBuying.add(landTitle);
         landBuying.add(text4);
@@ -406,16 +405,16 @@ public class Gameplay extends javax.swing.JFrame {
         title = new javax.swing.JLabel("", SwingConstants.CENTER);
         title.setFont(new java.awt.Font("Microsoft PhagsPa", 0, 15));
         title.setBounds(308, 160, 187, 34);
-        landmarkImg =  new javax.swing.JLabel();
+        landmarkImg = new javax.swing.JLabel();
         text3 = new javax.swing.JLabel("", SwingConstants.CENTER);
         text3.setFont(new java.awt.Font("Microsoft PhagsPa", 0, 15));
-        text3.setBounds(305,320, 200,100);
+        text3.setBounds(305, 320, 200, 100);
         cancelBtn2 = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\Asset 22.png"));
-        cancelBtn2.setBounds(302,357,100,39);
+        cancelBtn2.setBounds(302, 357, 100, 39);
         buyBtn2 = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\Asset 21.png"));
-        buyBtn2.setBounds(407,357,100,39);
+        buyBtn2.setBounds(407, 357, 100, 39);
         landmarkBuying = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\landmarkBuying.png"));
-        landmarkBuying.setBounds(0,0,800,600);
+        landmarkBuying.setBounds(0, 0, 800, 600);
 
         landmarkBuying.add(title);
         landmarkBuying.add(landmarkImg);
@@ -432,11 +431,11 @@ public class Gameplay extends javax.swing.JFrame {
 
         // J A I L  B R E A K
         stayBtn = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\stayBtn.png"));
-        stayBtn.setBounds(471,238,36,16);
+        stayBtn.setBounds(471, 238, 36, 16);
         useBtn = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\useBtn.png"));
-        useBtn.setBounds(471,261,36,16);
+        useBtn.setBounds(471, 261, 36, 16);
         payBtn = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\payBtn.png"));
-        payBtn.setBounds(471,212,36,16);
+        payBtn.setBounds(471, 212, 36, 16);
         jailBreak = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\jailBreak.png"));
         jailBreak.add(stayBtn);
         jailBreak.add(useBtn);
@@ -449,19 +448,19 @@ public class Gameplay extends javax.swing.JFrame {
         title2.setBounds(308, 160, 187, 34);
         image2 = new javax.swing.JLabel();
         highestBid = new javax.swing.JLabel();
-        highestBid.setBounds(291,314,107,28);
+        highestBid.setBounds(291, 314, 107, 28);
         timeLeft = new javax.swing.JLabel();
-        timeLeft.setBounds(402,314,107,28);
+        timeLeft.setBounds(402, 314, 107, 28);
         bidBtn = new javax.swing.JLabel();
-        bidBtn.setBounds(299,423,82,32);
+        bidBtn.setBounds(299, 423, 82, 32);
         passBtn = new javax.swing.JLabel();
-        passBtn.setBounds(417,423,82,32);
+        passBtn.setBounds(417, 423, 82, 32);
         bidPlace = new javax.swing.JTextField();
         bidPlace.setBounds(303, 369, 198, 27);
         bidPlace.setFont(new java.awt.Font("Microsoft PhagsPa", 2, 15));
         bidPlace.setText("Place your bid here");
         auction = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\auction.png"));
-        auction.setBounds(0,0,800,600);
+        auction.setBounds(0, 0, 800, 600);
         auction.setVisible(false);
 
         //Dice
@@ -506,8 +505,8 @@ public class Gameplay extends javax.swing.JFrame {
         estate.add(ic01);*/
 
 
-
         gameplay.setLayout(null);
+
         gameplay.add(spaceInfo);
         gameplay.add(card);
         gameplay.add(houseBuying);
@@ -539,12 +538,13 @@ public class Gameplay extends javax.swing.JFrame {
         gameplay.add(moneyPlayer3);
         gameplay.add(moneyPlayer4);
         gameplay.add(dice);
-        gameplay.add(board);
 
         dice.setVerticalAlignment(SwingConstants.BOTTOM);
-        //dice.setBackground(new Color(223,234,184));
+        //dice.setIcon(new ImageIcon("\\src\\allImage\\finaljingjing_board.png"));
+        dice.setBackground(new Color(223,234,184));
+        dice.setBounds(343,185,100,50);
+        //dice.setBackground(new Color(0x0));
         board.setVerticalAlignment(SwingConstants.BOTTOM);
-
 
 
         // --------------------------------------------------------------------
@@ -565,7 +565,7 @@ public class Gameplay extends javax.swing.JFrame {
         //gameplay
         titleDeedInfo.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                hideLabel(evt,titleDeedInfo);
+                hideLabel(evt, titleDeedInfo);
             }
         });
 
@@ -634,7 +634,7 @@ public class Gameplay extends javax.swing.JFrame {
 
         cancelBtn3.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                hideLabel(evt,landBuying);
+                hideLabel(evt, landBuying);
             }
         });
 
@@ -654,7 +654,6 @@ public class Gameplay extends javax.swing.JFrame {
                 }
             }
         });
-
 
         // dice
         rollBtn.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -713,7 +712,7 @@ public class Gameplay extends javax.swing.JFrame {
                         "LANDMARK PRICE      " + intToString(temp.getLandmarkPrice()) + "</b></pre></body></html>";
                 text.setText(s);
                 landName.setText("<html><b>" + temp.getName() + "</b></html>");
-                setImage(image,index);
+                setImage(image, index);
                 titleDeedInfo.setVisible(true);
                 dice.setVisible(false);
             } else {
@@ -724,7 +723,7 @@ public class Gameplay extends javax.swing.JFrame {
     }
 
     //set img for show
-    private void setImage(JLabel image, int index){
+    private void setImage(JLabel image, int index) {
         image.setIcon(new ImageIcon((map.get(index)).getImage()));
         if (index > 0 && index < 8) {
             image.setBounds(0 - ((EstateSpace) map.get(index)).getDisplayXPos() + 335,
@@ -746,10 +745,10 @@ public class Gameplay extends javax.swing.JFrame {
     }
 
     // land buying
-    private void showLandBuying(PropertySpace space){
-            landTitle.setText(space.getName());
-            text4.setText("Price : " + intToString(space.getPrice()));
-            landBuying.setVisible(true);
+    private void showLandBuying(PropertySpace space) {
+        landTitle.setText(space.getName());
+        text4.setText("Price : " + intToString(space.getPrice()));
+        landBuying.setVisible(true);
     }
 
     private void buyLandMousePressed(java.awt.event.MouseEvent evt) throws IOException {
@@ -759,7 +758,7 @@ public class Gameplay extends javax.swing.JFrame {
     }
 
     // house buying
-    private void showHouseBuying(EstateSpace space){
+    private void showHouseBuying(EstateSpace space) {
         int houseCount = space.getHouseCount();
         int money = player.getMoney();
         price = space.getHousePrice();
@@ -767,6 +766,9 @@ public class Gameplay extends javax.swing.JFrame {
         oneHouseCheck.setEnabled(false);
         twoHouseCheck.setEnabled(false);
         threeHouseCheck.setEnabled(false);
+        oneHouseCheck.setSelected(false);
+        twoHouseCheck.setSelected(false);
+        threeHouseCheck.setSelected(false);
         for (int i = houseCount; i <= 2; i++) {
             if (i == 0 && money >= temp) {
                 oneHouseCheck.setEnabled(true);
@@ -789,8 +791,8 @@ public class Gameplay extends javax.swing.JFrame {
 
     private void oneHouseCheckActionPerformed(java.awt.event.ActionEvent evt) {
         if (oneHouseCheck.isSelected())
-            totalPrice.setText(intToString(((EstateSpace)map.get(spaceNumber)).getPrice()));
-        else{
+            totalPrice.setText(intToString(((EstateSpace) map.get(spaceNumber)).getPrice()));
+        else {
             twoHouseCheck.setSelected(false);
             threeHouseCheck.setSelected(false);
             totalPrice.setText("");
@@ -798,16 +800,15 @@ public class Gameplay extends javax.swing.JFrame {
     }
 
     private void twoHouseCheckActionPerformed(java.awt.event.ActionEvent evt) {
-        price = ((EstateSpace)map.get(spaceNumber)).getPrice();
+        price = ((EstateSpace) map.get(spaceNumber)).getPrice();
         if (twoHouseCheck.isSelected() && !oneHouseCheck.isEnabled())
             totalPrice.setText(intToString(price));
-        else if(twoHouseCheck.isSelected() && oneHouseCheck.isEnabled()){
+        else if (twoHouseCheck.isSelected() && oneHouseCheck.isEnabled()) {
             oneHouseCheck.setSelected(true);
-            totalPrice.setText(intToString(price*2));
-        }
-        else{
+            totalPrice.setText(intToString(price * 2));
+        } else {
             threeHouseCheck.setSelected(false);
-            if(oneHouseCheck.isSelected())
+            if (oneHouseCheck.isSelected())
                 totalPrice.setText(intToString(price));
             else
                 totalPrice.setText("");
@@ -816,24 +817,22 @@ public class Gameplay extends javax.swing.JFrame {
     }
 
     private void threeHouseCheckActionPerformed(java.awt.event.ActionEvent evt) {
-        price = ((EstateSpace)map.get(spaceNumber)).getPrice();
+        price = ((EstateSpace) map.get(spaceNumber)).getPrice();
         if (threeHouseCheck.isSelected() && !oneHouseCheck.isEnabled() && !twoHouseCheck.isEnabled())
             totalPrice.setText(intToString(price));
-        else if(threeHouseCheck.isSelected() && !oneHouseCheck.isEnabled() && twoHouseCheck.isEnabled()){
+        else if (threeHouseCheck.isSelected() && !oneHouseCheck.isEnabled() && twoHouseCheck.isEnabled()) {
             twoHouseCheck.setSelected(true);
-            totalPrice.setText(intToString(price*2));
-        }
-        else if (threeHouseCheck.isSelected() && oneHouseCheck.isEnabled() && twoHouseCheck.isEnabled()){
+            totalPrice.setText(intToString(price * 2));
+        } else if (threeHouseCheck.isSelected() && oneHouseCheck.isEnabled() && twoHouseCheck.isEnabled()) {
             oneHouseCheck.setSelected(true);
             twoHouseCheck.setSelected(true);
-            totalPrice.setText(intToString(price*3));
-        }
-        else{
-            if(oneHouseCheck.isSelected() && twoHouseCheck.isSelected())
-                totalPrice.setText(intToString(price*2));
+            totalPrice.setText(intToString(price * 3));
+        } else {
+            if (oneHouseCheck.isSelected() && twoHouseCheck.isSelected())
+                totalPrice.setText(intToString(price * 2));
             else if (oneHouseCheck.isSelected())
                 totalPrice.setText(intToString(price));
-            else if(!oneHouseCheck.isEnabled() && twoHouseCheck.isSelected())
+            else if (!oneHouseCheck.isEnabled() && twoHouseCheck.isSelected())
                 totalPrice.setText(intToString(price));
             else
                 totalPrice.setText("");
@@ -847,7 +846,7 @@ public class Gameplay extends javax.swing.JFrame {
 
 
     //landmark buying
-    private void showLandmarkBuying(EstateSpace space){
+    private void showLandmarkBuying(EstateSpace space) {
         title.setText(space.getName());
         setImage(landmarkImg, map.indexOf(space));
         text3.setText("Landmark Price : " + intToString(space.getLandmarkPrice()));
@@ -868,7 +867,6 @@ public class Gameplay extends javax.swing.JFrame {
         rollBtn.setEnabled(false);
 
     }
-
 
 
     //call when player land on community card / chance card
@@ -990,14 +988,11 @@ public class Gameplay extends javax.swing.JFrame {
     }
 
 
-
-
     //*********************************************************************
     //*********************************************************************
     //------------------- E N D   U I   P A R T ---------------------------
 
     public void start() throws IOException {
-        startSendPlayerPositionTimer();
         startGetGameDataTimer();
     }
     //send player position update
@@ -1025,6 +1020,9 @@ public class Gameplay extends javax.swing.JFrame {
         getGameDataTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
+                if(diceNum == 0 ){
+                    repaint();
+                }
                 try {
                     ServerMessage serverMessage = client.getData();
                     if (serverMessage == null) {
@@ -1062,31 +1060,24 @@ public class Gameplay extends javax.swing.JFrame {
                             player = (Player) serverMessage.getData();
                             setMoney(player.getID(), player.getMoney());
                             System.out.println(player.getID());
-
                             //TODO: animate player if changes in x y
-                            displayPlayer = new socketConnection.CharacterSprite(player);
-                            gameplay.add(displayPlayer);
-                            //displayPlayer.repaint();
 
-                            //System.out.println("display");
-
-                            //javax.swing.Timer t = new javax.swing.Timer(300, new MoveForward(displayPlayer, player, diceNum));
-                            //t.start();
-
+//                            javax.swing.Timer t = new javax.swing.Timer(300, new MoveForward(displayPlayer1, player, diceNum));
+//                            t.start();
+                            setMoney(player.getID(), player.getMoney());
                             break;
                         }
 
                         case ("initOpponents"): {
                             opponents = (ArrayList<PlayerObj>) serverMessage.getData();
-                            for (PlayerObj opponent : opponents) {
-                                setMoney(opponent.getID(), opponent.getMoney());
-                            }
+                            initCharacterSprites();
                             break;
                         }
 
                         case ("updateOpponent"): {
                             PlayerObj playerObj = (PlayerObj) serverMessage.getData();
                             updateOpponent(playerObj);
+                            setMoney(playerObj.getID(), playerObj.getMoney());
                             break;
                         }
 
@@ -1150,6 +1141,23 @@ public class Gameplay extends javax.swing.JFrame {
                             break;
                         }
 
+                        case ("moveOpponentForward"): {
+                            MoveAnimateObj moveObj = (MoveAnimateObj) serverMessage.getData();
+                            Movable opponent = moveObj.getPlayer();
+                            int moveCount = moveObj.getMoveNumber();
+                            //TODO: animate opponent id forward
+                            javax.swing.Timer t = new javax.swing.Timer(300, new MoveForward(displayPlayer.get(opponent.getID()),opponent,moveCount));
+                            t.start();
+
+                            break;
+                        }
+
+                        case ("moveOpponentTo"): {
+                            MoveAnimateObj moveObj = (MoveAnimateObj) serverMessage.getData();
+                            //TODO: animate player opponent to specific position
+                            break;
+                        }
+
                         default:
                             break;
                     }
@@ -1189,14 +1197,14 @@ public class Gameplay extends javax.swing.JFrame {
         sendMapToUpdate(propertySpace);
 
         if (propertySpace instanceof EstateSpace) {
-            if(player.getMoney() >= ((EstateSpace) propertySpace).getHousePrice()){
+            if (player.getMoney() >= ((EstateSpace) propertySpace).getHousePrice()) {
                 showHouseBuying(((EstateSpace) propertySpace));
             }
         }
     }
 
     private void buyHouse(EstateSpace estateSpace) throws IOException {
-        player.buyHouse(estateSpace,price/estateSpace.getHousePrice());
+        player.buyHouse(estateSpace, price / estateSpace.getHousePrice());
         sendMapToUpdate(estateSpace);
         sendPlayerToUpdate();
         //TODO: animation build house
@@ -1287,7 +1295,7 @@ public class Gameplay extends javax.swing.JFrame {
     private void movePlayerForward(int moveCount) throws IOException {
         isMoving = true;
         spaceNumber += moveCount;
-        diceNum = moveCount;
+
         if (spaceNumber >= SPACE_COUNT) {
             spaceNumber %= SPACE_COUNT;
             if (!player.isJailed()) {
@@ -1296,9 +1304,10 @@ public class Gameplay extends javax.swing.JFrame {
                 sendPlayerToUpdate();
             }
         }
-        //TODO: animation move player forward
 
-        javax.swing.Timer t = new javax.swing.Timer(300, new MoveForward(displayPlayer, player, diceNum));
+        sendPlayerToMoveForward(moveCount);
+        //TODO: animation move player forward
+        javax.swing.Timer t = new javax.swing.Timer(300, new MoveForward(displayPlayer.get(player.getID()), player, moveCount));
         t.start();
 
         isMoving = false;
@@ -1308,6 +1317,7 @@ public class Gameplay extends javax.swing.JFrame {
     private void movePlayerTo(int number) throws IOException {
         isMoving = true;
         spaceNumber = number;
+        sendPlayerToMoveTo(number);
         //TODO: animation warp player to space number
         isMoving = false;
         doSpaceAction(spaceNumber, 1);
@@ -1319,6 +1329,7 @@ public class Gameplay extends javax.swing.JFrame {
 
         switch (action) {
             case ("draw card"): {
+                endTurn();
                 CardSpace cardSpace = (CardSpace) space;
                 String deckType = cardSpace.getType();
                 DrawCardObj drawCardObj = new DrawCardObj(player.getID(), deckType);
@@ -1342,18 +1353,17 @@ public class Gameplay extends javax.swing.JFrame {
             case ("property"): {
                 PropertySpace propertySpace = (PropertySpace) space;
                 Player owner = propertySpace.getOwner();
-                if (owner==null) {
+                if (owner == null) {
                     //TODO: display UI to let player choose to buy or put up for auction
                     showLandBuying(propertySpace);
                 } else if (owner.getID() == player.getID()) {
-                    if(propertySpace instanceof EstateSpace){
-                        if(((EstateSpace) propertySpace).getHouseCount() < 3){
-                            if(player.getMoney() >= ((EstateSpace) propertySpace).getHousePrice()) {
+                    if (propertySpace instanceof EstateSpace) {
+                        if (((EstateSpace) propertySpace).getHouseCount() < 3) {
+                            if (player.getMoney() >= ((EstateSpace) propertySpace).getHousePrice()) {
                                 showHouseBuying((EstateSpace) propertySpace);
                             }
-                        }
-                        else{
-                            if(player.getMoney() >= ((EstateSpace) propertySpace).getLandmarkPrice()) {
+                        } else {
+                            if (player.getMoney() >= ((EstateSpace) propertySpace).getLandmarkPrice()) {
                                 showLandmarkBuying((EstateSpace) propertySpace);
                             }
                         }
@@ -1364,7 +1374,6 @@ public class Gameplay extends javax.swing.JFrame {
                     if (propertySpace instanceof UtilitySpace) {
                         rent *= diceNumber;
                     }
-                    // RAILROAD?????
 //                    if (isBankrupt(rent)) {
 //                        sendPlayerIsBankrupt();
 //                        break;
@@ -1374,8 +1383,8 @@ public class Gameplay extends javax.swing.JFrame {
                     GetPaidObj getPaidObj = new GetPaidObj(propertySpace.getOwner().getID(), rent);
                     ServerMessage serverMessage = new ServerMessage("getPaid", getPaidObj);
                     client.sendData(serverMessage);
+                    endTurn();
                 }
-                endTurn();
                 break;
             }
 
@@ -1390,6 +1399,7 @@ public class Gameplay extends javax.swing.JFrame {
 
                 player.pay(taxSpace.getTaxFee() * player.getMoney());
                 sendPlayerToUpdate();
+                endTurn();
                 break;
             }
 
@@ -1398,10 +1408,20 @@ public class Gameplay extends javax.swing.JFrame {
                 break;
             }
 
+            case ("stop"): {
+                player.jailed();
+                endTurn();
+                break;
+            }
+
             case ("free parking"):
+                endTurn();
+                break;
             default:
                 break;
         }
+        endTurn();
+
     }
 
     private void checkBreakJail(int[] diceNumbers, int moveCount) throws IOException {
@@ -1415,6 +1435,7 @@ public class Gameplay extends javax.swing.JFrame {
         } else {
             jailTurnCount += 1;
         }
+        endTurn();
     }
 
     private void payJailFine() throws IOException {
@@ -1434,6 +1455,33 @@ public class Gameplay extends javax.swing.JFrame {
         player.useBreakJailCard();
         sendPlayerToUpdate();
         jailTurnCount = 0;
+    }
+
+    private void initCharacterSprites() {
+        for (int i = 0; i < MAX_PLAYERS; i++) {
+            displayPlayer.add(new CharacterSprite(player));
+        }
+
+        CharacterSprite sprite = new CharacterSprite(player);
+        sprite.setBounds(360, 460, 50, 50);
+        sprite.setVisible(true);
+        gameplay.add(sprite);
+        setMoney(player.getID(), player.getMoney());
+        displayPlayer.set(player.getID(), sprite);
+
+        for (PlayerObj opponent : opponents) {
+
+            sprite = new CharacterSprite(opponent);
+            sprite.setBounds(360, 460, 50, 50);
+            sprite.setVisible(true);
+            gameplay.add(sprite);
+            setMoney(opponent.getID(), opponent.getMoney());
+            displayPlayer.set(opponent.getID(), sprite);
+            //System.out.println("iiii: "+ displayPlayer.get(opponent.getID()));
+
+        }
+        gameplay.add(board);
+
     }
 
     private void updateMap(PropertySpace propertySpace) {
@@ -1504,23 +1552,50 @@ public class Gameplay extends javax.swing.JFrame {
         client.sendData(serverMessage);
     }
 
+    private void sendPlayerToMoveForward(int moveCount) throws IOException {
+        MoveAnimateObj moveObj = new MoveAnimateObj(player, moveCount);
+        ServerMessage serverMessage = new ServerMessage("moveOpponentForward", moveObj);
+        client.sendData(serverMessage);
+    }
+
+    private void sendPlayerToMoveTo(int spaceNumber) throws IOException {
+        MoveAnimateObj moveObj = new MoveAnimateObj(player, spaceNumber);
+        ServerMessage serverMessage = new ServerMessage("moveOpponentTo", moveObj);
+        client.sendData(serverMessage);
+    }
+
+
 }
 
-class CharacterSprite extends JComponent{
+
+class CharacterSprite extends JLabel {
     BufferedImage spriteIdleL, spriteIdleR;
     Movable player;
-    public CharacterSprite(Movable player){
+
+    public CharacterSprite(Movable player) {
         this.player = player;
         BufferedImageLoader loader = new BufferedImageLoader();
         BufferedImage spriteSheet = null;
-
-        try{
+        //setOpaque(true);
+        //setBackground(Color.blue);
+        setVisible(true);
+        try {
+            System.out.println("Player sprite: " + player.getID());
             switch (player.getID()) {
-                case 0: spriteSheet = loader.loadImage("/allImage/ratSprite.png");break;
-                case 1: spriteSheet = loader.loadImage("/allImage/pupSprite.png");break;
-                case 2: spriteSheet = loader.loadImage("/allImage/PDAMIAN.png");break;
-                case 3: spriteSheet = loader.loadImage("/allImage/maidSprite.png");break; }
-        }catch (IOException ex) {
+                case 0:
+                    spriteSheet = loader.loadImage("/allImage/ratSprite.png");
+                    break;
+                case 1:
+                    spriteSheet = loader.loadImage("/allImage/pupSprite.png");
+                    break;
+                case 2:
+                    spriteSheet = loader.loadImage("/allImage/PDAMIAN.png");
+                    break;
+                case 3:
+                    spriteSheet = loader.loadImage("/allImage/maidSprite.png");
+                    break;
+            }
+        } catch (IOException ex) {
             Logger.getLogger(socketConnection.CharacterSprite.class.getName()).log(Level.SEVERE, null, ex);
         }
         SpriteSheet playerSS = new SpriteSheet(spriteSheet);
@@ -1542,91 +1617,91 @@ class CharacterSprite extends JComponent{
                 spriteIdleR = playerSS.grabSprite(0, 198, 114, 190);
                 break;
         }
+
     }
+
     @Override
     public void paintComponent(Graphics g) {
-        super.paintComponents(g);
-        System.out.println("paintPlayer");
-        if ((player.getX()>= 80 && player.getX()< 672 && player.getY() <= 276) ||
-                (player.getY() >= 60 && player.getY() <= 268)) {
-            g.drawImage(spriteIdleR, player.getX(), player.getY(), 50, 50, null);
+        super.paintComponent(g);
+
+        if ((player.getX() >= 80 && player.getX() < 672 && player.getY() <= 276) ||
+                (player.getX() >= 60 && player.getY() <= 268)) {
+            g.drawImage(spriteIdleR, 0, 0, 50, 50, null);
+        } else {
+            g.drawImage(spriteIdleL, 0, 0, 50, 50, null);
         }
-        else {
-            g.drawImage(spriteIdleL, player.getX(), player.getY(), 50, 50, null);
-        }
+        setBounds(player.getX(), player.getY(), 50, 50);
     }
 }
 
 class MoveForward implements ActionListener {
-    socketConnection.CharacterSprite allSprite ;
-    static int diceNumber ;
+    CharacterSprite allSprite;
+    static int diceNumber;
+    static int posX, posY;
     Movable player;
-    static int posX , posY;
-    int  count ;
-    public MoveForward(socketConnection.CharacterSprite allSprite , Movable player, int diceNumber){
+    int count;
+
+    public MoveForward(CharacterSprite allSprite, Movable player, int diceNumber) {
         this.allSprite = allSprite;
-        this.diceNumber = diceNumber;
         this.player = player;
+        this.diceNumber = diceNumber;
+
     }
 
     public int ckSide() {
-        if((player.getX() <= 360 && player.getX() > 80)&&(player.getY() > 276 && player.getY() <= 460)){ return  1;}
-        else if((player.getX() < 376 && player.getX() >= 80)&&(player.getY() > 60 && player.getY() <= 276)){ return 2;}
-        else if((player.getX() < 672 && player.getX() >= 376)&&(player.getY() < 268 && player.getY() >= 60)){ return 3;}
-        else{ return 4;}
+        if ((player.getX() <= 360 && player.getX() > 80) && (player.getY() > 276 && player.getY() <= 460)) {
+            return 1;
+        } else if ((player.getX() < 376 && player.getX() >= 80) && (player.getY() > 60 && player.getY() <= 276)) {
+            return 2;
+        } else if ((player.getX() < 672 && player.getX() >= 376) && (player.getY() < 268 && player.getY() >= 60)) {
+            return 3;
+        } else {
+            return 4;
+        }
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         int side = ckSide();
-        System.out.println("count: "+ count);
-        System.out.println("dice: "+ diceNumber);
-        if(diceNumber == 0 ){
-            count =0 ;
-            posX = 360;
-            posY = 460;
-            player.setX(360);
-            player.setY(460);
+        count++;
 
-        }
-        else{
-            count++;
-            switch (side) {
-                case 1:
-                    posX -= 35; //side1
-                    posY -= 23; //side1
-                    break;
-                case 2:
-                    posX += 37; //side2
-                    posY -= 27; //side2
-                    break;
-                case 3:
-                    posX += 37; //side3
-                    posY += 26; //side3
-                    break;
-                case 4:
-                    if (posX == 427 && posY == 443) {
-                        posX -= 67;
-                        posY += 17;
-                    } else {
-                        posX -= 35; //side4
-                        posY += 25; //side4
-                    }
-                    break;
-            }
-        }
-        System.out.println("Flag 1: " + posX + " " + posY);
+        posX = player.getX();
+        posY = player.getY();
 
-       // allSprite.validate();
+        switch (side) {
+            case 1:
+                posX -= 35; //side1
+                posY -= 23; //side1
+                break;
+            case 2:
+                posX += 37; //side2
+                posY -= 27; //side2
+                break;
+            case 3:
+                posX += 37; //side3
+                posY += 26; //side3
+                break;
+            case 4:
+                if (posX == 427 && posY == 443) {
+                    posX -= 67;
+                    posY += 17;
+                } else {
+                    posX -= 35; //side4
+                    posY += 25; //side4
+                }
+                break;
+        }
+
+        player.setX(posX);
+        player.setY(posY);
+        allSprite.validate();
         allSprite.repaint();
-        /*allSprite.getParent().getParent().validate();
-        allSprite.getParent().getParent().repaint();*/
+        (allSprite.getParent().getParent()).validate();
+        (allSprite.getParent().getParent()).repaint();
+
 
         if (count == diceNumber) { //จนครั้งที่เดิน
-            player.setX(posX);
-            player.setY(posY);
             ((javax.swing.Timer) e.getSource()).stop();
         }
-
     }
 }
