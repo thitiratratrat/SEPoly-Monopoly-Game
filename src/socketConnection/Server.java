@@ -163,9 +163,14 @@ public class Server {
                                 estate.getInt(4), pos, estate.getBytes(12));
                         map.add(temp);
                         break;
-                    case "card":
+                    case "community":
                         temp = new CardSpace(estate.getInt(1), estate.getString(2),
-                                estate.getString(2), pos, estate.getBytes(12));
+                                estate.getString(3), pos, estate.getBytes(12));
+                        map.add(temp);
+                        break;
+                    case "chance":
+                        temp = new CardSpace(estate.getInt(1), estate.getString(2),
+                                estate.getString(3), pos, estate.getBytes(12));
                         map.add(temp);
                         break;
                     case "free parking":
