@@ -25,7 +25,7 @@ public class Server {
     private Integer highestBiddingMoney;
     private PropertySpace auctionProperty;
     final private int STARTINGMONEY = 1500000;
-    final private int CARDCOUNT = 10;
+    final private int CARDCOUNT = 9;
     final private int MAX_PLAYER = 4;
     final private String basePath = "C:\\Users\\Lenovo\\Documents\\SE\\Year2S1\\Java\\Monopoly\\";
     final private String databasePath = "jdbc:sqlite:" + basePath + "src\\Database\\SEpoly.db";
@@ -406,7 +406,7 @@ public class Server {
             while (card.next()) {
                 //System.out.println(card.getString(3) + card.getInt(4));
                 temp = new Card(card.getString(3), card.getInt(4), card.getBytes(5));
-                communityDeck.add(temp);
+                chanceDeck.add(temp);
             }
             connection.close();
         } catch (Exception e) {
