@@ -163,12 +163,12 @@ public class Server {
                                 estate.getInt(4), pos, estate.getBytes(12));
                         map.add(temp);
                         break;
-                    case "commucard":
+                    case "community":
                         temp = new CardSpace(estate.getInt(1), estate.getString(2),
                                 estate.getString(3), pos, estate.getBytes(12));
                         map.add(temp);
                         break;
-                    case "chancecard":
+                    case "chance":
                         temp = new CardSpace(estate.getInt(1), estate.getString(2),
                                 estate.getString(3), pos, estate.getBytes(12));
                         map.add(temp);
