@@ -13,8 +13,8 @@ public class Player implements Serializable, Movable {
     private boolean isJailed;
     private int money;
     private int ID;
-    private int x;
-    private int y;
+    private int x = 360;
+    private int y = 460;
 
     public Player(int startingMoney, int ID) {
         money = startingMoney;
