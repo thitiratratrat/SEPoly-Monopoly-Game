@@ -101,7 +101,8 @@ public class Server {
         players.set(player.getID(), player);
         PlayerObj playerObj = new PlayerObj(player.getX(), player.getY(), player.getMoney(), player.getID());
         ServerMessage serverMessage = new ServerMessage("updateOpponent", playerObj);
-        sendToAllExcept(player.getID(), serverMessage);
+//        sendToAllExcept(player.getID(), serverMessage);
+        sendToAllClients(serverMessage);
     }
 
     public void addNames(String name) throws IOException {

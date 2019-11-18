@@ -17,12 +17,7 @@ public class Dice extends JLabel {
 
     public Dice(){
         setBounds(400,300,100,50);
-        //roll(5,3);
         setVisible(true);
-//        System.out.println(getColorModel());
-//        setResizable(false);
-//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        setLocationRelativeTo(null);
     }
 
     public void roll(int die1, int die2) {
