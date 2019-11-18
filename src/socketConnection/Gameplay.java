@@ -176,9 +176,6 @@ public class Gameplay extends javax.swing.JFrame {
     private ArrayList<JLabel> estate;
 
 
-
-
-
     public Gameplay() {
         initUI();
     }
@@ -1501,7 +1498,6 @@ public class Gameplay extends javax.swing.JFrame {
 }
 
 
-
         
 
 class CharacterSprite extends JPanel{
@@ -1512,7 +1508,7 @@ class CharacterSprite extends JPanel{
         BufferedImage spriteSheet = null;
         try{
             switch (player.getID()) {
-                case 0: spriteSheet = loader.loadImage("src/allImage/ratSprite.png");break;
+                case 0: spriteSheet = loader.loadImage("/allImage/ratSprite.png");break;
                 case 1: spriteSheet = loader.loadImage("/allImage/pupSprite.png");break;
                 case 2: spriteSheet = loader.loadImage("/allImage/PDAMIAN.png");break;
                 case 3: spriteSheet = loader.loadImage("/allImage/maidSprite.png");break; }
