@@ -1285,10 +1285,12 @@ public class Gameplay extends javax.swing.JFrame {
         ServerMessage serverMessage = new ServerMessage("updateDice", diceNumbers);
         client.sendData(serverMessage);
 //        dice.roll(diceNumbers[0], diceNumbers[1]);
+        System.out.println("dice number: " + totalMoveCount);
         //TODO: display UI dice roll
         if (player.isJailed()) {
             checkBreakJail(diceNumbers, totalMoveCount);
         } else {
+            System.out.println("moving");
             movePlayerForward(totalMoveCount);
         }
     }
@@ -1308,6 +1310,7 @@ public class Gameplay extends javax.swing.JFrame {
 
         sendPlayerToMoveForward(moveCount);
         //TODO: animation move player forward
+        System.out.println("move animation");
         javax.swing.Timer t = new javax.swing.Timer(300, new MoveForward(displayPlayer.get(player.getID()), player, moveCount));
         t.start();
 
@@ -1484,7 +1487,7 @@ public class Gameplay extends javax.swing.JFrame {
         }
         System.out.println("test2");
         gameplay.add(board);
-
+        board.setVisible(false);
     }
 
     private void updateMap(PropertySpace propertySpace) {
