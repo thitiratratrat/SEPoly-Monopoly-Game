@@ -56,7 +56,6 @@ public class Gameplay extends javax.swing.JFrame {
     private ArrayList<CharacterSprite> displayPlayer = new ArrayList<>(MAX_PLAYERS);
 
     //character
-    private int diceNum = 0;
 
     //-----------------------------------------------------------------
     //------------------ F O R U I ------------------------------------
@@ -541,8 +540,8 @@ public class Gameplay extends javax.swing.JFrame {
 
         dice.setVerticalAlignment(SwingConstants.BOTTOM);
         //dice.setIcon(new ImageIcon("\\src\\allImage\\finaljingjing_board.png"));
-        dice.setBackground(new Color(223,234,184));
-        dice.setBounds(343,185,100,50);
+        dice.setBackground(new Color(223, 234, 184));
+        dice.setBounds(343, 185, 100, 50);
         //dice.setBackground(new Color(0x0));
         board.setVerticalAlignment(SwingConstants.BOTTOM);
 
@@ -867,8 +866,8 @@ public class Gameplay extends javax.swing.JFrame {
         if (!isTurn) {
             return;
         }
-            rollDice();
-            rollBtn.setEnabled(false);
+        rollDice();
+        rollBtn.setEnabled(false);
     }
 
 
@@ -1055,15 +1054,21 @@ public class Gameplay extends javax.swing.JFrame {
                             break;
                         }
 
-                        case ("updatePlayer"):
+                        case ("updatePlayer"): {
+                            Player temp = (Player) serverMessage.getData();
+                            player.setMoney(temp.getMoney());
+                            System.out.println("player ID from update: " + player.getID());
+                            setMoney(player.getID(), player.getMoney());
+                            System.out.println("THISONE : " + player.getID());
+                            System.out.println("player ID: " + player.getID());
+//                            javax.swing.Timer t = new javax.swing.Timer(300, new MoveForward(displayPlayer.get(player.getID()), player, diceNum));
+//                            t.start();
+                            break;
+                        }
+
                         case ("initPlayer"): {
                             player = (Player) serverMessage.getData();
                             setMoney(player.getID(), player.getMoney());
-                            System.out.println(player.getID());
-                            //TODO: animate player if changes in x y
-
-//                            javax.swing.Timer t = new javax.swing.Timer(300, new MoveForward(displayPlayer1, player, diceNum));
-//                            t.start();
                             setMoney(player.getID(), player.getMoney());
                             break;
                         }
@@ -1123,7 +1128,6 @@ public class Gameplay extends javax.swing.JFrame {
 
                         case ("updateDice"): {
                             int[] diceNumbers = (int[]) serverMessage.getData();
-                            //TODO: display UI dice roll
                             dice.roll(diceNumbers[0], diceNumbers[1]);
                             dice.setVisible(true);
                             break;
@@ -1143,13 +1147,18 @@ public class Gameplay extends javax.swing.JFrame {
 
                         case ("moveOpponentForward"): {
                             MoveAnimateObj moveObj = (MoveAnimateObj) serverMessage.getData();
-                            Movable opponent = moveObj.getPlayer();
+                            Movable data = moveObj.getPlayer();
                             int moveCount = moveObj.getMoveNumber();
+                            PlayerObj opponent = getOpponent(data.getID());
                             //TODO: animate opponent id forward
                             System.out.print("opponent : ");
-                            System.out.println(opponent.getID());
-                            javax.swing.Timer t = new javax.swing.Timer(300, new MoveForward(displayPlayer.get(opponent.getID()), opponent, moveCount));
-                            t.start();
+                            System.out.println(opponent.getX() + "    " + opponent.getY());
+                            javax.swing.Timer t2 = new javax.swing.Timer(300, new MoveForward(displayPlayer.get(opponent.getID()), opponent , moveCount));
+                            t2.start();
+                            System.out.println(opponent.getX() + "    " + opponent.getY());
+//                            sendPlayerToUpdate();
+
+                            container.repaint();
                             break;
                         }
 
@@ -1182,7 +1191,9 @@ public class Gameplay extends javax.swing.JFrame {
     private void updateOpponent(PlayerObj playerObj) {
         for (PlayerObj opponent : opponents) {
             if (opponent.getID() == playerObj.getID()) {
-                opponent = playerObj;
+                opponent.setX(playerObj.getX());
+                opponent.setY(playerObj.getY());
+                opponent.setMoney(playerObj.getMoney());
                 break;
             }
         }
@@ -1190,6 +1201,10 @@ public class Gameplay extends javax.swing.JFrame {
         setMoney(playerObj.getID(), playerObj.getMoney());
 
         //TODO: animate opponent to move to that position
+        //888888
+        gameplay.repaint();
+
+
     }
 
     private void buy(PropertySpace propertySpace) throws IOException {
@@ -1253,6 +1268,15 @@ public class Gameplay extends javax.swing.JFrame {
         //TODO: animation remove landmark
     }
 
+    private PlayerObj getOpponent(int playerID) {
+        for (PlayerObj opponent : opponents) {
+            if (opponent.getID() == playerID) {
+                return opponent;
+            }
+        }
+        return null;
+    }
+
     private void sendPlayerToUpdate() throws IOException {
         ServerMessage serverMessage = new ServerMessage("updatePlayer", player);
         client.sendData(serverMessage);
@@ -1312,6 +1336,7 @@ public class Gameplay extends javax.swing.JFrame {
         //TODO: animation move player forward
         System.out.println("move animation");
         javax.swing.Timer t = new javax.swing.Timer(300, new MoveForward(displayPlayer.get(player.getID()), player, moveCount));
+        System.out.println("move count from rolling: " + moveCount);
         t.start();
 
         isMoving = false;
@@ -1359,7 +1384,7 @@ public class Gameplay extends javax.swing.JFrame {
                 Player owner = propertySpace.getOwner();
                 if (owner == null) {
                     //TODO: display UI to let player choose to buy or put up for auction
-                    if(player.getMoney() >= propertySpace.getPrice())
+                    if (player.getMoney() >= propertySpace.getPrice())
                         showLandBuying(propertySpace);
                     else
                         endTurn();
@@ -1466,9 +1491,11 @@ public class Gameplay extends javax.swing.JFrame {
 
     private void initCharacterSprites() {
         for (int i = 0; i < MAX_PLAYERS; i++) {
+            System.out.print("i");
             displayPlayer.add(new CharacterSprite(player));
         }
-
+        System.out.println("");
+        System.out.println("display player length: " + displayPlayer.size());
         CharacterSprite sprite = new CharacterSprite(player);
         sprite.setBounds(360, 460, 50, 50);
         sprite.setVisible(true);
@@ -1477,7 +1504,7 @@ public class Gameplay extends javax.swing.JFrame {
         displayPlayer.set(player.getID(), sprite);
 
         for (PlayerObj opponent : opponents) {
-            System.out.println("test");
+            //System.out.println("test");
             sprite = new CharacterSprite(opponent);
             sprite.setBounds(360, 460, 50, 50);
             sprite.setVisible(true);
@@ -1485,9 +1512,9 @@ public class Gameplay extends javax.swing.JFrame {
             setMoney(opponent.getID(), opponent.getMoney());
             displayPlayer.set(opponent.getID(), sprite);
         }
-        System.out.println("test2");
+        // System.out.println("test2");
         gameplay.add(board);
-        board.setVisible(false);
+        //board.setVisible(false);
     }
 
     private void updateMap(PropertySpace propertySpace) {
@@ -1648,7 +1675,7 @@ class MoveForward implements ActionListener {
     static int diceNumber;
     static int posX, posY;
     Movable player;
-    int count;
+    int count = 0;
 
     public MoveForward(socketConnection.CharacterSprite allSprite, Movable player, int diceNumber) {
         this.allSprite = allSprite;
@@ -1676,6 +1703,13 @@ class MoveForward implements ActionListener {
         //System.out.println(player.getX() + "     " + player.getY());
         posX = player.getX();
         posY = player.getY();
+        if (diceNumber == 0) {
+            //allSprite.repaint();
+            posX += 0;
+            posY += 0;
+            count = 0;
+        }
+
         switch (side) {
             case 1:
                 posX -= 35; //side1
@@ -1699,17 +1733,20 @@ class MoveForward implements ActionListener {
                 }
                 break;
         }
+        System.out.println("dice num in action performed: " + diceNumber);
 
         player.setX(posX);
         player.setY(posY);
+        System.out.println(player.getX() + "    " + player.getY());
         allSprite.validate();
         allSprite.repaint();
         (allSprite.getParent().getParent()).validate();
         (allSprite.getParent().getParent()).repaint();
 
-
         if (count == diceNumber) { //จนครั้งที่เดิน
+            System.out.println("stop timer!");
             ((javax.swing.Timer) e.getSource()).stop();
+            count = 0;
         }
     }
 }

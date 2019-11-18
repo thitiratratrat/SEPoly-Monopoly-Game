@@ -42,7 +42,7 @@ public class Player implements Serializable, Movable {
     }
 
     public void buyHouse(EstateSpace estateSpace, int houseCount) {
-        int price = estateSpace.getHousePrice();
+        int price = estateSpace.getHousePrice()*houseCount;
 
         pay(price);
         estateSpace.buildHouse(houseCount);
@@ -164,6 +164,10 @@ public class Player implements Serializable, Movable {
         property.addAll(railroads);
 
         return property;
+    }
+
+    public void setMoney(int money) {
+        this.money = money;
     }
 
     //TODO: buy house add asset
