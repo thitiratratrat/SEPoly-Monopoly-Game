@@ -244,6 +244,9 @@ public class Server {
         int effectAmount = card.getEffectAmount();
         Player player = players.get(drawCardObj.getPlayerID());
 
+        ServerMessage serverMessage = new ServerMessage("showCard", card.getImage());
+        sendToAllClients(serverMessage);
+
         switch (effect) {
             case ("getPaid"): {
                 player.getPaid(effectAmount);
@@ -265,19 +268,19 @@ public class Server {
             }
             case ("getJailed"): {
                 player.jailed();
-                ServerMessage serverMessage = new ServerMessage("goToJail", "");
+                serverMessage = new ServerMessage("goToJail", "");
                 sendToPlayer(serverMessage, player.getID());
                 break;
             }
 
             case ("moveForward"): {
-                ServerMessage serverMessage = new ServerMessage("moveForward", effectAmount);
+                serverMessage = new ServerMessage("moveForward", effectAmount);
                 sendToPlayer(serverMessage, player.getID());
                 break;
             }
 
             case ("moveTo"): {
-                ServerMessage serverMessage = new ServerMessage("moveTo", effectAmount);
+                serverMessage = new ServerMessage("moveTo", effectAmount);
                 sendToPlayer(serverMessage, player.getID());
                 break;
             }
@@ -287,7 +290,7 @@ public class Server {
         }
         //TODO: player act on card effect
 
-        ServerMessage serverMessage = new ServerMessage("updatePlayer", player);
+        serverMessage = new ServerMessage("updatePlayer", player);
         sendToPlayer(serverMessage, player.getID());
         updatePlayer(player);
     }
