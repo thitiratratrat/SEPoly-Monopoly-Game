@@ -1138,10 +1138,7 @@ public class Gameplay extends javax.swing.JFrame {
                         case ("updatePlayer"): {
                             Player temp = (Player) serverMessage.getData();
                             player.setMoney(temp.getMoney());
-                            System.out.println("player ID from update: " + player.getID());
                             setMoney(player.getID(), player.getMoney());
-                            System.out.println("THISONE : " + player.getID());
-                            System.out.println("player ID: " + player.getID());
 //                            javax.swing.Timer t = new javax.swing.Timer(300, new MoveForward(displayPlayer.get(player.getID()), player, diceNum));
 //                            t.start();
                             break;
@@ -1203,7 +1200,9 @@ public class Gameplay extends javax.swing.JFrame {
 
                         case ("goToJail"): {
                             //TODO: animation go to jail
+                            System.out.println("case go to jail");
                             movePlayerTo(JAIL_SPACE_NUMBER);
+                            endTurn();
                             break;
                         }
 
@@ -1223,6 +1222,8 @@ public class Gameplay extends javax.swing.JFrame {
                         case ("moveTo"): {
                             int number = (int) serverMessage.getData();
                             movePlayerTo(number);
+                            System.out.println("case move to");
+                            endTurn();
                             break;
                         }
 
@@ -1270,7 +1271,7 @@ public class Gameplay extends javax.swing.JFrame {
     private void endTurn() throws IOException {
         isTurn = false;
         rollBtn.setEnabled(false);
-        dice.setVisible(false);
+        //dice.setVisible(false);
         ServerMessage serverMessage = new ServerMessage("endTurn", player.getID());
         client.sendData(serverMessage);
     }
@@ -1310,12 +1311,8 @@ public class Gameplay extends javax.swing.JFrame {
     private void buyHouse(EstateSpace estateSpace) throws IOException {
         String p = totalPrice.getText().replace("M","000000");
         p = p.replace("K","000");
-        System.out.println(totalPrice.getText());
-
         price = Integer.parseInt(p);
-        System.out.println("price "+price);
         int houseCount = price / estateSpace.getHousePrice();
-        System.out.println("housecount = " + houseCount);
         player.buyHouse(estateSpace, houseCount);
         sendMapToUpdate(estateSpace);
         sendPlayerToUpdate();
@@ -1337,7 +1334,6 @@ public class Gameplay extends javax.swing.JFrame {
         }
         path += Integer.toString(houseCount);
         path+=".png";
-        System.out.println("path "+path);
         if ((spaceNumber >= 1 && spaceNumber <= 7) || (spaceNumber >= 17 && spaceNumber <= 23)) {
             //estate.get(spaceNumber).setIcon(new ImageIcon("\\src\\house_side1-3\\" + path));
             (estate.get(spaceNumber)).setIcon(new ImageIcon("C:\\Users\\Asus\\Desktop\\javaProject\\monopoly\\src\\house_side1-3\\"+path));
@@ -1436,12 +1432,9 @@ public class Gameplay extends javax.swing.JFrame {
         ServerMessage serverMessage = new ServerMessage("updateDice", diceNumbers);
         client.sendData(serverMessage);
 //        dice.roll(diceNumbers[0], diceNumbers[1]);
-        System.out.println("dice number: " + totalMoveCount);
-        //TODO: display UI dice roll
         if (player.isJailed()) {
             checkBreakJail(diceNumbers, totalMoveCount);
         } else {
-            System.out.println("moving");
             movePlayerForward(totalMoveCount);
         }
     }
@@ -1478,12 +1471,13 @@ public class Gameplay extends javax.swing.JFrame {
     private void movePlayerTo(int number) throws IOException {
         isMoving = true;
         spaceNumber = number;
-
+        System.out.println("in move player to : "+ spaceNumber);
         sendPlayerToMoveTo(number);
         //TODO: animation warp player to space number
         MoveForwardTo(spaceNumber);
         isMoving = false;
         doSpaceAction(spaceNumber, 1);
+
 
     }
 
@@ -1511,8 +1505,9 @@ public class Gameplay extends javax.swing.JFrame {
             }
 
             case ("go to jail"): {
-                endTurn();
                 player.jailed();
+                endTurn();
+
                 break;
             }
 
@@ -1578,7 +1573,7 @@ public class Gameplay extends javax.swing.JFrame {
                     movePlayerTo(moveNumber);
                     sendPlayerToMoveTo(moveNumber);
                 }
-                System.out.println("THISTHIS");
+                System.out.println("THISTHIS Go");
                 endTurn();
                 break;
             }
