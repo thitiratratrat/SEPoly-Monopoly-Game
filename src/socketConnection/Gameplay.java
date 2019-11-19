@@ -39,8 +39,8 @@ public class Gameplay extends javax.swing.JFrame {
     private Player player;
     private ArrayList<PlayerObj> opponents;
     private ArrayList<Space> map;
+    //private String address = "25.30.143.112";
     private String address = "127.0.0.1";
-    //private String address = "172.20.10.2";
     //private String address = "161.246.144.120";
     private int port = 5056;
     private Timer biddingTimer = new Timer();
@@ -1120,7 +1120,6 @@ public class Gameplay extends javax.swing.JFrame {
 
                         case ("moveForward"): {
                             int spaceNumber = (int) serverMessage.getData();
-
                             movePlayerForward(spaceNumber);
                             break;
                         }
@@ -1157,8 +1156,8 @@ public class Gameplay extends javax.swing.JFrame {
                             int moveCount = moveObj.getMoveNumber();
                             PlayerObj opponent = getOpponent(data.getID());
                             //TODO: animate opponent id forward
-                            System.out.print("opponent : ");
-                            System.out.println(opponent.getX() + "    " + opponent.getY());
+                            //System.out.print("opponent : ");
+                            //System.out.println(opponent.getX() + "    " + opponent.getY());
                             javax.swing.Timer t2 = new javax.swing.Timer(300, new MoveForward(displayPlayer.get(opponent.getID()), opponent , moveCount
                             ));
                             t2.start();
@@ -1173,6 +1172,8 @@ public class Gameplay extends javax.swing.JFrame {
                             MoveAnimateObj moveObj = (MoveAnimateObj) serverMessage.getData();
                             //TODO: animate player opponent to specific position
 
+                            movePlayerTo(moveObj.getMoveNumber());
+                            container.repaint();
                             break;
                         }
 
@@ -1358,9 +1359,11 @@ public class Gameplay extends javax.swing.JFrame {
         sendPlayerToMoveTo(number);
         //TODO: animation warp player to space number
         MoveForwardTo(spaceNumber);
-        //new MoveForwardTo(displayPlayer.get(player.getID()),player,number);
-        isMoving = false;
 
+        //System.out.println("Player move: "+ spaceNumber);
+        //new MoveForwardTo(displayPlayer.get(player.getID()),player,number);
+
+        isMoving = false;
         doSpaceAction(spaceNumber, 1);
     }
 
@@ -1386,12 +1389,10 @@ public class Gameplay extends javax.swing.JFrame {
                 break;
             }
 
-            /*case ("go to jail"): {
-                System.out.println("move to Jaillllll !");
-                MoveForwardTo(player,JAIL_SPACE_NUMBER);
+            case ("go to jail"): {
                 player.jailed();
                 break;
-            }*/
+            }
 
             case ("property"): {
                 PropertySpace propertySpace = (PropertySpace) space;
@@ -1450,10 +1451,10 @@ public class Gameplay extends javax.swing.JFrame {
             }
 
             case ("go"): {
-                //movePlayerForward(diceNumber);
-                //System.out.println("Dice: "+ diceNumber);
-                //MoveForwardTo(player,JAIL_SPACE_NUMBER);
-                movePlayerTo(JAIL_SPACE_NUMBER);
+                int moveNumber = ((MoveSpace) space).getAmount();
+                movePlayerTo(moveNumber);
+                sendPlayerToMoveTo(moveNumber);
+
                 endTurn();
                 break;
             }
@@ -1700,8 +1701,7 @@ class CharacterSprite extends JLabel
             Logger.getLogger(socketConnection.CharacterSprite.class.getName()).log(Level.SEVERE, null, ex);
         }
         SpriteSheet playerSS = new SpriteSheet(spriteSheet);
-        switch (player.getID())
-        {
+        switch (player.getID()) {
             case 0:
                 spriteIdleL = playerSS.grabSprite(0, 0, 110, 120);
                 spriteIdleR = playerSS.grabSprite(0, 123, 110, 120);
@@ -1719,105 +1719,103 @@ class CharacterSprite extends JLabel
                 spriteIdleR = playerSS.grabSprite(0, 198, 114, 190);
                 break;
         }
+
     }
 
     @Override
-    public void paintComponent (Graphics g)
-    {
-            super.paintComponent(g);
-
-            if ((player.getX() >= 80 && player.getX() < 672 && player.getY() <= 276) ||
-                    (player.getX() >= 60 && player.getY() <= 268)) {
-                g.drawImage(spriteIdleR, 0, 0, 50, 50, null);
-            } else {
-                g.drawImage(spriteIdleL, 0, 0, 50, 50, null);
-            }
-            setBounds(player.getX(), player.getY(), 50, 50);
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        /*if(){
+            g.drawImage(spriteIdleL, 360, 460, 50, 50, null);
+        }*/
+        // System.out.println("isus");
+        if ((player.getX() >= 80 && player.getX() < 672 && player.getY() <= 276) ||
+                (player.getX() >= 60 && player.getY() <= 268)) {
+            g.drawImage(spriteIdleR, 0, 0, 50, 50, null);
+        } else {
+            g.drawImage(spriteIdleL, 0, 0, 50, 50, null);
+        }
+        setBounds(player.getX(), player.getY(), 50, 50);
     }
 }
 
-class MoveForward implements ActionListener
-    {
-        CharacterSprite allSprite;
-        static int diceNumber;
-        static int playerSpace;
-        static int posX, posY;
-        Movable player;
-        int count = 0;
+class MoveForward implements ActionListener {
+    socketConnection.CharacterSprite allSprite;
+    static int diceNumber;
+    static int posX, posY;
+    Movable player;
+    int count = 0;
 
-        public MoveForward(CharacterSprite allSprite, Movable player, int diceNumber) {
-            this.allSprite = allSprite;
-            this.player = player;
-            this.diceNumber = diceNumber;
-            //this.playerSpace = p;
-        }
+    public MoveForward(socketConnection.CharacterSprite allSprite, Movable player, int diceNumber) {
+        this.allSprite = allSprite;
+        this.player = player;
+        this.diceNumber = diceNumber;
 
-        public int ckSide() {
-            if ((player.getX() <= 360 && player.getX() > 80) && (player.getY() > 276 && player.getY() <= 460)) {
-                return 1;
-            } else if ((player.getX() < 376 && player.getX() >= 80) && (player.getY() > 60 && player.getY() <= 276)) {
-                return 2;
-            } else if ((player.getX() < 672 && player.getX() >= 376) && (player.getY() < 268 && player.getY() >= 60)) {
-                return 3;
-            } else {
-                return 4;
-            }
-        }
+    }
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            int side = ckSide();
-            count++;
-            //System.out.println(player.getX() + "     " + player.getY());
-            posX = player.getX();
-            posY = player.getY();
-            if (diceNumber == 0) {
-                //allSprite.repaint();
-                (allSprite.getParent().getParent()).repaint();
-                posX += 0;
-                posY += 0;
-                count = 0;
-            }
-            switch (side) {
-                case 1:
-                    posX -= 35; //side1
-                    posY -= 23; //side1
-                    break;
-                case 2:
-                    posX += 37; //side2
-                    posY -= 27; //side2
-                    break;
-                case 3:
-                    posX += 37; //side3
-                    posY += 26; //side3
-                    break;
-                case 4:
-                    if (posX == 427 && posY == 443) {
-                        posX -= 67;
-                        posY += 17;
-                    } else {
-                        posX -= 35; //side4
-                        posY += 25; //side4
-                    }
-                    break;
-            }
-            //System.out.println("dice num in action performed: " + diceNumber);
-
-            player.setX(posX);
-            player.setY(posY);
-            //System.out.println(player.getX() + "    " + player.getY());
-            allSprite.validate();
-            allSprite.repaint();
-            (allSprite.getParent().getParent()).validate();
-            (allSprite.getParent().getParent()).repaint();
-
-            if (count == diceNumber) { //จนครั้งที่เดิน
-                System.out.println("stop timer!");
-                ((javax.swing.Timer) e.getSource()).stop();
-                count = 0;
-            }
+    public int ckSide() {
+        if ((player.getX() <= 360 && player.getX() > 80) && (player.getY() > 276 && player.getY() <= 460)) {
+            return 1;
+        } else if ((player.getX() < 376 && player.getX() >= 80) && (player.getY() > 60 && player.getY() <= 276)) {
+            return 2;
+        } else if ((player.getX() < 672 && player.getX() >= 376) && (player.getY() < 268 && player.getY() >= 60)) {
+            return 3;
+        } else {
+            return 4;
         }
     }
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        int side = ckSide();
+        count++;
+        //System.out.println(player.getX() + "     " + player.getY());
+        posX = player.getX();
+        posY = player.getY();
+        if (diceNumber == 0) {
+            //allSprite.repaint();
+            posX += 0;
+            posY += 0;
+            count = 0;
+        }
 
+        switch (side) {
+            case 1:
+                posX -= 35; //side1
+                posY -= 23; //side1
+                break;
+            case 2:
+                posX += 37; //side2
+                posY -= 27; //side2
+                break;
+            case 3:
+                posX += 37; //side3
+                posY += 26; //side3
+                break;
+            case 4:
+                if (posX == 427 && posY == 443) {
+                    posX -= 67;
+                    posY += 17;
+                } else {
+                    posX -= 35; //side4
+                    posY += 25; //side4
+                }
+                break;
+        }
+        //System.out.println("dice num in action performed: " + diceNumber);
 
+        player.setX(posX);
+        player.setY(posY);
+        //System.out.println(player.getX() + "    " + player.getY());
+        allSprite.validate();
+        allSprite.repaint();
+        (allSprite.getParent().getParent()).validate();
+        (allSprite.getParent().getParent()).repaint();
+
+        if (count == diceNumber) { //จนครั้งที่เดิน
+            //System.out.println("stop timer!");
+            ((javax.swing.Timer) e.getSource()).stop();
+            count = 0;
+        }
+    }
+}
