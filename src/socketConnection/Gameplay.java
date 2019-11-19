@@ -1524,7 +1524,9 @@ public class Gameplay extends javax.swing.JFrame {
             }
 
             case ("go"): {
-                movePlayerTo(((MoveSpace) space).getAmount());
+                int moveNumber = ((MoveSpace) space).getAmount();
+                movePlayerTo(moveNumber);
+                sendPlayerToMoveTo(moveNumber);
                 break;
             }
 
