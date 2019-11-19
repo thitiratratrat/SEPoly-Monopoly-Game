@@ -47,14 +47,13 @@ public class Server {
             System.out.println("connected");
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
-            //check if size == 4 ?????
+
             int ID = players.size();
             ClientHandler clientHandler = new ClientHandler(socket, inputStream, outputStream, this, ID);
             Player player = new Player(STARTINGMONEY, ID);
 
             clients.add(clientHandler);
             players.add(player);
-            //send size? to change color in lobby????
             clientHandler.start();
         } catch (Exception e) {
             close();
@@ -70,7 +69,6 @@ public class Server {
         sendInitPlayerData();
         sendInitOpponentData();
     }
-
 
     public void sendToAllClients(ServerMessage serverMessage) throws IOException {
         for (ClientHandler client : clients) {
@@ -365,6 +363,7 @@ public class Server {
     }
 
     private void sendStartGame() throws IOException {
+        System.out.println("starting!");
         ServerMessage serverMessage = new ServerMessage("startGame", "");
         sendToAllClients(serverMessage);
     }

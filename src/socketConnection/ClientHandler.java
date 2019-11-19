@@ -14,7 +14,7 @@ class ClientHandler extends Thread {
     private ObjectOutputStream outputStream;
     private int ID;
 
-    public ClientHandler(Socket socket, ObjectInputStream inputStream, ObjectOutputStream outputStream, Server server, int ID) {
+    public ClientHandler(Socket socket, ObjectInputStream inputStream, ObjectOutputStream outputStream, Server server, int ID) throws IOException {
         this.socket = socket;
         this.inputStream = inputStream;
         this.outputStream = outputStream;
