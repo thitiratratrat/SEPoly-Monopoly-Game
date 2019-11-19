@@ -1126,7 +1126,7 @@ public class Gameplay extends javax.swing.JFrame {
 
                         case ("goToJail"): {
                             //TODO: animation go to jail
-                            //System.out.println("print Map: "+ map.get(spaceNumber));
+                            System.out.println("gotoJail");
                             movePlayerTo(JAIL_SPACE_NUMBER);
                             break;
                         }
@@ -1156,12 +1156,11 @@ public class Gameplay extends javax.swing.JFrame {
                             int moveCount = moveObj.getMoveNumber();
                             PlayerObj opponent = getOpponent(data.getID());
                             //TODO: animate opponent id forward
-                            //System.out.print("opponent : ");
-                            //System.out.println(opponent.getX() + "    " + opponent.getY());
+
                             javax.swing.Timer t2 = new javax.swing.Timer(300, new MoveForward(displayPlayer.get(opponent.getID()), opponent , moveCount
                             ));
                             t2.start();
-                            System.out.println(opponent.getX() + "    " + opponent.getY());
+                            //System.out.println(opponent.getX() + "    " + opponent.getY());
 //                            sendPlayerToUpdate();
 
                             container.repaint();
@@ -1170,10 +1169,14 @@ public class Gameplay extends javax.swing.JFrame {
 
                         case ("moveOpponentTo"): {
                             MoveAnimateObj moveObj = (MoveAnimateObj) serverMessage.getData();
+                            Movable data = moveObj.getPlayer();
                             //TODO: animate player opponent to specific position
-
-                            movePlayerTo(moveObj.getMoveNumber());
-                            container.repaint();
+                            System.out.println("thisone "+data.getID());
+                            if(moveObj.getMoveNumber() == 24 ){
+                                movePlayerTo(moveObj.getMoveNumber());
+                                container.repaint();
+                            }
+                            //System.out.println("Move opponent to");
                             break;
                         }
 
@@ -1194,7 +1197,6 @@ public class Gameplay extends javax.swing.JFrame {
         dice.setVisible(false);
         ServerMessage serverMessage = new ServerMessage("endTurn", player.getID());
         client.sendData(serverMessage);
-
     }
 
     private void updateOpponent(PlayerObj playerObj) {
@@ -1210,7 +1212,6 @@ public class Gameplay extends javax.swing.JFrame {
         setMoney(playerObj.getID(), playerObj.getMoney());
 
         //TODO: animate opponent to move to that position
-        //888888
         gameplay.repaint();
 
 
@@ -1314,6 +1315,7 @@ public class Gameplay extends javax.swing.JFrame {
             int diceNumber = randomGenerator.nextInt(6) + 1;
             diceNumbers[i] = diceNumber;
             totalMoveCount += diceNumber;
+
         }
         ServerMessage serverMessage = new ServerMessage("updateDice", diceNumbers);
         client.sendData(serverMessage);
@@ -1344,9 +1346,14 @@ public class Gameplay extends javax.swing.JFrame {
         sendPlayerToMoveForward(moveCount);
         //TODO: animation move player forward
        // System.out.println("move animation");
-        javax.swing.Timer t = new javax.swing.Timer(300, new MoveForward(displayPlayer.get(player.getID()), player, moveCount));
-        //System.out.println("move count from rolling: " + moveCount);
-        t.start();
+        if(spaceNumber == 24){
+            movePlayerTo(JAIL_SPACE_NUMBER);
+        }
+        else{
+            javax.swing.Timer t = new javax.swing.Timer(300, new MoveForward(displayPlayer.get(player.getID()), player, moveCount));
+            //System.out.println("move count from rolling: " + moveCount);
+            t.start();
+        }
 
         isMoving = false;
         doSpaceAction(spaceNumber, moveCount);
@@ -1359,9 +1366,6 @@ public class Gameplay extends javax.swing.JFrame {
         sendPlayerToMoveTo(number);
         //TODO: animation warp player to space number
         MoveForwardTo(spaceNumber);
-
-        //System.out.println("Player move: "+ spaceNumber);
-        //new MoveForwardTo(displayPlayer.get(player.getID()),player,number);
 
         isMoving = false;
         doSpaceAction(spaceNumber, 1);
@@ -1452,8 +1456,12 @@ public class Gameplay extends javax.swing.JFrame {
 
             case ("go"): {
                 int moveNumber = ((MoveSpace) space).getAmount();
-                movePlayerTo(moveNumber);
-                sendPlayerToMoveTo(moveNumber);
+               // System.out.println("--------GO---------");
+                if(moveNumber == 24){
+                    movePlayerTo(moveNumber);
+                    sendPlayerToMoveTo(moveNumber);
+                }
+                //System.out.println("GO Player" + displayPlayer.get(player.getID()));
 
                 endTurn();
                 break;
@@ -1531,7 +1539,7 @@ public class Gameplay extends javax.swing.JFrame {
             setMoney(opponent.getID(), opponent.getMoney());
             displayPlayer.set(opponent.getID(), sprite);
         }
-        // System.out.println("test2");
+
         gameplay.add(board);
         //board.setVisible(false);
     }
@@ -1579,11 +1587,8 @@ public class Gameplay extends javax.swing.JFrame {
 
                 break;
         }
-        // System.out.println("change the position");
-        System.out.println("PosX : "+ posX + "POSY: "+ posY);
         player.setX(posX);
         player.setY(posY);
-        System.out.println("Testttt : " + player.getX() + "    " + player.getY());
     }
 
     private void updateMap(PropertySpace propertySpace) {
