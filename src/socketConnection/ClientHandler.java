@@ -106,6 +106,7 @@ class ClientHandler extends Thread {
             }
         } catch (Exception e) {
             try {
+                e.printStackTrace();
                 System.out.println("error occured");
                 inputStream.close();
                 outputStream.close();
