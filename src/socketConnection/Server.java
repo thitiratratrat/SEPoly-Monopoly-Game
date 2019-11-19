@@ -25,7 +25,7 @@ public class Server {
     private Integer highestBiddingMoney;
     private PropertySpace auctionProperty;
     final private int STARTINGMONEY = 1500000;
-    final private int CARDCOUNT = 10;
+    final private int CARDCOUNT = 9;
     final private int MAX_PLAYER = 4;
     final private String basePath = "C:\\Users\\us\\Desktop\\Y2S1\\JAVA\\monopoly\\";
     final private String databasePath = "jdbc:sqlite:" + basePath + "src\\Database\\SEpoly.db";
@@ -295,6 +295,7 @@ public class Server {
     }
 
     public void payRentPlayer(GetPaidObj getPaidObj) throws IOException {
+        System.out.println("HIA");
         Player player = players.get(getPaidObj.getPlayerID());
         player.getPaid(getPaidObj.getRent());
         ServerMessage serverMessage = new ServerMessage("updatePlayer", player);
@@ -354,6 +355,7 @@ public class Server {
             serverMessage.setData(opponents);
             client.getOutputStream().writeUnshared(serverMessage);
             client.getOutputStream().reset();
+            opponents.clear();
         }
     }
 
