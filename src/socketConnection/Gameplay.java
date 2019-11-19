@@ -2,7 +2,6 @@ package socketConnection;
 
 import DiceAnimate.Dice;
 import allSpritePlayer.BufferedImageLoader;
-import allSpritePlayer.Play;
 import allSpritePlayer.SpriteSheet;
 import model.*;
 
@@ -13,20 +12,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.*;
 import java.util.Timer;
-
 import java.util.ArrayList;
-import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import model.Movable;
 
 
-
 public class Gameplay extends javax.swing.JFrame {
-
     private String name;
     private Client client;
     private Player player;
@@ -47,6 +43,7 @@ public class Gameplay extends javax.swing.JFrame {
     final private int JAIL_SPACE_NUMBER = 8;
     final private int JAIL_FEE = 200000;
     private final int MAX_PLAYERS = 4;
+    private final String BASE_PATH = "C:\\Users\\Asus\\Desktop\\javaProject\\monopoly\\";
     private ArrayList<CharacterSprite> displayPlayer = new ArrayList<>(MAX_PLAYERS);
 
     //character
@@ -645,7 +642,7 @@ public class Gameplay extends javax.swing.JFrame {
 
         card.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                hideLabel(evt,card);
+                hideLabel(evt, card);
             }
         });
 
@@ -1110,7 +1107,7 @@ public class Gameplay extends javax.swing.JFrame {
                     String action = serverMessage.getAction();
                     switch (action) {
                         case ("startGame"): {
-                            System.out.println("startgame");
+                            //System.out.println("startgame");
                             container.setSelectedIndex(2);
                             //start();
                             break;
@@ -1119,6 +1116,7 @@ public class Gameplay extends javax.swing.JFrame {
                         case ("startTurn"): {
                             isTurn = true;
                             rollBtn.setEnabled(true);
+                            System.out.println("starting my turn");
                             //walk
                             break;
                         }
@@ -1137,6 +1135,7 @@ public class Gameplay extends javax.swing.JFrame {
                         case ("updatePlayer"): {
                             Player temp = (Player) serverMessage.getData();
                             player.setMoney(temp.getMoney());
+                            System.out.println("player ID from update player : " + player.getID());
                             setMoney(player.getID(), player.getMoney());
 //                            javax.swing.Timer t = new javax.swing.Timer(300, new MoveForward(displayPlayer.get(player.getID()), player, diceNum));
 //                            t.start();
@@ -1220,9 +1219,8 @@ public class Gameplay extends javax.swing.JFrame {
 
                         case ("moveTo"): {
                             int number = (int) serverMessage.getData();
+                            moveForwardTo(player,8);
                             movePlayerTo(number);
-                            System.out.println("case move to");
-                            endTurn();
                             break;
                         }
 
@@ -1232,11 +1230,8 @@ public class Gameplay extends javax.swing.JFrame {
                             int moveCount = moveObj.getMoveNumber();
                             PlayerObj opponent = getOpponent(data.getID());
                             //TODO: animate opponent id forward
-
-                            javax.swing.Timer t2 = new javax.swing.Timer(300, new MoveForward(displayPlayer.get(opponent.getID()), opponent , moveCount
-                            ));
+                            javax.swing.Timer t2 = new javax.swing.Timer(300, new MoveForward(displayPlayer.get(opponent.getID()), opponent, moveCount));
                             t2.start();
-                            //System.out.println(opponent.getX() + "    " + opponent.getY());
 //                            sendPlayerToUpdate();
 
                             container.repaint();
@@ -1244,15 +1239,19 @@ public class Gameplay extends javax.swing.JFrame {
                         }
 
                         case ("moveOpponentTo"): {
-                            MoveAnimateObj moveObj = (MoveAnimateObj) serverMessage.getData();
-                            Movable data = moveObj.getPlayer();
-                            //TODO: animate player opponent to specific position
-                            //System.out.println("thisone "+data.getID());
-                            //if(moveObj.getMoveNumber() == 24 ){
-                                movePlayerTo(moveObj.getMoveNumber());
-                                container.repaint();
-                            //}
-                            //System.out.println("Move opponent to");
+                        }
+
+                        case ("showCard"): {
+                            byte[] image = (byte[]) serverMessage.getData();
+                            card.setIcon(new ImageIcon(image));
+                            card.setVisible(true);
+                            break;
+                        }
+
+                        case ("updateHouse"): {
+                            HouseObj houseObj = (HouseObj) serverMessage.getData();
+                            (estate.get(houseObj.getSpaceNumber())).setIcon(new ImageIcon(houseObj.getPath()));
+                            repaint();
                             break;
                         }
 
@@ -1302,14 +1301,15 @@ public class Gameplay extends javax.swing.JFrame {
             if (player.getMoney() >= ((EstateSpace) propertySpace).getHousePrice()) {
                 showHouseBuying(((EstateSpace) propertySpace));
             }
-        }
-        else
+            else
+                endTurn();
+        } else
             endTurn();
     }
 
     private void buyHouse(EstateSpace estateSpace) throws IOException {
-        String p = totalPrice.getText().replace("M","000000");
-        p = p.replace("K","000");
+        String p = totalPrice.getText().replace("M", "000000");
+        p = p.replace("K", "000");
         price = Integer.parseInt(p);
         int houseCount = price / estateSpace.getHousePrice();
         player.buyHouse(estateSpace, houseCount);
@@ -1317,7 +1317,7 @@ public class Gameplay extends javax.swing.JFrame {
         sendPlayerToUpdate();
         //TODO: animation build house
         String path = "";
-        switch (player.getID()){
+        switch (player.getID()) {
             case 0:
                 path = "yellow";
                 break;
@@ -1332,16 +1332,18 @@ public class Gameplay extends javax.swing.JFrame {
                 break;
         }
         path += Integer.toString(houseCount);
-        path+=".png";
+        path += ".png";
+        String fullPath;
         if ((spaceNumber >= 1 && spaceNumber <= 7) || (spaceNumber >= 17 && spaceNumber <= 23)) {
             //estate.get(spaceNumber).setIcon(new ImageIcon("\\src\\house_side1-3\\" + path));
-            (estate.get(spaceNumber)).setIcon(new ImageIcon("C:\\Users\\Asus\\Desktop\\javaProject\\monopoly\\src\\house_side1-3\\"+path));
-        }
-        else {
+            fullPath = BASE_PATH + "src\\house_side1-3\\" + path;
+        } else {
             //estate.get(spaceNumber).setIcon(new ImageIcon("\\src\\house_side2-4\\" + path));
-            (estate.get(spaceNumber)).setIcon(new ImageIcon("C:\\Users\\Asus\\Desktop\\javaProject\\monopoly\\src\\house_side2-4\\"+path));
+            fullPath = BASE_PATH + "src\\house_side2-4\\" + path;
         }
-            repaint();
+        (estate.get(spaceNumber)).setIcon(new ImageIcon(fullPath));
+        sendHouseToUpdate(spaceNumber, fullPath);
+        repaint();
         endTurn();
     }
 
@@ -1430,6 +1432,7 @@ public class Gameplay extends javax.swing.JFrame {
         }
         ServerMessage serverMessage = new ServerMessage("updateDice", diceNumbers);
         client.sendData(serverMessage);
+//        dice.roll(diceNumbers[0], diceNumbers[1]);
         if (player.isJailed()) {
             checkBreakJail(diceNumbers, totalMoveCount);
         } else {
@@ -1451,31 +1454,36 @@ public class Gameplay extends javax.swing.JFrame {
         }
 
         sendPlayerToMoveForward(moveCount);
+//        if(spaceNumber == 24){
+//            javax.swing.Timer t = new javax.swing.Timer(300, new MoveForward(displayPlayer.get(player.getID()), player, moveCount));
+//            t.start();
+//            movePlayerTo(JAIL_SPACE_NUMBER);
+//            container.repaint();
+//        }
         javax.swing.Timer t = new javax.swing.Timer(300, new MoveForward(displayPlayer.get(player.getID()), player, moveCount));
         t.start();
-        container.repaint();
 
         isMoving = false;
-        System.out.println("move player forward "+ spaceNumber);
         doSpaceAction(spaceNumber, moveCount);
     }
 
     private void movePlayerTo(int number) throws IOException {
         isMoving = true;
-        sendPlayerToMoveTo(number);
         spaceNumber = number;
-        System.out.println("kuay");
-        doSpaceAction(spaceNumber, 1);
-
+        System.out.println("in move player to : " + spaceNumber);
         //TODO: animation warp player to space number
-        //MoveForwardTo(spaceNumber);
+        moveForwardTo(player , spaceNumber);
         isMoving = false;
+        doSpaceAction(spaceNumber, 1);
     }
+
+
 
     private void doSpaceAction(int spaceNumber, int diceNumber) throws IOException {
         Space space = map.get(spaceNumber);
         String action = space.getAction();
-        System.out.println(space.getName());
+        System.out.println("action: " + action + "  spaceNumber: " + spaceNumber);
+
         switch (action) {
             case ("draw card"): {
                 CardSpace cardSpace = (CardSpace) space;
@@ -1498,6 +1506,7 @@ public class Gameplay extends javax.swing.JFrame {
 //            case ("go to jail"): {
 //                player.jailed();
 //                endTurn();
+//
 //                break;
 //            }
 
@@ -1516,10 +1525,14 @@ public class Gameplay extends javax.swing.JFrame {
                             if (player.getMoney() >= ((EstateSpace) propertySpace).getHousePrice()) {
                                 showHouseBuying((EstateSpace) propertySpace);
                             }
+                            else
+                                endTurn();
                         } else {
                             if (player.getMoney() >= ((EstateSpace) propertySpace).getLandmarkPrice()) {
                                 showLandmarkBuying((EstateSpace) propertySpace);
                             }
+                            else
+                                endTurn();
                         }
                     }
                 } else {
@@ -1558,15 +1571,14 @@ public class Gameplay extends javax.swing.JFrame {
             }
 
             case ("go"): {
-                movePlayerTo(8);
-                sendPlayerToMoveTo(8);
-                System.out.println("THISTHIS Go");
-                //endTurn();
+                int moveNumber = ((MoveSpace) space).getAmount();
+                movePlayerTo(moveNumber);
+                sendPlayerToMoveTo(moveNumber);
+//                endTurn();
                 break;
             }
 
             case ("stop"): {
-                System.out.println("yeahhhhhhhh" + spaceNumber);
                 player.jailed();
                 endTurn();
                 break;
@@ -1591,7 +1603,6 @@ public class Gameplay extends javax.swing.JFrame {
         } else {
             jailTurnCount += 1;
         }
-        endTurn();
     }
 
     private void payJailFine() throws IOException {
@@ -1615,11 +1626,8 @@ public class Gameplay extends javax.swing.JFrame {
 
     private void initCharacterSprites() {
         for (int i = 0; i < MAX_PLAYERS; i++) {
-            //System.out.print("i");
             displayPlayer.add(new CharacterSprite(player));
         }
-        //System.out.println("");
-        //System.out.println("display player length: " + displayPlayer.size());
         CharacterSprite sprite = new CharacterSprite(player);
         sprite.setBounds(360, 460, 50, 50);
         sprite.setVisible(true);
@@ -1628,7 +1636,6 @@ public class Gameplay extends javax.swing.JFrame {
         displayPlayer.set(player.getID(), sprite);
 
         for (PlayerObj opponent : opponents) {
-            //System.out.println("test");
             sprite = new CharacterSprite(opponent);
             sprite.setBounds(360, 460, 50, 50);
             sprite.setVisible(true);
@@ -1636,13 +1643,11 @@ public class Gameplay extends javax.swing.JFrame {
             setMoney(opponent.getID(), opponent.getMoney());
             displayPlayer.set(opponent.getID(), sprite);
         }
-        // System.out.println("test2");
         gameplay.add(icBuilding);
         gameplay.add(lCanteen);
         gameplay.add(yellowBin);
         gameplay.add(blueBin);
         gameplay.add(redBin);
-
 
 
         gameplay.add(ic06);
@@ -1657,25 +1662,22 @@ public class Gameplay extends javax.swing.JFrame {
         repaint();
     }
 
-    public void MoveForwardTo(int spaceNumber)
-    {
+    public void moveForwardTo(Movable player, int spaceNumber) {
         int side, spaceNum;
         double sideDouble;
         int posX = 0, posY = 0;
         sideDouble = (double) spaceNumber / 8;
         side = (int) Math.ceil(sideDouble);
         spaceNum = spaceNumber % 8;
-        if(spaceNum == 0 ){
-            spaceNum= 8 ;
+        if (spaceNum == 0) {
+            spaceNum = 8;
         }
-        switch (side)
-        {
+        switch (side) {
             case 1:
                 posX = 360;
                 posY = 460;
                 posX -= 35 * spaceNum; //side1
                 posY -= 23 * spaceNum; //side1
-
                 break;
             case 2:
                 posX = 80;
@@ -1699,7 +1701,9 @@ public class Gameplay extends javax.swing.JFrame {
 
                 break;
         }
-
+        player.setX(posX);
+        player.setX(posY);
+        return;
     }
 
     private void updateMap(PropertySpace propertySpace) {
@@ -1782,12 +1786,15 @@ public class Gameplay extends javax.swing.JFrame {
         client.sendData(serverMessage);
     }
 
-
+    private void sendHouseToUpdate(int spaceNumber, String path) throws IOException {
+        HouseObj houseObj = new HouseObj(path, spaceNumber, player.getID());
+        ServerMessage serverMessage = new ServerMessage("updateHouse", houseObj);
+        client.sendData(serverMessage);
+    }
 }
 
 
-class CharacterSprite extends JLabel
-{
+class CharacterSprite extends JLabel {
     BufferedImage spriteIdleL, spriteIdleR;
     Movable player;
 
@@ -1798,7 +1805,6 @@ class CharacterSprite extends JLabel
 
         setVisible(true);
         try {
-            System.out.println("Player sprite: " + player.getID());
             switch (player.getID()) {
                 case 0:
                     spriteSheet = loader.loadImage("/allImage/ratSprite.png");
@@ -1844,7 +1850,6 @@ class CharacterSprite extends JLabel
         /*if(){
             g.drawImage(spriteIdleL, 360, 460, 50, 50, null);
         }*/
-        // System.out.println("isus");
         if ((player.getX() >= 80 && player.getX() < 672 && player.getY() <= 276) ||
                 (player.getX() >= 60 && player.getY() <= 268)) {
             g.drawImage(spriteIdleR, 0, 0, 50, 50, null);
@@ -1888,6 +1893,10 @@ class MoveForward implements ActionListener {
         //System.out.println(player.getX() + "     " + player.getY());
         posX = player.getX();
         posY = player.getY();
+        if (posX == 672 && posY == 268) {
+            posX = 80;
+            posY = 276;
+        }
         if (diceNumber == 0) {
             //allSprite.repaint();
             posX += 0;
@@ -1918,25 +1927,17 @@ class MoveForward implements ActionListener {
                 }
                 break;
         }
-        //System.out.println("dice num in action performed: " + diceNumber);
 
+        if (count == diceNumber) { //จนครั้งที่เดิน
+            ((javax.swing.Timer) e.getSource()).stop();
+            count = 0;
+        }
         player.setX(posX);
         player.setY(posY);
-        //System.out.println(player.getX() + "    " + player.getY());
         allSprite.validate();
         allSprite.repaint();
         (allSprite.getParent().getParent()).validate();
         (allSprite.getParent().getParent()).repaint();
-
-        if (count == diceNumber) { //จนครั้งที่เดิน
-            //System.out.println("stop timer!");
-            ((javax.swing.Timer) e.getSource()).stop();
-            count = 0;
-        }
-        if(posX == 672 && posY == 268){
-            posX = 80;
-            posY = 276;
-        }
         player.setX(posX);
         player.setY(posY);
     }
