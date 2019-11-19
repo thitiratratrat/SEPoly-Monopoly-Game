@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.*;
 import java.util.Timer;
 
@@ -1253,6 +1254,13 @@ public class Gameplay extends javax.swing.JFrame {
                             break;
                         }
 
+                        case ("updateHouse"): {
+                            HouseObj houseObj = (HouseObj) serverMessage.getData();
+                            (estate.get(houseObj.getSpaceNumber())).setIcon(new ImageIcon(houseObj.getPath()));
+                            repaint();
+                            break;
+                        }
+
                         default:
                             break;
                     }
@@ -1336,13 +1344,16 @@ public class Gameplay extends javax.swing.JFrame {
         path += Integer.toString(houseCount);
         path += ".png";
         System.out.println("path " + path);
+        String fullPath;
         if ((spaceNumber >= 1 && spaceNumber <= 7) || (spaceNumber >= 17 && spaceNumber <= 23)) {
             //estate.get(spaceNumber).setIcon(new ImageIcon("\\src\\house_side1-3\\" + path));
-            (estate.get(spaceNumber)).setIcon(new ImageIcon(BASE_PATH + "src\\house_side1-3\\" + path));
+            fullPath = BASE_PATH + "src\\house_side1-3\\" + path;
         } else {
             //estate.get(spaceNumber).setIcon(new ImageIcon("\\src\\house_side2-4\\" + path));
-            (estate.get(spaceNumber)).setIcon(new ImageIcon(BASE_PATH + "src\\house_side2-4\\" + path));
+            fullPath = BASE_PATH + "src\\house_side2-4\\" + path;
         }
+        (estate.get(spaceNumber)).setIcon(new ImageIcon(fullPath));
+        sendHouseToUpdate(spaceNumber, fullPath);
         repaint();
         endTurn();
     }
@@ -1733,6 +1744,12 @@ public class Gameplay extends javax.swing.JFrame {
     private void sendPlayerToMoveTo(int spaceNumber) throws IOException {
         MoveAnimateObj moveObj = new MoveAnimateObj(player, spaceNumber);
         ServerMessage serverMessage = new ServerMessage("moveOpponentTo", moveObj);
+        client.sendData(serverMessage);
+    }
+
+    private void sendHouseToUpdate(int spaceNumber, String path) throws IOException {
+        HouseObj houseObj = new HouseObj(path, spaceNumber, player.getID());
+        ServerMessage serverMessage = new ServerMessage("updateHouse", houseObj);
         client.sendData(serverMessage);
     }
 }

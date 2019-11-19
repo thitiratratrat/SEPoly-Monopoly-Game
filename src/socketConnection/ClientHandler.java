@@ -100,6 +100,12 @@ class ClientHandler extends Thread {
                         break;
                     }
 
+                    case ("updateHouse"): {
+                        HouseObj houseObj = (HouseObj) serverMessage.getData();
+                        server.sendToAllExcept(houseObj.getID(), serverMessage);
+                        break;
+                    }
+
                     default:
                         break;
                 }
