@@ -47,14 +47,13 @@ public class Server {
             System.out.println("connected");
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
-            //check if size == 4 ?????
+
             int ID = players.size();
             ClientHandler clientHandler = new ClientHandler(socket, inputStream, outputStream, this, ID);
             Player player = new Player(STARTINGMONEY, ID);
 
             clients.add(clientHandler);
             players.add(player);
-            //send size? to change color in lobby????
             clientHandler.start();
         } catch (Exception e) {
             close();
@@ -71,7 +70,6 @@ public class Server {
         sendInitOpponentData();
     }
 
-
     public void sendToAllClients(ServerMessage serverMessage) throws IOException {
         for (ClientHandler client : clients) {
             client.getOutputStream().writeUnshared(serverMessage);
@@ -80,6 +78,7 @@ public class Server {
     }
 
     public void startNextPlayerTurn(int playerID) throws IOException {
+        System.out.println("player ending turn: " + playerID);
         int nextPlayerIDTurn = 0;
 
         while (true) {
@@ -94,7 +93,8 @@ public class Server {
         ServerMessage serverMessage = new ServerMessage("startTurn", "");
 
         firstPlayerClient.getOutputStream().writeUnshared(serverMessage);
-        firstPlayerClient.getOutputStream().reset();
+//        firstPlayerClient.getOutputStream().reset();
+        firstPlayerClient.getOutputStream().flush();
     }
 
     public void updatePlayer(Player player) throws IOException {
@@ -246,6 +246,9 @@ public class Server {
         int effectAmount = card.getEffectAmount();
         Player player = players.get(drawCardObj.getPlayerID());
 
+        ServerMessage serverMessage = new ServerMessage("showCard", card.getImage());
+        sendToAllClients(serverMessage);
+
         switch (effect) {
             case ("getPaid"): {
                 player.getPaid(effectAmount);
@@ -267,19 +270,19 @@ public class Server {
             }
             case ("getJailed"): {
                 player.jailed();
-                ServerMessage serverMessage = new ServerMessage("goToJail", "");
+                serverMessage = new ServerMessage("goToJail", "");
                 sendToPlayer(serverMessage, player.getID());
                 break;
             }
 
             case ("moveForward"): {
-                ServerMessage serverMessage = new ServerMessage("moveForward", effectAmount);
+                serverMessage = new ServerMessage("moveForward", effectAmount);
                 sendToPlayer(serverMessage, player.getID());
                 break;
             }
 
             case ("moveTo"): {
-                ServerMessage serverMessage = new ServerMessage("moveTo", effectAmount);
+                serverMessage = new ServerMessage("moveTo", effectAmount);
                 sendToPlayer(serverMessage, player.getID());
                 break;
             }
@@ -289,7 +292,7 @@ public class Server {
         }
         //TODO: player act on card effect
 
-        ServerMessage serverMessage = new ServerMessage("updatePlayer", player);
+        serverMessage = new ServerMessage("updatePlayer", player);
         sendToPlayer(serverMessage, player.getID());
         updatePlayer(player);
     }
@@ -309,7 +312,8 @@ public class Server {
                 continue;
             }
             client.getOutputStream().writeUnshared(serverMessage);
-            client.getOutputStream().reset();
+//            client.getOutputStream().reset();
+            client.getOutputStream().flush();
         }
     }
 
@@ -365,6 +369,7 @@ public class Server {
     }
 
     private void sendStartGame() throws IOException {
+        System.out.println("starting!");
         ServerMessage serverMessage = new ServerMessage("startGame", "");
         sendToAllClients(serverMessage);
     }

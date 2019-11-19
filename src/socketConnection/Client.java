@@ -27,7 +27,6 @@ public class Client {
 
     public ServerMessage getData() throws SocketException {
         try {
-            //socket.setSoTimeout(SOCKETINPUTTIMEOUT);
             return (ServerMessage) inputStream.readUnshared();
         } catch (Exception e) {
             return null;
