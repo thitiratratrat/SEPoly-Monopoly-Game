@@ -791,7 +791,7 @@ public class Gameplay extends javax.swing.JFrame {
 
     private void oneHouseCheckActionPerformed(java.awt.event.ActionEvent evt) {
         if (oneHouseCheck.isSelected())
-            totalPrice.setText(intToString(((EstateSpace) map.get(spaceNumber)).getPrice()));
+            totalPrice.setText(intToString(((EstateSpace) map.get(spaceNumber)).getHousePrice()));
         else {
             twoHouseCheck.setSelected(false);
             threeHouseCheck.setSelected(false);
@@ -800,7 +800,7 @@ public class Gameplay extends javax.swing.JFrame {
     }
 
     private void twoHouseCheckActionPerformed(java.awt.event.ActionEvent evt) {
-        price = ((EstateSpace) map.get(spaceNumber)).getPrice();
+        price = ((EstateSpace) map.get(spaceNumber)).getHousePrice();
         if (twoHouseCheck.isSelected() && !oneHouseCheck.isEnabled())
             totalPrice.setText(intToString(price));
         else if (twoHouseCheck.isSelected() && oneHouseCheck.isEnabled()) {
@@ -817,7 +817,7 @@ public class Gameplay extends javax.swing.JFrame {
     }
 
     private void threeHouseCheckActionPerformed(java.awt.event.ActionEvent evt) {
-        price = ((EstateSpace) map.get(spaceNumber)).getPrice();
+        price = ((EstateSpace) map.get(spaceNumber)).getHousePrice();
         if (threeHouseCheck.isSelected() && !oneHouseCheck.isEnabled() && !twoHouseCheck.isEnabled())
             totalPrice.setText(intToString(price));
         else if (threeHouseCheck.isSelected() && !oneHouseCheck.isEnabled() && twoHouseCheck.isEnabled()) {
@@ -1119,6 +1119,8 @@ public class Gameplay extends javax.swing.JFrame {
 
                         case ("goToJail"): {
                             //TODO: animation go to jail
+                            System.out.println("gotoJail");
+                            //displayPlayer.get(player.getID()).MoveForwardTo(8);
                             movePlayerTo(JAIL_SPACE_NUMBER);
                             break;
                         }
@@ -1148,9 +1150,9 @@ public class Gameplay extends javax.swing.JFrame {
                             Movable opponent = moveObj.getPlayer();
                             int moveCount = moveObj.getMoveNumber();
 
-                            System.out.println("Move Player: " + opponent.getID()+ " Number : " + moveCount);
+                           // System.out.println("Move Player: " + opponent.getID()+ " Number : " + moveCount);
                             //TODO: animate opponent id forward
-                            //edit
+
                             javax.swing.Timer t = new javax.swing.Timer(300, new MoveForward(displayPlayer.get(opponent.getID()),opponent,moveCount));
                             t.start();
                             break;
@@ -1310,9 +1312,9 @@ public class Gameplay extends javax.swing.JFrame {
         }
 
         sendPlayerToMoveForward(moveCount);
-        //TODO: animation move player forward
         javax.swing.Timer t = new javax.swing.Timer(300, new MoveForward(displayPlayer.get(player.getID()), player, moveCount));
         t.start();
+
 
         isMoving = false;
         doSpaceAction(spaceNumber, moveCount);
@@ -1323,6 +1325,9 @@ public class Gameplay extends javax.swing.JFrame {
         spaceNumber = number;
         sendPlayerToMoveTo(number);
         //TODO: animation warp player to space number
+
+        displayPlayer.get(player.getID()).MoveForwardTo(spaceNumber);
+
         isMoving = false;
         doSpaceAction(spaceNumber, 1);
     }
@@ -1359,7 +1364,10 @@ public class Gameplay extends javax.swing.JFrame {
                 Player owner = propertySpace.getOwner();
                 if (owner == null) {
                     //TODO: display UI to let player choose to buy or put up for auction
-                    showLandBuying(propertySpace);
+                    if(player.getMoney() >= propertySpace.getPrice())
+                        showLandBuying(propertySpace);
+                    else
+                        endTurn();
                 } else if (owner.getID() == player.getID()) {
                     if (propertySpace instanceof EstateSpace) {
                         if (((EstateSpace) propertySpace).getHouseCount() < 3) {
@@ -1567,13 +1575,12 @@ public class Gameplay extends javax.swing.JFrame {
         client.sendData(serverMessage);
     }
 
-
 }
 
 
 class CharacterSprite extends JLabel {
     BufferedImage spriteIdleL, spriteIdleR;
-    Movable player;
+    public Movable player;
 
     public CharacterSprite(Movable player) {
         this.player = player;
@@ -1583,7 +1590,7 @@ class CharacterSprite extends JLabel {
         //setBackground(Color.blue);
         setVisible(true);
         try {
-            System.out.println("Player sprite: " + player.getID());
+
             switch (player.getID()) {
                 case 0:
                     spriteSheet = loader.loadImage("/allImage/ratSprite.png");
@@ -1621,6 +1628,45 @@ class CharacterSprite extends JLabel {
                 break;
         }
 
+    }
+
+    public void MoveForwardTo(int spaceNumber)
+    {
+        int side ,spaceNum ;
+        double sideDouble;
+        int posX = 0 ,posY = 0 ;
+        sideDouble = (double) spaceNumber /8 ;
+        side = (int) Math.ceil(sideDouble);
+        spaceNum = spaceNumber %8;
+        switch (side){
+            case 1:
+                posX = 360 ;
+                posY = 460 ;
+                posX -= 35*spaceNum; //side1
+                posY -= 23*spaceNum; //side1
+                break;
+            case 2:
+                posX = 80 ;
+                posY = 276 ;
+                posX += 37*spaceNum; //side2
+                posY -= 27*spaceNum; //side2
+                break;
+            case 3:
+                posX = 376 ;
+                posY = 60 ;
+                posX += 37*spaceNum; //side3
+                posY += 26*spaceNum; //side3
+                break;
+            case 4:
+                posX = 672 ;
+                posY = 268 ;
+                posX -= 35*spaceNum; //side4
+                posY += 25*spaceNum; //side4
+                break;
+        }
+        System.out.println(player.getX() + " " + player.getY());
+        this.player.setX(posX);
+        this.player.setY(posY);
     }
 
     @Override
