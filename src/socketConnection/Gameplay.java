@@ -38,7 +38,7 @@ public class Gameplay extends javax.swing.JFrame {
     private Player player;
     private ArrayList<PlayerObj> opponents;
     private ArrayList<Space> map;
-    private String address = "127.0.0.1";
+    private String address = "25.30.143.112";
     private int port = 5056;
     private Timer biddingTimer = new Timer();
     private Timer sendPlayerDataTimer, getGameDataTimer;
@@ -1598,8 +1598,6 @@ public class Gameplay extends javax.swing.JFrame {
         ServerMessage serverMessage = new ServerMessage("moveOpponentTo", moveObj);
         client.sendData(serverMessage);
     }
-
-
 }
 
 
