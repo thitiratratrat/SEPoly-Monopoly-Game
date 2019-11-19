@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class ServerMain{
     public static void start() throws IOException, ClassNotFoundException {
-        Server server = new Server(5057);
+        Server server = new Server(5056);
         server.connect();
         try {
             server.start();

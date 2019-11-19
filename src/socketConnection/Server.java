@@ -163,9 +163,14 @@ public class Server {
                                 estate.getInt(4), pos, estate.getBytes(12));
                         map.add(temp);
                         break;
-                    case "card":
+                    case "community":
                         temp = new CardSpace(estate.getInt(1), estate.getString(2),
-                                estate.getString(2), pos, estate.getBytes(12));
+                                estate.getString(3), pos, estate.getBytes(12));
+                        map.add(temp);
+                        break;
+                    case "chance":
+                        temp = new CardSpace(estate.getInt(1), estate.getString(2),
+                                estate.getString(3), pos, estate.getBytes(12));
                         map.add(temp);
                         break;
                     case "free parking":
@@ -406,7 +411,7 @@ public class Server {
             while (card.next()) {
                 //System.out.println(card.getString(3) + card.getInt(4));
                 temp = new Card(card.getString(3), card.getInt(4), card.getBytes(5));
-                communityDeck.add(temp);
+                chanceDeck.add(temp);
             }
             connection.close();
         } catch (Exception e) {
