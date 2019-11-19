@@ -2,6 +2,7 @@ package socketConnection;
 
 import DiceAnimate.Dice;
 import allSpritePlayer.BufferedImageLoader;
+import allSpritePlayer.Play;
 import allSpritePlayer.SpriteSheet;
 import model.*;
 
@@ -16,6 +17,7 @@ import java.util.*;
 import java.util.Timer;
 
 import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,6 +26,8 @@ import model.Movable;
 
 
 public class Gameplay extends javax.swing.JFrame {
+    CountDownLatch latch = new CountDownLatch(3);
+
     private String name;
     private Client client;
     private Player player;
@@ -1144,7 +1148,6 @@ public class Gameplay extends javax.swing.JFrame {
                         }
 
                         case ("initPlayer"): {
-                            System.out.println("initPlayer");
                             player = (Player) serverMessage.getData();
                             setMoney(player.getID(), player.getMoney());
                             setMoney(player.getID(), player.getMoney());
@@ -1229,11 +1232,11 @@ public class Gameplay extends javax.swing.JFrame {
                             int moveCount = moveObj.getMoveNumber();
                             PlayerObj opponent = getOpponent(data.getID());
                             //TODO: animate opponent id forward
-                            System.out.print("opponent : ");
-                            System.out.println(opponent.getX() + "    " + opponent.getY());
-                            javax.swing.Timer t2 = new javax.swing.Timer(300, new MoveForward(displayPlayer.get(opponent.getID()), opponent , moveCount));
+
+                            javax.swing.Timer t2 = new javax.swing.Timer(300, new MoveForward(displayPlayer.get(opponent.getID()), opponent , moveCount
+                            ));
                             t2.start();
-                            System.out.println(opponent.getX() + "    " + opponent.getY());
+                            //System.out.println(opponent.getX() + "    " + opponent.getY());
 //                            sendPlayerToUpdate();
 
                             container.repaint();
@@ -1242,7 +1245,14 @@ public class Gameplay extends javax.swing.JFrame {
 
                         case ("moveOpponentTo"): {
                             MoveAnimateObj moveObj = (MoveAnimateObj) serverMessage.getData();
+                            Movable data = moveObj.getPlayer();
                             //TODO: animate player opponent to specific position
+                            //System.out.println("thisone "+data.getID());
+                            //if(moveObj.getMoveNumber() == 24 ){
+                                movePlayerTo(moveObj.getMoveNumber());
+                                container.repaint();
+                            //}
+                            //System.out.println("Move opponent to");
                             break;
                         }
 
@@ -1263,7 +1273,6 @@ public class Gameplay extends javax.swing.JFrame {
         dice.setVisible(false);
         ServerMessage serverMessage = new ServerMessage("endTurn", player.getID());
         client.sendData(serverMessage);
-
     }
 
     private void updateOpponent(PlayerObj playerObj) {
@@ -1279,7 +1288,6 @@ public class Gameplay extends javax.swing.JFrame {
         setMoney(playerObj.getID(), playerObj.getMoney());
 
         //TODO: animate opponent to move to that position
-        //888888
         gameplay.repaint();
 
 
@@ -1452,11 +1460,16 @@ public class Gameplay extends javax.swing.JFrame {
         }
 
         sendPlayerToMoveForward(moveCount);
-        //TODO: animation move player forward
-        //System.out.println("move animation");
-        javax.swing.Timer t = new javax.swing.Timer(300, new MoveForward(displayPlayer.get(player.getID()), player, moveCount));
-        //System.out.println("move count from rolling: " + moveCount);
-        t.start();
+        if(spaceNumber == 24){
+            javax.swing.Timer t = new javax.swing.Timer(300, new MoveForward(displayPlayer.get(player.getID()), player, moveCount));
+            t.start();
+            movePlayerTo(JAIL_SPACE_NUMBER);
+            container.repaint();
+        }
+        else{
+            javax.swing.Timer t = new javax.swing.Timer(300, new MoveForward(displayPlayer.get(player.getID()), player, moveCount));
+            t.start();
+        }
 
         isMoving = false;
         doSpaceAction(spaceNumber, moveCount);
@@ -1465,10 +1478,13 @@ public class Gameplay extends javax.swing.JFrame {
     private void movePlayerTo(int number) throws IOException {
         isMoving = true;
         spaceNumber = number;
+
         sendPlayerToMoveTo(number);
         //TODO: animation warp player to space number
+        MoveForwardTo(spaceNumber);
         isMoving = false;
         doSpaceAction(spaceNumber, 1);
+
     }
 
     private void doSpaceAction(int spaceNumber, int diceNumber) throws IOException {
@@ -1490,10 +1506,12 @@ public class Gameplay extends javax.swing.JFrame {
                 StartSpace startSpace = (StartSpace) space;
                 player.getPaid(startSpace.getGoMoney());
                 sendPlayerToUpdate();
+                endTurn();
                 break;
             }
 
             case ("go to jail"): {
+                endTurn();
                 player.jailed();
                 break;
             }
@@ -1556,8 +1574,12 @@ public class Gameplay extends javax.swing.JFrame {
 
             case ("go"): {
                 int moveNumber = ((MoveSpace) space).getAmount();
-                movePlayerTo(moveNumber);
-                sendPlayerToMoveTo(moveNumber);
+                if(moveNumber == 24){
+                    movePlayerTo(moveNumber);
+                    sendPlayerToMoveTo(moveNumber);
+                }
+                System.out.println("THISTHIS");
+                endTurn();
                 break;
             }
 
@@ -1652,6 +1674,51 @@ public class Gameplay extends javax.swing.JFrame {
         repaint();
     }
 
+    public void MoveForwardTo(int spaceNumber)
+    {
+        int side, spaceNum;
+        double sideDouble;
+        int posX = 0, posY = 0;
+        sideDouble = (double) spaceNumber / 8;
+        side = (int) Math.ceil(sideDouble);
+        spaceNum = spaceNumber % 8;
+        if(spaceNum == 0 ){
+            spaceNum= 8 ;
+        }
+        switch (side)
+        {
+            case 1:
+                posX = 360;
+                posY = 460;
+                posX -= 35 * spaceNum; //side1
+                posY -= 23 * spaceNum; //side1
+
+                break;
+            case 2:
+                posX = 80;
+                posY = 276;
+                posX += 37 * spaceNum; //side2
+                posY -= 27 * spaceNum; //side2
+
+                break;
+            case 3:
+                posX = 376;
+                posY = 60;
+                posX += 37 * spaceNum; //side3
+                posY += 26 * spaceNum; //side3
+                break;
+
+            case 4:
+                posX = 672;
+                posY = 268;
+                posX -= 35 * spaceNum; //side4
+                posY += 25 * spaceNum; //side4
+
+                break;
+        }
+
+    }
+
     private void updateMap(PropertySpace propertySpace) {
         map.set(propertySpace.getNumber(), propertySpace);
     }
@@ -1736,7 +1803,8 @@ public class Gameplay extends javax.swing.JFrame {
 }
 
 
-class CharacterSprite extends JLabel {
+class CharacterSprite extends JLabel
+{
     BufferedImage spriteIdleL, spriteIdleR;
     Movable player;
 
@@ -1744,8 +1812,7 @@ class CharacterSprite extends JLabel {
         this.player = player;
         BufferedImageLoader loader = new BufferedImageLoader();
         BufferedImage spriteSheet = null;
-        //setOpaque(true);
-        //setBackground(Color.blue);
+
         setVisible(true);
         try {
             System.out.println("Player sprite: " + player.getID());
@@ -1868,20 +1935,26 @@ class MoveForward implements ActionListener {
                 }
                 break;
         }
-        System.out.println("dice num in action performed: " + diceNumber);
+        //System.out.println("dice num in action performed: " + diceNumber);
 
         player.setX(posX);
         player.setY(posY);
-        System.out.println(player.getX() + "    " + player.getY());
+        //System.out.println(player.getX() + "    " + player.getY());
         allSprite.validate();
         allSprite.repaint();
         (allSprite.getParent().getParent()).validate();
         (allSprite.getParent().getParent()).repaint();
 
         if (count == diceNumber) { //จนครั้งที่เดิน
-            System.out.println("stop timer!");
+            //System.out.println("stop timer!");
             ((javax.swing.Timer) e.getSource()).stop();
             count = 0;
         }
+        if(posX == 672 && posY == 268){
+            posX = 80;
+            posY = 276;
+        }
+        player.setX(posX);
+        player.setY(posY);
     }
 }

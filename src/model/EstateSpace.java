@@ -57,9 +57,9 @@ public class EstateSpace extends PropertySpace {
     }
 
     public void buildHouse(int houseCount) {
-        houseCount += houseCount;
+        this.houseCount += houseCount;
 
-        if (houseCount > MAX_HOUSE_COUNT) {
+        if (this.houseCount > MAX_HOUSE_COUNT) {
             houseCount = MAX_HOUSE_COUNT;
         }
     }
@@ -85,4 +85,6 @@ public class EstateSpace extends PropertySpace {
     public int getDisplayYPos(){
         return (int)positions[3];
     }
+
+
 }
