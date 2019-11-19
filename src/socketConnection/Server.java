@@ -295,6 +295,7 @@ public class Server {
     }
 
     public void payRentPlayer(GetPaidObj getPaidObj) throws IOException {
+        System.out.println("HIA");
         Player player = players.get(getPaidObj.getPlayerID());
         player.getPaid(getPaidObj.getRent());
         ServerMessage serverMessage = new ServerMessage("updatePlayer", player);
@@ -354,6 +355,7 @@ public class Server {
             serverMessage.setData(opponents);
             client.getOutputStream().writeUnshared(serverMessage);
             client.getOutputStream().reset();
+            opponents.clear();
         }
     }
 
