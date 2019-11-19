@@ -78,6 +78,7 @@ public class Server {
     }
 
     public void startNextPlayerTurn(int playerID) throws IOException {
+        System.out.println("player ending turn: " + playerID);
         int nextPlayerIDTurn = 0;
 
         while (true) {
@@ -92,7 +93,8 @@ public class Server {
         ServerMessage serverMessage = new ServerMessage("startTurn", "");
 
         firstPlayerClient.getOutputStream().writeUnshared(serverMessage);
-        firstPlayerClient.getOutputStream().reset();
+//        firstPlayerClient.getOutputStream().reset();
+        firstPlayerClient.getOutputStream().flush();
     }
 
     public void updatePlayer(Player player) throws IOException {
@@ -310,7 +312,8 @@ public class Server {
                 continue;
             }
             client.getOutputStream().writeUnshared(serverMessage);
-            client.getOutputStream().reset();
+//            client.getOutputStream().reset();
+            client.getOutputStream().flush();
         }
     }
 
