@@ -26,7 +26,6 @@ import model.Movable;
 
 
 public class Gameplay extends javax.swing.JFrame {
-    CountDownLatch latch = new CountDownLatch(3);
 
     private String name;
     private Client client;
@@ -1431,7 +1430,6 @@ public class Gameplay extends javax.swing.JFrame {
         }
         ServerMessage serverMessage = new ServerMessage("updateDice", diceNumbers);
         client.sendData(serverMessage);
-//        dice.roll(diceNumbers[0], diceNumbers[1]);
         if (player.isJailed()) {
             checkBreakJail(diceNumbers, totalMoveCount);
         } else {
@@ -1453,38 +1451,31 @@ public class Gameplay extends javax.swing.JFrame {
         }
 
         sendPlayerToMoveForward(moveCount);
-        if(spaceNumber == 24){
-            javax.swing.Timer t = new javax.swing.Timer(300, new MoveForward(displayPlayer.get(player.getID()), player, moveCount));
-            t.start();
-            movePlayerTo(JAIL_SPACE_NUMBER);
-            container.repaint();
-        }
-        else{
-            javax.swing.Timer t = new javax.swing.Timer(300, new MoveForward(displayPlayer.get(player.getID()), player, moveCount));
-            t.start();
-        }
+        javax.swing.Timer t = new javax.swing.Timer(300, new MoveForward(displayPlayer.get(player.getID()), player, moveCount));
+        t.start();
+        container.repaint();
 
         isMoving = false;
+        System.out.println("move player forward "+ spaceNumber);
         doSpaceAction(spaceNumber, moveCount);
     }
 
     private void movePlayerTo(int number) throws IOException {
         isMoving = true;
-        spaceNumber = number;
-        System.out.println("in move player to : "+ spaceNumber);
         sendPlayerToMoveTo(number);
-        //TODO: animation warp player to space number
-        MoveForwardTo(spaceNumber);
-        isMoving = false;
+        spaceNumber = number;
+        System.out.println("kuay");
         doSpaceAction(spaceNumber, 1);
 
-
+        //TODO: animation warp player to space number
+        //MoveForwardTo(spaceNumber);
+        isMoving = false;
     }
 
     private void doSpaceAction(int spaceNumber, int diceNumber) throws IOException {
         Space space = map.get(spaceNumber);
         String action = space.getAction();
-
+        System.out.println(space.getName());
         switch (action) {
             case ("draw card"): {
                 CardSpace cardSpace = (CardSpace) space;
@@ -1504,12 +1495,11 @@ public class Gameplay extends javax.swing.JFrame {
                 break;
             }
 
-            case ("go to jail"): {
-                player.jailed();
-                endTurn();
-
-                break;
-            }
+//            case ("go to jail"): {
+//                player.jailed();
+//                endTurn();
+//                break;
+//            }
 
             case ("property"): {
                 PropertySpace propertySpace = (PropertySpace) space;
@@ -1568,17 +1558,15 @@ public class Gameplay extends javax.swing.JFrame {
             }
 
             case ("go"): {
-                int moveNumber = ((MoveSpace) space).getAmount();
-                if(moveNumber == 24){
-                    movePlayerTo(moveNumber);
-                    sendPlayerToMoveTo(moveNumber);
-                }
+                movePlayerTo(8);
+                sendPlayerToMoveTo(8);
                 System.out.println("THISTHIS Go");
-                endTurn();
+                //endTurn();
                 break;
             }
 
             case ("stop"): {
+                System.out.println("yeahhhhhhhh" + spaceNumber);
                 player.jailed();
                 endTurn();
                 break;
