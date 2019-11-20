@@ -60,7 +60,7 @@ public class EstateSpace extends PropertySpace {
         this.houseCount += houseCount;
 
         if (this.houseCount > MAX_HOUSE_COUNT) {
-            houseCount = MAX_HOUSE_COUNT;
+            this.houseCount = MAX_HOUSE_COUNT;
         }
     }
 
