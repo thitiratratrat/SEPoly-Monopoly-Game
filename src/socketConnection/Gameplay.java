@@ -1273,7 +1273,7 @@ public class Gameplay extends javax.swing.JFrame {
                                 (estate.get(houseObj.getSpaceNumber())).setIcon(new ImageIcon(map.get(houseObj.getSpaceNumber()).getImage()));
                             }
                             else
-                                (estate.get(houseObj.getSpaceNumber())).setIcon(new ImageIcon(houseObj.getPath()));
+                                (estate.get(houseObj.getSpaceNumber())).setIcon(new ImageIcon(BASE_PATH + houseObj.getPath()));
                             repaint();
                             break;
                         }
@@ -1354,19 +1354,22 @@ public class Gameplay extends javax.swing.JFrame {
                 path = "blue";
                 break;
         }
-        path += Integer.toString(houseCount + estateSpace.getHouseCount());
+        path += Integer.toString(houseCount);
         path += ".png";
         System.out.println("path " + path);
         String fullPath;
+        String sendPath;
         if ((spaceNumber >= 1 && spaceNumber <= 7) || (spaceNumber >= 17 && spaceNumber <= 23)) {
             //estate.get(spaceNumber).setIcon(new ImageIcon("\\src\\house_side1-3\\" + path));
             fullPath = BASE_PATH + "src\\house_side1-3\\" + path;
+            sendPath = "src\\house_side1-3\\" + path;
         } else {
             //estate.get(spaceNumber).setIcon(new ImageIcon("\\src\\house_side2-4\\" + path));
             fullPath = BASE_PATH + "src\\house_side2-4\\" + path;
+            sendPath = "src\\house_side1-3\\" + path;
         }
-        (estate.get(spaceNumber)).setIcon(new ImageIcon(fullPath));
-        sendHouseToUpdate(spaceNumber, fullPath);
+        (estate.get(spaceNumber)).setIcon(new ImageIcon(sendPath));
+        sendHouseToUpdate(spaceNumber, sendPath);
         repaint();
         endTurn();
     }
@@ -1454,8 +1457,8 @@ public class Gameplay extends javax.swing.JFrame {
                 totalMoveCount += diceNumber;
             }
 //        diceNumbers[0] = 4;
-//        diceNumbers[1] = 2;
-//        totalMoveCount = 6;
+//        diceNumbers[1] = 1;
+//        totalMoveCount = 5;
         ServerMessage serverMessage = new ServerMessage("updateDice", diceNumbers);
         client.sendData(serverMessage);
 //        dice.roll(diceNumbers[0], diceNumbers[1]);
