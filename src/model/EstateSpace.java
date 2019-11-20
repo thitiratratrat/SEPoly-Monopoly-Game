@@ -47,7 +47,6 @@ public class EstateSpace extends PropertySpace {
     }
 
     public int getRentPrice() {
-        //change 5 to 4 has only 3 house
         int rentPrice = landmarkCount == MAX_LANDMARK ? rentPrices.get(4) : rentPrices.get(houseCount);
         return rentPrice;
     }
