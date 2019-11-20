@@ -1231,7 +1231,7 @@ public class Gameplay extends javax.swing.JFrame {
                             Movable data = moveObj.getPlayer();
                             int moveCount = moveObj.getMoveNumber();
                             PlayerObj opponent = getOpponent(data.getID());
-                            //TODO: animate opponent id forward
+
                             System.out.print("opponent : ");
                             System.out.println(opponent.getX() + "    " + opponent.getY());
                             javax.swing.Timer t2 = new javax.swing.Timer(300, new MoveForward(displayPlayer.get(opponent.getID()), opponent, moveCount));
@@ -1440,10 +1440,10 @@ public class Gameplay extends javax.swing.JFrame {
         Random randomGenerator = new Random();
         for (int i = 0; i < diceNumbers.length; i++) {
             int diceNumber = randomGenerator.nextInt(6) + 1;
-//            diceNumbers[i] = diceNumber;
-//            totalMoveCount += diceNumber;
-            diceNumbers[i] = 6;
-            totalMoveCount += 6;
+            diceNumbers[i] = diceNumber;
+            totalMoveCount += diceNumber;
+//            diceNumbers[i] = 6;
+//            totalMoveCount += 6;
         }
         ServerMessage serverMessage = new ServerMessage("updateDice", diceNumbers);
         client.sendData(serverMessage);
@@ -1486,7 +1486,7 @@ public class Gameplay extends javax.swing.JFrame {
     private void movePlayerTo(int number) throws IOException {
         isMoving = true;
         spaceNumber = number;
-        System.out.println("in move player to : " + spaceNumber);
+//        System.out.println("in move player to : " + spaceNumber);
         //TODO: animation warp player to space number
         MoveForwardTo(spaceNumber);
         isMoving = false;
@@ -1505,6 +1505,7 @@ public class Gameplay extends javax.swing.JFrame {
                 DrawCardObj drawCardObj = new DrawCardObj(player.getID(), deckType);
                 ServerMessage serverMessage = new ServerMessage("drawCard", drawCardObj);
                 client.sendData(serverMessage);
+                System.out.println("ending my turn in draw card");
                 endTurn();
                 break;
             }
@@ -1560,6 +1561,7 @@ public class Gameplay extends javax.swing.JFrame {
                     GetPaidObj getPaidObj = new GetPaidObj(propertySpace.getOwner().getID(), rent);
                     ServerMessage serverMessage = new ServerMessage("getPaid", getPaidObj);
                     client.sendData(serverMessage);
+                    System.out.println("ending my turn in property");
                     endTurn();
                 }
                 break;
@@ -1576,6 +1578,7 @@ public class Gameplay extends javax.swing.JFrame {
 
                 player.pay(taxSpace.getTaxFee() * player.getMoney());
                 sendPlayerToUpdate();
+                System.out.println("ending my turn in pay tax");
                 endTurn();
                 break;
             }
@@ -1590,6 +1593,7 @@ public class Gameplay extends javax.swing.JFrame {
 
             case ("stop"): {
                 player.jailed();
+                System.out.println("ending my turn in stop");
                 endTurn();
                 break;
             }
@@ -1612,8 +1616,9 @@ public class Gameplay extends javax.swing.JFrame {
             movePlayerForward(moveCount);
         } else {
             jailTurnCount += 1;
+            endTurn();
         }
-        endTurn();
+//        endTurn();
     }
 
     private void payJailFine() throws IOException {
@@ -1952,7 +1957,7 @@ class MoveForward implements ActionListener {
             ((javax.swing.Timer) e.getSource()).stop();
             count = 0;
         }
-        if (posX == 672 && posY == 268) {
+        if (posX == 672 && posY == 268 && count == diceNumber) {
             posX = 80;
             posY = 276;
         }
