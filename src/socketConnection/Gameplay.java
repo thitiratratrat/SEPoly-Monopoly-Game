@@ -400,7 +400,7 @@ public class Gameplay extends javax.swing.JFrame {
         landmarkImg = new javax.swing.JLabel();
         text3 = new javax.swing.JLabel("", SwingConstants.CENTER);
         text3.setFont(new java.awt.Font("Microsoft PhagsPa", 0, 15));
-        text3.setBounds(305, 320, 200, 100);
+        text3.setBounds(305, 255, 200, 100);
         cancelBtn2 = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\Asset 22.png"));
         cancelBtn2.setBounds(302, 357, 100, 39);
         buyBtn2 = new javax.swing.JLabel(new javax.swing.ImageIcon("src\\allImage\\Asset 21.png"));
@@ -955,19 +955,19 @@ public class Gameplay extends javax.swing.JFrame {
         for (int i = 0; i < names.size(); i++) {
             switch (i) {
                 case 0:
-                    namePlayer1.setText("<html><b><p style = 'font-family:Microsoft PhagsPa; font-size: 20'>"
+                    namePlayer1.setText("<html><b><p style = 'font-family:Microsoft PhagsPa; font-size: 15'>"
                             + names.get(i) + "</p></b></html>");
                     break;
                 case 1:
-                    namePlayer2.setText("<html><b><p style = 'font-family:Microsoft PhagsPa; font-size: 20'>"
+                    namePlayer2.setText("<html><b><p style = 'font-family:Microsoft PhagsPa; font-size: 15'>"
                             + names.get(i) + "</p></b></html>");
                     break;
                 case 2:
-                    namePlayer3.setText("<html><b><p style = 'font-family:Microsoft PhagsPa; font-size: 20'>"
+                    namePlayer3.setText("<html><b><p style = 'font-family:Microsoft PhagsPa; font-size: 15'>"
                             + names.get(i) + "</p></b></html>");
                     break;
                 case 3:
-                    namePlayer4.setText("<html><b><p style = 'font-family:Microsoft PhagsPa; font-size: 20'>"
+                    namePlayer4.setText("<html><b><p style = 'font-family:Microsoft PhagsPa; font-size: 15'>"
                             + names.get(i) + "</p></b></html>");
                     break;
                 default:
@@ -1268,6 +1268,7 @@ public class Gameplay extends javax.swing.JFrame {
                         case ("updateHouse"): {
                             HouseObj houseObj = (HouseObj) serverMessage.getData();
                             if (houseObj.getPath() == "own path"){
+                                System.out.println("buying landmark");
                                 (estate.get(houseObj.getSpaceNumber())).setBounds(0,0,800,600);
                                 (estate.get(houseObj.getSpaceNumber())).setIcon(new ImageIcon(map.get(houseObj.getSpaceNumber()).getImage()));
                             }
@@ -1353,7 +1354,7 @@ public class Gameplay extends javax.swing.JFrame {
                 path = "blue";
                 break;
         }
-        path += Integer.toString(houseCount);
+        path += Integer.toString(houseCount + estateSpace.getHouseCount());
         path += ".png";
         System.out.println("path " + path);
         String fullPath;
