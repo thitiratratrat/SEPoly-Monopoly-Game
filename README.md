@@ -10,6 +10,7 @@ Players are able to view the property details.
 ![view](https://user-images.githubusercontent.com/47154880/71324638-c3ee4480-2513-11ea-879f-5fb2edb376dc.PNG)
 
 All players start with 1 milion and 500 thousand baht. The name of the players and their characters are displayerd on the board.
+
 ![main1](https://user-images.githubusercontent.com/47154880/71324494-d9fb0580-2511-11ea-900a-f0edb1fb3ba1.PNG)
 
 Players can buy property as well as houses.
